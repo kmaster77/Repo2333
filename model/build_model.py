@@ -33,6 +33,7 @@ from openpyxl.worksheet.datavalidation import DataValidation
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import model_core as mc  # noqa: E402
+import options as opts  # noqa: E402
 
 OUT = os.path.join(HERE, "financial_model.xlsx")
 
@@ -176,13 +177,13 @@ def hdr(ws, r, labels, c0=1):
 
 
 # ---------------------------------------------------------------------------
-def build_workbook(path=OUT, scenario_selector=2, overrides=None, table=None, with_python_sheets=True):
+def build_workbook(path=OUT, scenario_selector=2, overrides=None, table=None, with_python_sheets=True, option_selector=0):
     REG.clear()
     table = table or mc.load_inputs()
     overrides = overrides or {}
     wb = Workbook()
     names = ["README", "Inputs", "UnitEconomics", "Capex", "Revenue", "Opex", "PnL", "CashFlow",
-             "Valuation", "Scenarios", "Sensitivity", "Viability"]
+             "Valuation", "Scenarios", "Sensitivity", "Viability", "Opt_Overview", "Opt_AssetLight"]
     sheets = {n: (wb.active if i == 0 else wb.create_sheet(n)) for i, n in enumerate(names)}
     sheets["README"].title = "README"
 
@@ -200,12 +201,25 @@ def build_workbook(path=OUT, scenario_selector=2, overrides=None, table=None, wi
     ws.add_data_validation(dv)
     dv.add("C3")
     wb.defined_names["scenario"] = DefinedName("scenario", attr_text="Inputs!$C$3")
+    ws["F3"] = "ACTIVE OPTION (0 = none; see Opt_Overview)"
+    ws["F3"].font = BOLD
+    ws["I3"] = option_selector
+    ws["I3"].font, ws["I3"].fill = Font(color="0000FF", bold=True, size=12), INPUT_FILL
+    wb.defined_names["option_sel"] = DefinedName("option_sel", attr_text="Inputs!$I$3")
+    opt_params = []
+    for o in opts.MODEL_OPTIONS:
+        for k_ in o[3]:
+            if k_ not in opt_params:
+                opt_params.append(k_)
+    OPT_R0, OPT_R1 = 7, 7 + len(opt_params) - 1
+    OPT_C1 = get_column_letter(2 + len(opts.MODEL_OPTIONS))
     ws["A4"] = ("Column H picks low/base/high per row: pessimistic uses column F, optimistic column G "
-                "(1=low, 2=base, 3=high). Column I = OVERRIDE (leave empty = use H). Column J = ACTIVE value "
-                "used by every formula (defined name = parameter name).")
+                "(1=low, 2=base, 3=high). Column I = OVERRIDE (leave empty = use H). Column O = value of the ACTIVE OPTION "
+                "(cell I3, matrix on sheet Opt_Overview). Column J = ACTIVE value used by every formula "
+                "(priority: Override > option > scenario; defined name = parameter name).")
     ws["A4"].font = GREY
     hdr(ws, 5, ["parameter (= defined name)", "unit", "low", "base", "high", "pess. col", "opt. col",
-                "scenario value", "OVERRIDE", "ACTIVE", "label", "source_ids", "notes", "direction"])
+                "scenario value", "OVERRIDE", "ACTIVE", "label", "source_ids", "notes", "direction", "option value"])
     r = 6
     rows = list(table.items()) + [(h, {"unit": u, "low": 0.0, "base": 0.0, "high": 0.0, "label": "MODEL HOOK",
                                        "source_ids": "model", "notes": d}) for h, (u, d) in mc.HOOKS.items()]
@@ -224,7 +238,10 @@ def build_workbook(path=OUT, scenario_selector=2, overrides=None, table=None, wi
         ws.cell(r, 8, f"=INDEX(C{r}:E{r},1,CHOOSE(scenario,F{r},2,G{r}))")
         ov = ws.cell(r, 9, overrides.get(p))
         ov.font, ov.fill = BLUE, INPUT_FILL
-        a = ws.cell(r, 10, f'=IF(I{r}="",H{r},I{r})')
+        mtx = f"Opt_Overview!$C${OPT_R0}:${OPT_C1}${OPT_R1}"
+        mt = f"MATCH($A{r},Opt_Overview!$A${OPT_R0}:$A${OPT_R1},0)"
+        ws.cell(r, 15, f'=IFERROR(IF(option_sel=0,"",IF(LEN(INDEX({mtx},{mt},option_sel))=0,"",INDEX({mtx},{mt},option_sel))),"")')
+        a = ws.cell(r, 10, f'=IF(I{r}<>"",I{r},IF(O{r}<>"",O{r},H{r}))')
         a.font = BOLD
         ws.cell(r, 11, rec.get("label"))
         ws.cell(r, 12, rec.get("source_ids"))
@@ -244,47 +261,55 @@ def build_workbook(path=OUT, scenario_selector=2, overrides=None, table=None, wi
     cx = YearSheet(sheets["Capex"], "Capex, one-off start-up costs, grant, depreciation, salvage (EUR, real 2026)",
                    "t=0 (2026) = permitting & construction year. All initial spend in t=0.")
     cx.section("Initial investment (t = 0)")
-    cx.row("capex_plant", "Plant equipment (batching plant, mixer, bins, silos, lab)", "EUR", only_t0("capex_plant_equipment*1000000"))
-    cx.row("capex_civil", "Site preparation & civil works", "EUR", only_t0("capex_site_prep_civil*1000000"))
-    cx.row("capex_permits", "Permits, studies, engineering (amortised)", "EUR", only_t0("capex_permits_engineering*1000000"))
-    cx.row("capex_extra", "Option hook: extra capex", "EUR", only_t0("opt_extra_capex_y0"))
-    cx.row("capex_land", "Land purchase (0 = leased)", "EUR", only_t0("land_purchase*1000000"))
+    cx.row("capex_plant", "Plant equipment (batching plant, mixer, bins, silos, lab) - in build year (2026 + delay)", "EUR",
+           "IF({t}=opt_start_delay,capex_plant_equipment*1000000,0)")
+    cx.row("capex_civil", "Site preparation & civil works - in build year", "EUR", "IF({t}=opt_start_delay,capex_site_prep_civil*1000000,0)")
+    cx.row("capex_permits", "Permits, studies, engineering (amortised) - always 2026", "EUR", only_t0("capex_permits_engineering*1000000"))
+    cx.row("capex_extra", "Option hook: extra capex - in build year", "EUR", "IF({t}=opt_start_delay,opt_extra_capex_y0,0)")
+    cx.row("capex_land", "Land purchase (0 = leased) - in build year", "EUR", "IF({t}=opt_start_delay,land_purchase*1000000,0)")
+    cx.row("crush_t", "Option A+B: year index of crushing-line capex (year before first crushing)", "t",
+           f"MIN({NYRS},MAX(0,ROUND(opt_crusher_start_year-{mc.BASE_YEAR},0)-1))", fmt="0", cols="c0")
+    cx.row("capex_crusher", "Option A+B: crushing-line capex", "EUR", "IF({t}={crush_t@0},opt_crusher_capex,0)")
     cx.row("capex_initial", "Total initial capex", "EUR",
-           "{capex_plant}+{capex_civil}+{capex_permits}+{capex_extra}+{capex_land}", total=True)
+           "{capex_plant}+{capex_civil}+{capex_permits}+{capex_extra}+{capex_land}+{capex_crusher}", total=True)
     cx.row("physical", "Physical assets (plant + civil) - base for maintenance, sustaining capex, salvage", "EUR",
-           "{capex_plant@0}+{capex_civil@0}", cols="c0")
+           f"SUM({RNG('capex_plant')})+SUM({RNG('capex_civil')})", cols="c0")
     cx.blank()
     cx.section("One-off items in t = 0 (expensed / income, not capex)")
-    cx.row("startup_oneoff", "Start-up costs expensed: LCA/EPD + pre-opening", "EUR",
-           only_t0("capex_lca_epd_one_off+capex_preopening_costs"))
-    cx.row("grant", "Grant DEI+/VEKI (taxable income in t=0)", "EUR", only_t0("grant_dei_veki_first_plant*1000000"))
-    cx.row("mia", "MIA extra tax deduction (gives the stated net value at top rate)", "EUR",
-           only_t0("mia_eligible_share_of_capex/100*{physical@0}*mia_net_value_pct_eligible_capex/tax_rate_vpb_high_bracket"))
+    cx.row("startup_oneoff", "Start-up costs expensed: LCA/EPD + pre-opening (build year)", "EUR",
+           "IF({t}=opt_start_delay,capex_lca_epd_one_off+capex_preopening_costs,0)")
+    cx.row("grant", "Grant DEI+/VEKI (taxable income in build year)", "EUR", "IF({t}=opt_start_delay,grant_dei_veki_first_plant*1000000,0)")
+    cx.row("mia", "MIA extra tax deduction (gives the stated net value at top rate); plant in build year, crusher in its capex year", "EUR",
+           "IF({t}=opt_start_delay,mia_eligible_share_of_capex/100*{physical@0}*mia_net_value_pct_eligible_capex/tax_rate_vpb_high_bracket,0)"
+           "+IF({t}={crush_t@0},opt_crusher_mia_share_pct/100*opt_crusher_capex*mia_net_value_pct_eligible_capex/tax_rate_vpb_high_bracket,0)")
     cx.blank()
     cx.section("Sustaining capex and depreciation")
+    S0 = "(1+opt_start_delay)"      # first operating year index
     cx.row("sust", "Sustaining capex (% of physical assets per operating year)", "EUR",
-           ops("sustaining_capex_pct_of_capex/100*{physical@0}"))
-    cx.row("dep_plant", "Depreciation plant equipment (+ hook capex)", "EUR",
-           "IF(AND({t}>=1,{t}<=lifetime_plant_equipment),({capex_plant@0}+{capex_extra@0})/lifetime_plant_equipment,0)")
+           f"IF({{t}}>={S0},sustaining_capex_pct_of_capex/100*{{physical@0}},0)")
+    cx.row("dep_plant", "Depreciation plant equipment (+ hook capex), from first operating year", "EUR",
+           f"IF(AND({{t}}>={S0},{{t}}<{S0}+lifetime_plant_equipment),(SUM({RNG('capex_plant')})+SUM({RNG('capex_extra')}))/lifetime_plant_equipment,0)")
     cx.row("dep_civil", "Depreciation civil works", "EUR",
-           "IF(AND({t}>=1,{t}<=lifetime_civil_works),{capex_civil@0}/lifetime_civil_works,0)")
+           f"IF(AND({{t}}>={S0},{{t}}<{S0}+lifetime_civil_works),SUM({RNG('capex_civil')})/lifetime_civil_works,0)")
     cx.row("dep_permits", "Amortisation permits & engineering", "EUR",
-           "IF(AND({t}>=1,{t}<=lifetime_permits_engineering),{capex_permits@0}/lifetime_permits_engineering,0)")
+           f"IF(AND({{t}}>={S0},{{t}}<{S0}+lifetime_permits_engineering),{{capex_permits@0}}/lifetime_permits_engineering,0)")
+    cx.row("dep_crusher", "Depreciation crushing line (option A+B)", "EUR",
+           "IF(AND({t}>={crush_t@0}+1,{t}<{crush_t@0}+1+hybrid_crusher_lifetime),opt_crusher_capex/hybrid_crusher_lifetime,0)")
     cx.row("dep_sust", "Depreciation sustaining capex (plant life)", "EUR", "SUM({sust:cum})/lifetime_plant_equipment")
     cx.row("da", "Total depreciation & amortisation", "EUR",
-           "{dep_plant}+{dep_civil}+{dep_permits}+{dep_sust}", total=True)
+           "{dep_plant}+{dep_civil}+{dep_permits}+{dep_crusher}+{dep_sust}", total=True)
     cx.row("nbv", "Memo: net book value end of year (excl. land)", "EUR",
-           "SUM({capex_initial:cum})-{capex_land@0}+SUM({sust:cum})-SUM({da:cum})")
-    cx.row("salvage", "Salvage value in t=10 (= the ONLY terminal value)", "EUR",
-           f"IF({{t}}={NYRS},salvage_value_yr10_pct_of_plant_civil_capex/100*{{physical@0}},0)")
+           "SUM({capex_initial:cum})-SUM({capex_land:cum})+SUM({sust:cum})-SUM({da:cum})")
+    cx.row("salvage", "Salvage value in t=10 (= the ONLY terminal value; plant+civil and crushing line)", "EUR",
+           f"IF({{t}}={NYRS},salvage_value_yr10_pct_of_plant_civil_capex/100*{{physical@0}}+opt_crusher_salvage_pct/100*opt_crusher_capex,0)")
 
     # ======================= Revenue ========================================
     rv = YearSheet(sheets["Revenue"], "Volume, prices and revenue",
                    "Plant-average price over all strength classes (Agent 5). Premium only on circular volume.")
     rv.section("Volume")
     rv.row("ramp", "Utilisation of steady-state output (ramp-up)", "%",
-           lambda t: 0 if t == 0 else ("ramp_year1_pct_of_steady/100" if t == 1 else
-                                       "ramp_year2_pct_of_steady/100" if t == 2 else "ramp_year3plus_pct_of_steady/100"), fmt=PCT)
+           "IF({t}<1+opt_start_delay,0,IF({t}=1+opt_start_delay,ramp_year1_pct_of_steady/100,"
+           "IF({t}=2+opt_start_delay,ramp_year2_pct_of_steady/100,ramp_year3plus_pct_of_steady/100)))", fmt=PCT)
     rv.row("vol", "Volume sold", "m3", "output_steady_state*{ramp}", total=True)
     rv.row("vol_circ", "  of which circular mixes (50% coarse RCA)", "m3", "{vol}*circular_share_of_volume/100")
     rv.row("vol_conv", "  of which standard CEM III/B mixes", "m3", "{vol}-{vol_circ}")
@@ -305,14 +330,31 @@ def build_workbook(path=OUT, scenario_selector=2, overrides=None, table=None, wi
     rv.row("premium", "Blended green premium on circular volume", "%",
            "public_share_of_sales/100*green_premium_public/100+(1-public_share_of_sales/100)*green_premium_private/100",
            fmt='0.00%', cols="c0")
-    rv.row("price_circ", "Price circular mixes", "EUR/m3", "{price_market}*(1+{premium@0})", fmt=EUR2)
+    rv.row("price_circ", "Price circular mixes (+ option: circular-only delta from its start year)", "EUR/m3",
+           "{price_market}*(1+{premium@0})+IF({year}>=opt_circ_delta_start_year,opt_circ_price_delta_per_m3,0)", fmt=EUR2)
     rv.row("price_conv", "Price standard mixes", "EUR/m3", "{price_market}", fmt=EUR2)
     rv.blank()
     rv.section("Revenue")
     rv.row("rev_circ", "Revenue circular mixes", "EUR", "{vol_circ}*{price_circ}")
     rv.row("rev_conv", "Revenue standard mixes", "EUR", "{vol_conv}*{price_conv}")
-    rv.row("rev_extra", "Option hook: extra revenue", "EUR", ops("opt_extra_revenue_per_yr"))
-    rv.row("revenue", "Total revenue", "EUR", "{rev_circ}+{rev_conv}+{rev_extra}", total=True)
+    rv.row("rev_extra", "Option hook: extra revenue", "EUR", "IF({t}>=1+opt_start_delay,opt_extra_revenue_per_yr,0)")
+    rv.blank()
+    rv.section("Option A+B: on-site rubble acceptance and crushing (0 unless opt_crusher_on = 1)")
+    rv.row("cflag", "Crushing active (operating year and >= crusher start year)", "-",
+           "opt_crusher_on*IF({t}>=1+opt_start_delay,1,0)*IF({year}>=opt_crusher_start_year,1,0)", fmt="0")
+    rv.row("intake", "Rubble intake (scales with ramp-up)", "t", "opt_rubble_intake_tpy*{ramp}*{cflag}")
+    rv.row("coarse_prod", "Coarse RCA produced", "t", "{intake}*hybrid_yield_coarse/100")
+    rv.row("rca_need", "Coarse RCA needed by the plant", "t",
+           "{vol_circ}*mix_circ_rca_coarse/1000+{vol_conv}*mix_conv_cem3b_rca_coarse/1000")
+    rv.row("rca_own", "Own RCA used in the plant (replaces purchased RCA)", "t", "MIN({coarse_prod},{rca_need})")
+    rv.row("rca_surplus", "Surplus coarse RCA sold ex-works", "t", "{coarse_prod}-{rca_own}")
+    rv.row("cr_gate", "Gate fee received", "EUR", "{intake}*hybrid_gate_fee_received")
+    rv.row("cr_sand", "Crusher sand 0/4 sold", "EUR", "{intake}*hybrid_yield_sand_0_4/100*hybrid_price_crusher_sand")
+    rv.row("cr_steel", "Steel scrap sold", "EUR", "{intake}*hybrid_yield_steel/100*hybrid_price_steel_scrap")
+    rv.row("cr_surplus", "Surplus RCA sold (at RCA ex-works price)", "EUR", "{rca_surplus}*price_rca_coarse_exworks")
+    rv.row("rev_crusher", "Revenue on-site crushing", "EUR", "{cr_gate}+{cr_sand}+{cr_steel}+{cr_surplus}", total=True)
+    rv.blank()
+    rv.row("revenue", "Total revenue", "EUR", "{rev_circ}+{rev_conv}+{rev_extra}+{rev_crusher}", total=True)
     rv.row("avg_price", "Memo: average realised price", "EUR/m3", lambda t: "IF({vol}>0,({rev_circ}+{rev_conv})/{vol},0)", fmt=EUR2)
 
     # ======================= Opex ===========================================
@@ -353,7 +395,7 @@ def build_workbook(path=OUT, scenario_selector=2, overrides=None, table=None, wi
            "{v_cement}+{v_gravel}+{v_rca}+{v_sand}+{v_admix}+{v_water}", fmt=EUR2, total=True)
     ox.blank()
     ox.section("Indices")
-    ox.row("opflag", "Operating year flag", "-", "IF({t}>=1,1,0)", fmt="0")
+    ox.row("opflag", "Operating year flag", "-", "IF({t}>=1+opt_start_delay,1,0)", fmt="0")
     ox.row("wage_idx", "Real wage index", "x", "(1+real_wage_growth/100)^{t}", fmt="0.0000")
     ox.blank()
     ox.section("Variable costs (EUR/yr)")
@@ -362,9 +404,17 @@ def build_workbook(path=OUT, scenario_selector=2, overrides=None, table=None, wi
     ox.row("o_energy", "Energy", "EUR", "{vol}*{energy_m3@0}")
     ox.row("o_delivery", "Delivery (truck mixers)", "EUR", "{vol}*{delivery_m3@0}")
     ox.row("o_vardelta", "Option hook: variable cost delta", "EUR", "{vol}*opt_cost_delta_per_m3")
+    ox.row("o_circdelta", "Option: circular-only variable cost delta (from its start year)", "EUR",
+           "{vol_circ}*IF({year}>=opt_circ_delta_start_year,1,0)*opt_circ_cost_delta_per_m3")
+    ox.row("o_cr_rca", "A+B: own RCA replaces purchased RCA (credit)", "EUR", "-{rca_own}*{rca_deliv@0}")
+    ox.row("o_cr_cont", "A+B: contaminant disposal", "EUR", "{intake}*hybrid_yield_contaminants/100*hybrid_cost_contaminant_disposal")
+    ox.row("o_cr_diesel", "A+B: crusher diesel", "EUR", "{intake}*hybrid_crusher_diesel*price_diesel")
+    ox.row("o_cr_wear", "A+B: crusher wear", "EUR", "{intake}*hybrid_crusher_wear")
+    ox.row("o_cr_contract", "A+B: contract crushing", "EUR", "{intake}*opt_crusher_contract_rate")
     ox.row("o_baddebt", "Bad debt", "EUR", "{revenue}*bad_debt_pct_revenue/100")
     ox.row("opex_var", "Total variable costs", "EUR",
-           "{o_raw}+{o_rcaqc}+{o_energy}+{o_delivery}+{o_vardelta}+{o_baddebt}", total=True)
+           "{o_raw}+{o_rcaqc}+{o_energy}+{o_delivery}+{o_vardelta}+{o_circdelta}+{o_cr_rca}+{o_cr_cont}+{o_cr_diesel}"
+           "+{o_cr_wear}+{o_cr_contract}+{o_baddebt}", total=True)
     ox.section("Fixed costs (EUR/yr, from year 1)")
     ox.row("o_staffprod", "Production staff", "EUR",
            "{opflag}*staff_production_fte*cost_per_fte_production*{wage_idx}")
@@ -374,22 +424,37 @@ def build_workbook(path=OUT, scenario_selector=2, overrides=None, table=None, wi
     ox.row("o_staffsga", "SG&A staff", "EUR", "{opflag}*staff_sga_fte*cost_per_fte_sga*{wage_idx}")
     ox.row("o_sgaother", "SG&A non-staff", "EUR", "{opflag}*sga_fixed_non_staff")
     ox.row("o_extrafixed", "Option hook: extra fixed opex", "EUR", "{opflag}*opt_extra_opex_per_yr")
+    ox.row("o_cr_staff", "A+B: crushing staff", "EUR", "{cflag}*hybrid_crusher_staff_fte*cost_per_fte_production*{wage_idx}")
+    ox.row("o_cr_maint", "A+B: crusher maintenance", "EUR", "{cflag}*hybrid_crusher_maintenance_pct_capex/100*opt_crusher_capex")
+    ox.row("o_cr_cert", "A+B: BRL 2506 certification", "EUR", "{cflag}*hybrid_brl2506_certification")
+    ox.row("o_cr_site", "A+B: extra site area lease", "EUR", "{cflag}*hybrid_extra_site_area*site_lease_rate")
     ox.row("opex_fixed", "Total fixed costs", "EUR",
-           "{o_staffprod}+{o_maint}+{o_cert}+{o_lease}+{o_staffsga}+{o_sgaother}+{o_extrafixed}", total=True)
+           "{o_staffprod}+{o_maint}+{o_cert}+{o_lease}+{o_staffsga}+{o_sgaother}+{o_extrafixed}"
+           "+{o_cr_staff}+{o_cr_maint}+{o_cr_cert}+{o_cr_site}", total=True)
     ox.row("o_startup", "One-off start-up costs (t=0)", "EUR", "{startup_oneoff}")
     ox.row("opex_total", "TOTAL OPERATING COSTS", "EUR", "{opex_var}+{opex_fixed}+{o_startup}", total=True)
+    ox.section("Option A+B memo")
+    ox.row("cr_var", "A+B variable costs (incl. RCA credit)", "EUR", "{o_cr_rca}+{o_cr_cont}+{o_cr_diesel}+{o_cr_wear}+{o_cr_contract}")
+    ox.row("cr_fix", "A+B fixed costs", "EUR", "{o_cr_staff}+{o_cr_maint}+{o_cr_cert}+{o_cr_site}")
+    ox.row("crusher_net", "A+B net contribution (revenue - costs, incl. RCA credit; before bad debt)", "EUR",
+           "{rev_crusher}-{cr_var}-{cr_fix}", total=True)
 
     # ======================= PnL ============================================
     pl = YearSheet(sheets["PnL"], "Profit & loss (EUR, real 2026)", "Unlevered: no debt, no interest.")
     pl.row("p_rev_circ", "Revenue circular mixes", "EUR", "{rev_circ}")
     pl.row("p_rev_conv", "Revenue standard mixes", "EUR", "{rev_conv}")
     pl.row("p_rev_extra", "Other revenue (option hook)", "EUR", "{rev_extra}")
-    pl.row("p_revenue", "REVENUE", "EUR", "{p_rev_circ}+{p_rev_conv}+{p_rev_extra}", total=True)
+    pl.row("p_rev_crusher", "On-site crushing revenue (option A+B)", "EUR", "{rev_crusher}")
+    pl.row("p_revenue", "REVENUE", "EUR", "{p_rev_circ}+{p_rev_conv}+{p_rev_extra}+{p_rev_crusher}", total=True)
     lines = [("o_raw", "Raw materials"), ("o_rcaqc", "RCA testing & handling"), ("o_energy", "Energy"),
-             ("o_delivery", "Delivery"), ("o_vardelta", "Variable cost delta (hook)"), ("o_baddebt", "Bad debt"),
+             ("o_delivery", "Delivery"), ("o_vardelta", "Variable cost delta (hook)"),
+             ("o_circdelta", "Circular-only cost delta (option)"), ("o_cr_rca", "A+B: own RCA credit"),
+             ("o_cr_cont", "A+B: contaminant disposal"), ("o_cr_diesel", "A+B: crusher diesel"), ("o_cr_wear", "A+B: crusher wear"),
+             ("o_cr_contract", "A+B: contract crushing"), ("o_baddebt", "Bad debt"),
              ("o_staffprod", "Production staff"), ("o_maint", "Maintenance"), ("o_cert", "Certification & testing"),
              ("o_lease", "Site lease"), ("o_staffsga", "SG&A staff"), ("o_sgaother", "SG&A non-staff"),
-             ("o_extrafixed", "Extra fixed opex (hook)"), ("o_startup", "One-off start-up costs")]
+             ("o_extrafixed", "Extra fixed opex (hook)"), ("o_cr_staff", "A+B: crushing staff"), ("o_cr_maint", "A+B: crusher maintenance"),
+             ("o_cr_cert", "A+B: BRL 2506 certification"), ("o_cr_site", "A+B: extra site lease"), ("o_startup", "One-off start-up costs")]
     for k, lab in lines:
         pl.row("p_" + k, "  - " + lab, "EUR", "-{" + k + "}")
     pl.row("ebitda", "EBITDA", "EUR", "{p_revenue}+" + "+".join("{p_" + k + "}" for k, _ in lines), total=True)
@@ -482,25 +547,27 @@ def build_workbook(path=OUT, scenario_selector=2, overrides=None, table=None, wi
         "first year cumulative FCF (excl. salvage) >= 0, interpolated", fmt="0.0")
     kpi("dpayback", "Discounted payback period", f'IF(COUNT({RNG("dpb_h", 1)})=0,"not reached",MIN({RNG("dpb_h", 1)}))', "years from t=0",
         "same on discounted FCF", fmt="0.0")
-    kpi("ebitda_y3", "EBITDA year 3 (2029)", R("ebitda", 3), "EUR", "first year at full output")
+    X3 = lambda key: f"INDEX({RNG(key)},1,opt_start_delay+4)"      # third operating year
+    kpi("ebitda_y3", "EBITDA in 3rd operating year (2029; 2030 if sales start 2028)", X3("ebitda"), "EUR", "first year at full output (criterion 3)")
     kpi("ebitda_y1", "EBITDA year 1 (2027)", R("ebitda", 1), "EUR", "")
     kpi("ebitda_y10", "EBITDA year 10 (2036)", R("ebitda", 10), "EUR", "")
     kpi("funding", "Funding need (peak cumulative negative FCF)", f"MAX(0,-MIN({RNG('cum')}))", "EUR",
         "equity/debt needed before the plant pays for itself")
-    kpi("capex", "Initial capex", R("capex_initial", 0), "EUR", "plant + civil + permits (+hooks)")
+    kpi("capex", "Initial capex", f"SUM({RNG('capex_initial')})", "EUR", "plant + civil + permits (+hooks, crushing line)")
     kpi("npv_pct", "NPV as % of initial capex", f"{kp['npv']}/{kp['capex']}", "%", "borderline test: -10% .. 0%", fmt=PCT)
     kpi("npv_wc", "Memo: NPV if working capital is released in 2036", f"{kp['npv']}+{R('wc', 10)}*{R('df', 10)}", "EUR",
         "not used for the criteria (plan 2.1 allows salvage only)")
-    kpi("rev_y3", "Revenue year 3", R("revenue", 3), "EUR", "")
-    kpi("unit_contrib", "Contribution per m3, year 3", f"({R('revenue', 3)}-{R('rev_extra', 3)})/{R('vol', 3)}-{R('opex_var', 3)}/{R('vol', 3)}",
-        "EUR/m3", "price - variable costs (incl. bad debt, delivery)", fmt=EUR2)
-    kpi("be_vol", "Break-even volume EBITDA = 0 (year-3 prices & fixed costs)",
-        f'IF({kp["unit_contrib"]}>0,({R("opex_fixed", 3)}-{R("rev_extra", 3)})/{kp["unit_contrib"]},"none")', "m3/yr",
-        "fixed costs / contribution per m3")
+    kpi("rev_y3", "Revenue 3rd operating year", X3("revenue"), "EUR", "")
+    kpi("unit_contrib", "Contribution per m3, 3rd operating year",
+        f"({X3('revenue')}-{X3('rev_extra')}-{X3('rev_crusher')})/{X3('vol')}-({X3('opex_var')}-{X3('cr_var')})/{X3('vol')}",
+        "EUR/m3", "concrete price - concrete variable costs (incl. bad debt, delivery)", fmt=EUR2)
+    kpi("be_vol", "Break-even volume EBITDA = 0 (3rd-operating-year prices & fixed costs)",
+        f'IF({kp["unit_contrib"]}>0,({X3("opex_fixed")}-{X3("rev_extra")}-{X3("crusher_net")})/{kp["unit_contrib"]},"none")', "m3/yr",
+        "(fixed costs - hook revenue - crusher net) / contribution per m3")
     kpi("cap_charge", "Capital recovery charge (10 yr annuity of initial capex at r)",
         f"{kp['capex']}*(discount_rate_real/100)/(1-(1+discount_rate_real/100)^-{NYRS})", "EUR/yr", "memo")
     kpi("be_vol_cc", "Volume where EBITDA covers the capital charge (year-3 basis, pre-tax)",
-        f'IF({kp["unit_contrib"]}>0,({R("opex_fixed", 3)}-{R("rev_extra", 3)}+{kp["cap_charge"]})/{kp["unit_contrib"]},"none")', "m3/yr",
+        f'IF({kp["unit_contrib"]}>0,({X3("opex_fixed")}-{X3("rev_extra")}-{X3("crusher_net")}+{kp["cap_charge"]})/{kp["unit_contrib"]},"none")', "m3/yr",
         "rough NPV break-even; exact Python value below")
     va.column_dimensions["A"].width = 62
     va.column_dimensions["B"].width = 16
@@ -553,6 +620,9 @@ def build_workbook(path=OUT, scenario_selector=2, overrides=None, table=None, wi
     ue_row("RCA testing & handling", f"Opex!$C${REG['rca_qc_m3'][1]}", "0")
     ue_row("Energy", f"Opex!$C${REG['energy_m3'][1]}", f"Opex!$C${REG['energy_m3'][1]}")
     ue_row("Variable cost delta (hook)", "opt_cost_delta_per_m3", "opt_cost_delta_per_m3")
+    ue_row("Circular-only cost delta (option)", f"IF({ix('vol_circ')}>0,{ix('o_circdelta')}/{ix('vol_circ')},0)", "0")
+    crn = f"-({ix('crusher_net')}-{ix('rev_crusher')}*bad_debt_pct_revenue/100)/{ix('vol')}"
+    ue_row("On-site crushing net cost per m3 (negative = net income, option A+B)", crn, crn)
     fixed_keys = [("o_staffprod", "Production labour"), ("o_maint", "Maintenance & wear"),
                   ("o_cert", "Certification & testing"), ("o_lease", "Site lease"),
                   ("o_staffsga", "SG&A staff"), ("o_sgaother", "SG&A non-staff"), ("o_extrafixed", "Extra fixed (hook)")]
@@ -692,6 +762,129 @@ def build_workbook(path=OUT, scenario_selector=2, overrides=None, table=None, wi
     ws.column_dimensions["D"].width = 18
     ws.column_dimensions["E"].width = 12
 
+    # ======================= Opt_Overview (Agent 7) ===========================
+    ws = sheets["Opt_Overview"]
+    ws["A1"] = "Viability options - live option selector (Agent 7)"
+    ws["A1"].font = TITLE
+    ws["A2"] = ("Set Inputs!I3 to an option number (1..N, row 5) and the WHOLE model recalculates live with that option's values "
+                "(blank cell = parameter keeps its scenario/base value). 0 = base case. Option O6 (asset-light) is a separate model: "
+                "sheet Opt_AssetLight. Results table below: values from model/options.py (grey) - see research/viability_options.md.")
+    ws["A2"].alignment = Alignment(wrap_text=True)
+    ws.merge_cells("A2:N2")
+    ws.row_dimensions[2].height = 45
+    ws["A3"] = "Active option number (Inputs!I3)"
+    ws["B3"] = "=option_sel"
+    ws["C3"] = f'=IF(option_sel=0,"none (base case)",INDEX($C$6:${OPT_C1}$6,1,option_sel))'
+    ws["A3"].font = ws["B3"].font = ws["C3"].font = BOLD
+    ws["E3"] = "Live NPV of active option"
+    ws["G3"] = f"={kp['npv']}"
+    ws["G3"].number_format = EUR
+    ws["G3"].font = BOLD
+    hdr(ws, 5, ["parameter", "base value"] + [str(i + 1) for i in range(len(opts.MODEL_OPTIONS))])
+    ws.cell(6, 1, "option").font = BOLD
+    ws.cell(6, 2, "")
+    for j, o in enumerate(opts.MODEL_OPTIONS):
+        c = ws.cell(6, 3 + j, f"{o[0]} {o[1]}")
+        c.font = BOLD
+        c.alignment = Alignment(wrap_text=True, vertical="top")
+    ws.row_dimensions[6].height = 75
+    hook_names = set(mc.HOOKS)
+    for i, k_ in enumerate(opt_params):
+        rr = OPT_R0 + i
+        ws.cell(rr, 1, k_)
+        ws.cell(rr, 2, 0.0 if k_ in hook_names else table[k_]["base"]).font = GREY
+        for j, o in enumerate(opts.MODEL_OPTIONS):
+            if k_ in o[3]:
+                c = ws.cell(rr, 3 + j, o[3][k_])
+                c.font, c.fill = BLUE, INPUT_FILL
+    ws.column_dimensions["A"].width = 40
+    ws.column_dimensions["B"].width = 12
+    for j in range(len(opts.MODEL_OPTIONS)):
+        ws.column_dimensions[get_column_letter(3 + j)].width = 15
+    if with_python_sheets:
+        ores = opts.evaluate(table)
+        r0 = OPT_R1 + 3
+        ws.cell(r0, 1, "Results per option (values from model/options.py; criterion 4 = option-relative stress test)").font = BOLD
+        hdr(ws, r0 + 1, ["option", "NPV @ 8%", "IRR", "payback (yr)", "EBITDA 3rd op. year", "funding need", "initial capex",
+                         "criteria passed", "crit. 4 (of 6)", "verdict", "feasibility 1-5"])
+        for i, (key, rec) in enumerate(ores["options"].items()):
+            k = rec["kpis"]
+            vals = [f"{key} {rec['name']}", k["npv"], k["irr"] if k["irr"] is not None else "n/a",
+                    k["payback"] if k["payback"] is not None else "not reached", k["ebitda_y3"], k["funding_need"],
+                    k["capex_initial"], f"{rec['criteria']['n_pass']}/4", rec["criteria"]["c4_n_pass"], rec["criteria"]["verdict"],
+                    rec.get("feasibility", "")]
+            for j, v in enumerate(vals):
+                c = ws.cell(r0 + 2 + i, 1 + j, v)
+                c.font = GREY
+                c.number_format = PCT if j == 2 else ("0.0" if j == 3 else EUR)
+        r1 = r0 + 3 + len(ores["options"])
+        ws.cell(r1, 1, "Policy dependence (values from model/options.py)").font = BOLD
+        hdr(ws, r1 + 1, ["case", "levy on gravel+sand for NPV=0 (EUR/t)", "public green premium for NPV=0 (%)",
+                         "MKI value on circular m3 for NPV=0 (EUR/m3)", "NPV high ETS path", "NPV gate fee 15", "price for NPV=0 (EUR/m3)",
+                         "volume for NPV=0 (m3/yr)"])
+        for i, pt in enumerate(ores["policy"]):
+            vals = [pt["option"], pt["levy_for_npv0_eur_per_t"], pt["public_premium_for_npv0_pct"], pt["circ_mki_value_for_npv0_eur_m3"],
+                    pt["npv_high_ets_path"], pt["npv_gate_fee_15"], pt["price_for_npv0_eur_m3"], pt["volume_for_npv0_m3"]]
+            for j, v in enumerate(vals):
+                c = ws.cell(r1 + 2 + i, 1 + j, "none in range" if v is None else v)
+                c.font = GREY
+                c.number_format = EUR2 if j in (1, 2, 3, 6) else EUR
+
+    # ======================= Opt_AssetLight (O6, live) ========================
+    al = YearSheet(sheets["Opt_AssetLight"], "Option O6 - asset-light licence + RCA service (archetype D), EUR real 2026",
+                   "Separate small model (no plant). Inputs in column P (blue). Same tax and discounting rules as the plant model.")
+    wsa = sheets["Opt_AssetLight"]
+    hdr(wsa, 5, ["input", "", "value", "unit", "low", "high", "ID"], c0=15)
+    for i, (k_, lab, unit, lo, b, hi, sid) in enumerate(opts.AL_INPUTS):
+        rr = 6 + i
+        wsa.cell(rr, 15, lab)
+        c = wsa.cell(rr, 17, b)
+        c.font, c.fill = BLUE, INPUT_FILL
+        wsa.cell(rr, 18, unit)
+        wsa.cell(rr, 19, lo)
+        wsa.cell(rr, 20, hi)
+        wsa.cell(rr, 21, sid)
+        wb.defined_names[k_] = DefinedName(k_, attr_text=f"Opt_AssetLight!$Q${rr}")
+    wsa.column_dimensions["O"].width = 58
+    al.row("al_lic", "Licensee plants", "plants", "IF({t}=0,0,MIN(al_licensees_max,{t}))", fmt="0")
+    al.row("al_vol", "Circular volume at licensees", "m3", "{al_lic}*al_circ_volume_per_licensee")
+    al.row("al_rfee", "Licence / service fees", "EUR", "{al_vol}*al_fee_per_m3")
+    al.row("al_rrca", "RCA brokerage margin", "EUR", "{al_vol}*al_rca_t_per_m3*al_rca_margin_per_t")
+    al.row("al_rsrv", "LCA/EPD/MKI services", "EUR", "IF({t}>=2,al_services_rev,0)")
+    al.row("al_rev", "Revenue", "EUR", "{al_rfee}+{al_rrca}+{al_rsrv}", total=True)
+    al.row("al_staff", "Staff", "EUR", "IF({t}>=1,al_fte*al_cost_per_fte,0)")
+    al.row("al_ovh", "Other overhead", "EUR", "IF({t}>=1,al_overhead,0)")
+    al.row("al_start", "Start-up costs (expensed)", "EUR", "IF({t}=0,al_startup_t0,0)")
+    al.row("al_ebitda", "EBITDA", "EUR", "{al_rev}-{al_staff}-{al_ovh}-{al_start}", total=True)
+    al.row("al_dep", "Depreciation", "EUR", "IF(AND({t}>=1,{t}<=al_capex_life),al_capex_t0/al_capex_life,0)")
+    al.row("al_ebit", "EBIT", "EUR", "{al_ebitda}-{al_dep}", total=True)
+    al.row("al_taxable", "Taxable profit after loss offset", "EUR",
+           lambda t: "MAX(0,{al_ebit})" if t == 0 else "MAX(0,{al_ebit}-{al_pool@-1})")
+    al.row("al_pool", "Tax-loss pool (end of year)", "EUR", lambda t: "MAX(0,-{al_ebit})" if t == 0 else "MAX(0,{al_pool@-1}-{al_ebit})")
+    al.row("al_tax", "Corporate income tax", "EUR",
+           "MIN({al_taxable},tax_vpb_low_bracket_limit)*tax_rate_vpb_low_bracket/100+MAX(0,{al_taxable}-tax_vpb_low_bracket_limit)*tax_rate_vpb_high_bracket/100")
+    al.row("al_wc", "Receivables", "EUR", "{al_rev}*al_receivable_days/365")
+    al.row("al_dwc", "Change in working capital (cash out = negative)", "EUR", lambda t: "-{al_wc}" if t == 0 else "-({al_wc}-{al_wc@-1})")
+    al.row("al_capex", "Capex", "EUR", "IF({t}=0,-al_capex_t0,0)")
+    al.row("al_fcf", "FREE CASH FLOW", "EUR", "{al_ebitda}-{al_tax}+{al_dwc}+{al_capex}", total=True)
+    al.row("al_cum", "Cumulative FCF", "EUR", "SUM({al_fcf:cum})")
+    al.row("al_df", "Discount factor", "x", "1/(1+discount_rate_real/100)^{t}", fmt="0.0000")
+    al.row("al_pb", "Payback crossing (year)", "yr",
+           lambda t: None if t == 0 else 'IF(AND({al_cum@-1}<0,{al_cum}>=0),{t}-1+(-{al_cum@-1})/({al_cum}-{al_cum@-1}),"")', fmt="0.00")
+    al.write()
+    rr = al.r + 1
+    def alkpi(key, label, formula, fmt=EUR):
+        global_r = rr + len([n for n in wb.defined_names if str(n).startswith("kpi_al_")])
+        wsa.cell(global_r, 1, label).font = BOLD
+        c = wsa.cell(global_r, 3, "=" + formula)
+        c.number_format, c.font = fmt, BOLD
+        wb.defined_names["kpi_al_" + key] = DefinedName("kpi_al_" + key, attr_text=f"Opt_AssetLight!$C${global_r}")
+    alkpi("npv", "NPV @ discount rate", f"SUMPRODUCT({RNG('al_fcf')},{RNG('al_df')})")
+    alkpi("irr", "IRR", f'IFERROR(IRR({RNG("al_fcf")},0.1),IFERROR(IRR({RNG("al_fcf")},-0.1),"n/a"))', PCT)
+    alkpi("payback", "Payback (years from 2026)", f'IF(COUNT({RNG("al_pb", 1)})=0,"not reached",MIN({RNG("al_pb", 1)}))', "0.0")
+    alkpi("ebitda_y3", "EBITDA 2029", R("al_ebitda", 3))
+    alkpi("funding", "Funding need", f"MAX(0,-MIN({RNG('al_cum')}))")
+
     write_readme(sheets["README"])
     wb.calculation.fullCalcOnLoad = True
     wb.save(path)
@@ -767,6 +960,9 @@ def write_readme(ws):
         ("a) Fill the Override column (Inputs!I) or the option hooks (opt_*, bottom of Inputs). Nothing else needs to change.", None),
         ("b) In Python: model_core.run(load_inputs(), overrides={...}); build a copy of this workbook with build_model.build_workbook(path, overrides={...}).", None),
         ("c) For a new option sheet: add a sheet that reads the defined names / kpi_* names (e.g. kpi_npv) or paste model_core results.", None),
+        ("VIABILITY OPTIONS (Agent 7): Inputs!I3 = option number (Opt_Overview lists them); the whole model recalculates live with that option.", BOLD),
+        ("   New live logic (0 = off, base unchanged): opt_start_delay (first sales later), on-site crushing block (opt_crusher_*, hybrid_* inputs),", None),
+        ("   circular-only price/cost deltas from a start year. Option O6 asset-light = separate live model on sheet Opt_AssetLight.", None),
         ("", None),
         ("FILES", BOLD),
         ("model/inputs.csv, model/model_core.py, model/build_model.py, model/check_model.py, model/charts.py, model/charts/*.png, model/model_summary.md, model/check_report.md", None),

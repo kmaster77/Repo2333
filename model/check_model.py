@@ -23,6 +23,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import build_model as bm  # noqa: E402
 import model_core as mc  # noqa: E402
+import options as opts  # noqa: E402
 
 REPORT = os.path.join(HERE, "check_report.md")
 TOL_ABS = 0.5      # EUR
@@ -38,6 +39,14 @@ CASES = [
                                                 "opt_extra_opex_per_yr": 50_000, "opt_price_delta_per_m3": 2,
                                                 "opt_cost_delta_per_m3": -1}),
 ]
+# Viability options (Agent 7): each option through the LIVE option selector (Inputs!I3), plus one
+# combination of the pessimistic scenario with package P1. Tuple: (name, scenario, overrides, option no.)
+CASES = [(n, s_, o, 0) for n, s_, o in CASES]
+for i_, o_ in enumerate(opts.MODEL_OPTIONS):
+    CASES.append((f"Option {o_[0]} via selector ({i_ + 1})", 2, {}, i_ + 1))
+_P1 = [i_ + 1 for i_, o_ in enumerate(opts.MODEL_OPTIONS) if o_[0] == "P1"][0]
+CASES.append(("Pessimistic scenario + option P1 via selector", 1, {}, _P1))
+AL_KPIS = [("npv", "npv"), ("irr", "irr"), ("payback", "payback"), ("ebitda_y3", "ebitda_y3"), ("funding", "funding_need")]
 SC = {1: "pessimistic", 2: "base", 3: "optimistic"}
 YEARLY = [("revenue", "revenue"), ("ebitda", "ebitda"), ("ebit", "ebit"), ("tax", "tax"),
           ("net_income", "net_income"), ("fcf", "fcf"), ("cum", "cum_fcf")]
@@ -72,13 +81,16 @@ def main():
     out = os.path.join(tmp, "out")
     os.makedirs(out)
     results, all_ok = [], True
-    for i, (name, sel, ov) in enumerate(CASES):
+    for i, (name, sel, ov, osel) in enumerate(CASES):
         src = os.path.join(tmp, f"case{i}.xlsx")
-        bm.build_workbook(src, scenario_selector=sel, overrides=ov, table=table)
+        bm.build_workbook(src, scenario_selector=sel, overrides=ov, table=table, option_selector=osel,
+                          with_python_sheets=(i == 0))
         reg = dict(bm.REG)
         wb_f = load_workbook(src)                      # for defined names
         wb = load_workbook(recalc(src, out), data_only=True)
-        py = mc.run(table, ov, SC[sel])
+        ov_all = dict(opts.MODEL_OPTIONS[osel - 1][3]) if osel else {}
+        ov_all.update(ov)
+        py = mc.run(table, ov_all, SC[sel])
         rows, ok = [], True
         for xk, pk in KPIS:
             s, a, b = same(py["kpis"][pk], kpi_cell_val(wb, wb_f, xk))
@@ -92,6 +104,11 @@ def main():
                 if isinstance(a, float) and isinstance(b, (int, float)):
                     worst = max(worst, abs(a - b))
             rows.append((f"{xk} (11 years, max abs diff)", worst, None, s_all)); ok &= s_all
+        if i == 0:   # asset-light sheet (O6), independent of the selector
+            al_py = opts.run_asset_light(table=table)["kpis"]
+            for xk, pk in AL_KPIS:
+                s, a, b = same(al_py[pk], kpi_cell_val(wb, wb_f, "al_" + xk))
+                rows.append(("asset-light " + xk, a, b, s)); ok &= s
         chk_max = 0.0
         for k in CHECK_ROWS:
             sh, r = reg[k]
@@ -150,9 +167,10 @@ def main():
           f"- EBITDA vs (revenue - total opex): max abs diff {py_pl:.2e} EUR", "",
           "## What is and is not checked", "",
           "- Checked: every KPI on the Valuation sheet that drives the criteria, 7 yearly lines x 11 years, all check rows, "
-          "for 3 scenarios and 3 override cases (incl. all option hooks).",
-          "- Not checked by recalculation: the Scenarios, Sensitivity and criterion-4 values, because they are pasted from "
-          "model_core.py (same code path as the cases above)."]
+          "for 3 scenarios, 3 override cases (incl. all original option hooks), every Agent-7 option through the live option "
+          "selector (Inputs!I3), one pessimistic-scenario + package P1 case, and the asset-light sheet (O6) KPIs.",
+          "- Not checked by recalculation: the Scenarios, Sensitivity, criterion-4 and Opt_Overview results values, because they "
+          "are pasted from model_core.py / options.py (same code path as the cases above)."]
     with open(REPORT, "w", encoding="utf-8") as fh:
         fh.write("\n".join(L) + "\n")
     shutil.rmtree(tmp, ignore_errors=True)
@@ -164,9 +182,9 @@ def kpi_cell_val(wb_vals, wb_formulas, key):
     ref = wb_formulas.defined_names["kpi_" + key].attr_text
     sh, cell = ref.split("!")
     v = wb_vals[sh][cell.replace("$", "")].value
-    if key in ("payback", "dpayback") and v == "not reached":
+    if key in ("payback", "dpayback", "al_payback") and v == "not reached":
         return None
-    if key == "irr" and v == "n/a":
+    if key in ("irr", "al_irr") and v == "n/a":
         return None
     if key == "be_vol" and v == "none":
         return None

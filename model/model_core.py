@@ -105,6 +105,18 @@ HOOKS = {
     "opt_extra_opex_per_yr": ("EUR/yr", "Extra fixed opex every operating year"),
     "opt_price_delta_per_m3": ("EUR/m3", "Price change on ALL concrete sold (e.g. extra premium)"),
     "opt_cost_delta_per_m3": ("EUR/m3", "Variable cost change on ALL concrete sold (negative = saving)"),
+    # --- added by Agent 7 (viability options); all 0 = base case unchanged -------------
+    "opt_start_delay": ("yr", "Delay of first sales in years (0 = 2027, 1 = 2028). Permits/engineering stay in 2026; plant capex, start-up costs, grant and MIA move to the year before first sales"),
+    "opt_crusher_on": ("0/1", "Option A+B: on-site rubble acceptance + crushing line (uses the hybrid_* inputs)"),
+    "opt_crusher_start_year": ("year", "First calendar year of crushing (waste-processing permit)"),
+    "opt_rubble_intake_tpy": ("t/yr", "Rubble intake at full plant output (scales with the ramp-up)"),
+    "opt_crusher_capex": ("EUR", "Crushing-line capex, spent the year before crushing starts; depreciated over hybrid_crusher_lifetime"),
+    "opt_crusher_contract_rate": ("EUR/t", "Contract (campaign) crushing rate per t rubble, when crushing is outsourced"),
+    "opt_crusher_salvage_pct": ("%", "Salvage value of the crushing-line capex in 2036"),
+    "opt_crusher_mia_share_pct": ("%", "Share of crushing-line capex eligible for MIA (A 1401 recycling equipment)"),
+    "opt_circ_price_delta_per_m3": ("EUR/m3", "Extra price on CIRCULAR volume only, from opt_circ_delta_start_year (e.g. MKI value of a lower-CO2 binder)"),
+    "opt_circ_cost_delta_per_m3": ("EUR/m3", "Extra variable cost on CIRCULAR volume only, from opt_circ_delta_start_year"),
+    "opt_circ_delta_start_year": ("year", "First calendar year of the two circular-only deltas"),
 }
 
 
@@ -174,22 +186,33 @@ def run(inputs: dict, overrides: Optional[dict] = None, scenario: str = "base") 
     n = len(T)
     r = pct("discount_rate_real")
 
+    # ---------------- Timing (option hook opt_start_delay) -----------------
+    d = int(round(p["opt_start_delay"]))          # build year index (0 = 2026)
+    s0 = 1 + d                                     # first operating year index
+    op = [1.0 if t >= s0 else 0.0 for t in T]
+    t3 = 2 + s0                                    # third operating year (criterion 3)
+
     # ---------------- Capex -------------------------------------------------
     capex_plant = p["capex_plant_equipment"] * 1e6
     capex_civil = p["capex_site_prep_civil"] * 1e6
     capex_permits = p["capex_permits_engineering"] * 1e6
     capex_extra = p["opt_extra_capex_y0"]
     capex_land = p["land_purchase"] * 1e6
-    capex_initial = capex_plant + capex_civil + capex_permits + capex_extra + capex_land
+    capex_crusher = p["opt_crusher_capex"]
+    crush_t0 = p["opt_crusher_start_year"] - BASE_YEAR           # t of first crushing year
+    crush_capex_t = min(N_YEARS, max(0, int(round(crush_t0)) - 1))
+    capex_initial = capex_plant + capex_civil + capex_permits + capex_extra + capex_land + capex_crusher
     physical = capex_plant + capex_civil
     startup_oneoff = p["capex_lca_epd_one_off"] + p["capex_preopening_costs"]
     grant = p["grant_dei_veki_first_plant"] * 1e6
     mia_deduction = pct("mia_eligible_share_of_capex") * physical * pct("mia_net_value_pct_eligible_capex") / pct("tax_rate_vpb_high_bracket")
+    mia_crusher = pct("opt_crusher_mia_share_pct") * capex_crusher * pct("mia_net_value_pct_eligible_capex") / pct("tax_rate_vpb_high_bracket")
 
     # ---------------- Volume ------------------------------------------------
     ramp = [0.0] * n
-    for t in T[1:]:
-        ramp[t] = pct("ramp_year1_pct_of_steady") if t == 1 else pct("ramp_year2_pct_of_steady") if t == 2 else pct("ramp_year3plus_pct_of_steady")
+    for t in T:
+        if t >= s0:
+            ramp[t] = pct("ramp_year1_pct_of_steady") if t == s0 else pct("ramp_year2_pct_of_steady") if t == s0 + 1 else pct("ramp_year3plus_pct_of_steady")
     vol = [p["output_steady_state"] * ramp[t] for t in T]
     vol_circ = [v * pct("circular_share_of_volume") for v in vol]
     vol_conv = [vol[t] - vol_circ[t] for t in T]
@@ -203,15 +226,31 @@ def run(inputs: dict, overrides: Optional[dict] = None, scenario: str = "base") 
                     + pct("concrete_price_passthrough_of_market_binder_cost") * mkt_binder_incr[t]
                     + p["opt_price_delta_per_m3"] for t in T]
     premium = pct("public_share_of_sales") * pct("green_premium_public") + (1 - pct("public_share_of_sales")) * pct("green_premium_private")
-    price_circ = [price_market[t] * (1 + premium) for t in T]
+    circ_flag = [1.0 if YEARS[t] >= p["opt_circ_delta_start_year"] else 0.0 for t in T]
+    price_circ = [price_market[t] * (1 + premium) + circ_flag[t] * p["opt_circ_price_delta_per_m3"] for t in T]
     price_conv = list(price_market)
     rev_circ = [vol_circ[t] * price_circ[t] for t in T]
     rev_conv = [vol_conv[t] * price_conv[t] for t in T]
-    rev_extra = [p["opt_extra_revenue_per_yr"] if t >= 1 else 0.0 for t in T]
-    revenue = [rev_circ[t] + rev_conv[t] + rev_extra[t] for t in T]
+    rev_extra = [p["opt_extra_revenue_per_yr"] * op[t] for t in T]
+
+    # ---------------- On-site crushing (option A+B) -------------------------
+    rca_deliv = p["price_rca_coarse_exworks"] + p["rca_transport_distance"] * p["road_haulage_rate"] + p["road_handling_per_t"]
+    cflag = [p["opt_crusher_on"] * op[t] * (1.0 if YEARS[t] >= p["opt_crusher_start_year"] else 0.0) for t in T]
+    intake = [p["opt_rubble_intake_tpy"] * ramp[t] * cflag[t] for t in T]
+    coarse_prod = [intake[t] * pct("hybrid_yield_coarse") for t in T]
+    rca_need = [vol_circ[t] * p["mix_circ_rca_coarse"] / 1000 + vol_conv[t] * p["mix_conv_cem3b_rca_coarse"] / 1000 for t in T]
+    rca_own = [min(coarse_prod[t], rca_need[t]) for t in T]
+    rca_surplus = [coarse_prod[t] - rca_own[t] for t in T]
+    cr_rev = {
+        "gate_fee": [intake[t] * p["hybrid_gate_fee_received"] for t in T],
+        "sand": [intake[t] * pct("hybrid_yield_sand_0_4") * p["hybrid_price_crusher_sand"] for t in T],
+        "steel": [intake[t] * pct("hybrid_yield_steel") * p["hybrid_price_steel_scrap"] for t in T],
+        "surplus_rca": [rca_surplus[t] * p["price_rca_coarse_exworks"] for t in T],
+    }
+    rev_crusher = [sum(cr_rev[k][t] for k in cr_rev) for t in T]
+    revenue = [rev_circ[t] + rev_conv[t] + rev_extra[t] + rev_crusher[t] for t in T]
 
     # ---------------- Material cost per m3 ---------------------------------
-    rca_deliv = p["price_rca_coarse_exworks"] + p["rca_transport_distance"] * p["road_haulage_rate"] + p["road_handling_per_t"]
     m_circ = {
         "cement": [p["mix_plant_avg_binder_circ"] / 1000 * cem_price[t] for t in T],
         "gravel": [p["mix_circ_gravel"] / 1000 * p["price_gravel_delivered"]] * n,
@@ -235,7 +274,6 @@ def run(inputs: dict, overrides: Optional[dict] = None, scenario: str = "base") 
     delivery_m3 = p["delivery_fixed_per_m3"] + p["delivery_variable_per_km_oneway"] * p["delivery_avg_distance_oneway"]
 
     # ---------------- Opex (EUR/yr) ----------------------------------------
-    op = [1.0 if t >= 1 else 0.0 for t in T]
     wage_idx = [(1 + pct("real_wage_growth")) ** t for t in T]
     opex = {
         "raw_materials": [vol_circ[t] * mat_circ_m3[t] + vol_conv[t] * mat_conv_m3[t] for t in T],
@@ -243,6 +281,12 @@ def run(inputs: dict, overrides: Optional[dict] = None, scenario: str = "base") 
         "energy": [vol[t] * energy_m3 for t in T],
         "delivery": [vol[t] * delivery_m3 for t in T],
         "var_delta": [vol[t] * p["opt_cost_delta_per_m3"] for t in T],
+        "circ_delta": [vol_circ[t] * circ_flag[t] * p["opt_circ_cost_delta_per_m3"] for t in T],
+        "cr_rca_credit": [-rca_own[t] * rca_deliv for t in T],
+        "cr_contaminants": [intake[t] * pct("hybrid_yield_contaminants") * p["hybrid_cost_contaminant_disposal"] for t in T],
+        "cr_diesel": [intake[t] * p["hybrid_crusher_diesel"] * p["price_diesel"] for t in T],
+        "cr_wear": [intake[t] * p["hybrid_crusher_wear"] for t in T],
+        "cr_contract": [intake[t] * p["opt_crusher_contract_rate"] for t in T],
         "bad_debt": [revenue[t] * pct("bad_debt_pct_revenue") for t in T],
         "staff_prod": [op[t] * p["staff_production_fte"] * p["cost_per_fte_production"] * wage_idx[t] for t in T],
         "maintenance": [op[t] * pct("maintenance_pct_of_capex") * physical for t in T],
@@ -251,30 +295,40 @@ def run(inputs: dict, overrides: Optional[dict] = None, scenario: str = "base") 
         "staff_sga": [op[t] * p["staff_sga_fte"] * p["cost_per_fte_sga"] * wage_idx[t] for t in T],
         "sga_other": [op[t] * p["sga_fixed_non_staff"] for t in T],
         "extra_fixed": [op[t] * p["opt_extra_opex_per_yr"] for t in T],
-        "startup_oneoff": [startup_oneoff if t == 0 else 0.0 for t in T],
+        "cr_staff": [cflag[t] * p["hybrid_crusher_staff_fte"] * p["cost_per_fte_production"] * wage_idx[t] for t in T],
+        "cr_maintenance": [cflag[t] * pct("hybrid_crusher_maintenance_pct_capex") * capex_crusher for t in T],
+        "cr_certification": [cflag[t] * p["hybrid_brl2506_certification"] for t in T],
+        "cr_site": [cflag[t] * p["hybrid_extra_site_area"] * p["site_lease_rate"] for t in T],
+        "startup_oneoff": [startup_oneoff if t == d else 0.0 for t in T],
     }
-    VARIABLE = ("raw_materials", "rca_qc", "energy", "delivery", "var_delta", "bad_debt")
-    FIXED = ("staff_prod", "maintenance", "certification", "site_lease", "staff_sga", "sga_other", "extra_fixed")
+    VARIABLE = ("raw_materials", "rca_qc", "energy", "delivery", "var_delta", "circ_delta", "cr_rca_credit",
+                "cr_contaminants", "cr_diesel", "cr_wear", "cr_contract", "bad_debt")
+    FIXED = ("staff_prod", "maintenance", "certification", "site_lease", "staff_sga", "sga_other", "extra_fixed",
+             "cr_staff", "cr_maintenance", "cr_certification", "cr_site")
+    CR_VAR = ("cr_rca_credit", "cr_contaminants", "cr_diesel", "cr_wear", "cr_contract")
+    CR_FIX = ("cr_staff", "cr_maintenance", "cr_certification", "cr_site")
     opex_var = [sum(opex[k][t] for k in VARIABLE) for t in T]
     opex_fixed = [sum(opex[k][t] for k in FIXED) for t in T]
     opex_total = [opex_var[t] + opex_fixed[t] + opex["startup_oneoff"][t] for t in T]
     ebitda = [revenue[t] - opex_total[t] for t in T]
+    crusher_net = [rev_crusher[t] - sum(opex[k][t] for k in CR_VAR) - sum(opex[k][t] for k in CR_FIX) for t in T]
 
     # ---------------- Depreciation -----------------------------------------
-    def sl(amount, life):
-        return [amount / life if 1 <= t <= life else 0.0 for t in T]
-    dep_plant = sl(capex_plant + capex_extra, p["lifetime_plant_equipment"])
-    dep_civil = sl(capex_civil, p["lifetime_civil_works"])
-    dep_permits = sl(capex_permits, p["lifetime_permits_engineering"])
+    def sl(amount, life, start):
+        return [amount / life if start <= t < start + life else 0.0 for t in T]
+    dep_plant = sl(capex_plant + capex_extra, p["lifetime_plant_equipment"], s0)
+    dep_civil = sl(capex_civil, p["lifetime_civil_works"], s0)
+    dep_permits = sl(capex_permits, p["lifetime_permits_engineering"], s0)
+    dep_crusher = sl(capex_crusher, p["hybrid_crusher_lifetime"], crush_capex_t + 1)
     sust = [op[t] * pct("sustaining_capex_pct_of_capex") * physical for t in T]
     dep_sust = [sum(sust[: t + 1]) / p["lifetime_plant_equipment"] for t in T]
-    da = [dep_plant[t] + dep_civil[t] + dep_permits[t] + dep_sust[t] for t in T]
+    da = [dep_plant[t] + dep_civil[t] + dep_permits[t] + dep_crusher[t] + dep_sust[t] for t in T]
     ebit = [ebitda[t] - da[t] for t in T]
-    grant_inc = [grant if t == 0 else 0.0 for t in T]
+    grant_inc = [grant if t == d else 0.0 for t in T]
     pbt = [ebit[t] + grant_inc[t] for t in T]
 
     # ---------------- Tax ---------------------------------------------------
-    mia = [mia_deduction if t == 0 else 0.0 for t in T]
+    mia = [(mia_deduction if t == d else 0.0) + (mia_crusher if t == crush_capex_t else 0.0) for t in T]
     ti = [pbt[t] - mia[t] for t in T]
     pool, taxable, tax = [0.0] * n, [0.0] * n, [0.0] * n
     prev = 0.0
@@ -292,8 +346,10 @@ def run(inputs: dict, overrides: Optional[dict] = None, scenario: str = "base") 
     wc_pay = [opex["raw_materials"][t] * p["working_capital_payable_days"] / 365 for t in T]
     wc = [wc_rec[t] + wc_inv[t] - wc_pay[t] for t in T]
     d_wc = [wc[t] - (wc[t - 1] if t > 0 else 0.0) for t in T]
-    capex_cf = [capex_initial if t == 0 else 0.0 for t in T]
-    salvage = [pct("salvage_value_yr10_pct_of_plant_civil_capex") * physical if t == N_YEARS else 0.0 for t in T]
+    capex_cf = [(capex_permits if t == 0 else 0.0) + (capex_plant + capex_civil + capex_extra + capex_land if t == d else 0.0)
+                + (capex_crusher if t == crush_capex_t else 0.0) for t in T]
+    salvage = [(pct("salvage_value_yr10_pct_of_plant_civil_capex") * physical + pct("opt_crusher_salvage_pct") * capex_crusher)
+               if t == N_YEARS else 0.0 for t in T]
     fcf = [ebitda[t] + grant_inc[t] - tax[t] - d_wc[t] - capex_cf[t] - sust[t] + salvage[t] for t in T]
     fcf_x = [fcf[t] - salvage[t] for t in T]
     df = [1 / (1 + r) ** t for t in T]
@@ -309,27 +365,33 @@ def run(inputs: dict, overrides: Optional[dict] = None, scenario: str = "base") 
     funding_need = max(0.0, -min(cum))
     npv_wc_memo = npv + wc[-1] * df[-1]
 
-    # Break-even steady-state volume (EBITDA = 0) at year-3 prices/costs
-    t3 = 3
-    unit_contrib = (revenue[t3] - rev_extra[t3]) / vol[t3] - opex_var[t3] / vol[t3] if vol[t3] else float("nan")
-    be_vol_ebitda = (opex_fixed[t3] - rev_extra[t3]) / unit_contrib if unit_contrib > 0 else None
+    # Break-even steady-state volume (EBITDA = 0) in the third operating year.
+    # Crusher net result and hook revenue are treated as fixed amounts (memo KPI).
+    cr_var3 = sum(opex[k][t3] for k in CR_VAR)
+    conc_rev3 = revenue[t3] - rev_extra[t3] - rev_crusher[t3]
+    unit_contrib = conc_rev3 / vol[t3] - (opex_var[t3] - cr_var3) / vol[t3] if vol[t3] else float("nan")
+    be_vol_ebitda = (opex_fixed[t3] - rev_extra[t3] - crusher_net[t3]) / unit_contrib if unit_contrib > 0 else None
 
     kpis = {
         "npv": npv, "irr": irr, "payback": payback, "discounted_payback": dpayback,
-        "ebitda_y3": ebitda[3], "funding_need": funding_need, "capex_initial": capex_initial,
+        "ebitda_y3": ebitda[t3], "ebitda_y3_year": YEARS[t3], "funding_need": funding_need, "capex_initial": capex_initial,
         "npv_pct_of_capex": npv / capex_initial if capex_initial else None,
         "npv_incl_wc_release_memo": npv_wc_memo, "be_volume_ebitda_y3": be_vol_ebitda,
-        "unit_contribution_y3": unit_contrib, "revenue_y3": revenue[3],
+        "unit_contribution_y3": unit_contrib, "revenue_y3": revenue[t3],
     }
     years = {
         "year": YEARS, "t": T, "ramp": ramp, "volume": vol, "volume_circ": vol_circ, "volume_conv": vol_conv,
         "carbon_cost_cem3b": cc, "slag_uplift": slag, "cement_price": cem_price, "market_binder_increase_m3": mkt_binder_incr,
         "price_market": price_market, "price_circ": price_circ, "price_conv": price_conv,
-        "revenue_circ": rev_circ, "revenue_conv": rev_conv, "revenue_extra": rev_extra, "revenue": revenue,
+        "revenue_circ": rev_circ, "revenue_conv": rev_conv, "revenue_extra": rev_extra,
+        "revenue_crusher": rev_crusher, **{f"crusher_rev_{k}": v for k, v in cr_rev.items()},
+        "rubble_intake": intake, "rca_own": rca_own, "rca_surplus": rca_surplus, "crusher_net": crusher_net,
+        "revenue": revenue,
         "mat_circ_m3": mat_circ_m3, "mat_conv_m3": mat_conv_m3,
         **{f"opex_{k}": v for k, v in opex.items()},
         "opex_variable": opex_var, "opex_fixed": opex_fixed, "opex_total": opex_total, "ebitda": ebitda,
-        "dep_plant": dep_plant, "dep_civil": dep_civil, "dep_permits": dep_permits, "dep_sustaining": dep_sust, "da": da,
+        "dep_plant": dep_plant, "dep_civil": dep_civil, "dep_permits": dep_permits, "dep_crusher": dep_crusher,
+        "dep_sustaining": dep_sust, "da": da,
         "ebit": ebit, "grant_income": grant_inc, "pbt": pbt, "mia_deduction": mia, "taxable_before_losses": ti,
         "loss_pool": pool, "taxable": taxable, "tax": tax, "net_income": net_income,
         "wc_receivables": wc_rec, "wc_inventory": wc_inv, "wc_payables": wc_pay, "wc": wc, "delta_wc": d_wc,
@@ -430,7 +492,7 @@ def viability(table: dict, scenario: str = "base") -> dict:
     n_pass4 = sum(1 for s in c4 if s["npv_pessimistic"] > 0)
     c1 = k["npv"] > 0
     c2 = k["payback"] is not None and k["payback"] < 7
-    c3 = run(table, scenario=scenario)["years"]["ebitda"][3] > 0
+    c3 = k["ebitda_y3"] > 0
     c4ok = n_pass4 >= 2
     if c1 and c2 and c3 and c4ok:
         verdict = "VIABLE"

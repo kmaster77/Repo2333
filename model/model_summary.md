@@ -138,3 +138,13 @@ No gate fee is used: in B1 the plant buys RCA and does not receive rubble.
   - option hooks `opt_*` (extra capex, extra revenue, extra opex, price or cost change per m³);
   - `model_core.run(table, overrides={...})`;
   - `build_model.build_workbook(path, overrides={...})`.
+
+## 7. Viability options (added by Agent 7)
+
+- New live logic, all off (0) in the base case. Base-case results are unchanged.
+  - `opt_start_delay`: later first sales.
+  - On-site crushing block: `opt_crusher_*` + the `hybrid_*` inputs.
+  - Circular-only price and cost deltas.
+- Option selector `Inputs!I3`, with the option matrix on sheet `Opt_Overview`. Asset-light option on the live sheet `Opt_AssetLight`.
+- Definitions and tests are in `model/options.py`. Results: `model/results_options.json`. Chart: `model/charts/options_npv.png`. Write-up: `research/viability_options.md`.
+- The Excel–Python check covers all options. `run_all.py` now also runs `options.py` and `charts_options.py`.

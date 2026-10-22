@@ -13,6 +13,8 @@ import model_core as mc  # noqa: E402
 py = sys.executable
 subprocess.run([py, os.path.join(HERE, "build_model.py")], check=True)
 subprocess.run([py, os.path.join(HERE, "charts.py")], check=True)
+subprocess.run([py, os.path.join(HERE, "options.py")], check=True)          # -> results_options.json
+subprocess.run([py, os.path.join(HERE, "charts_options.py")], check=True)  # -> charts/options_npv.png
 rc = subprocess.run([py, os.path.join(HERE, "check_model.py")]).returncode
 
 tab = mc.load_inputs()
