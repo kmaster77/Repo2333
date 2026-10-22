@@ -635,7 +635,7 @@ for i, (big, lab) in enumerate([("−€2.5/m³", "cash cost of the circular mix
 # 8 ---------------------------------------------------------------- why it fails
 s = new_slide(
     "The plant earns €4.6 per m³ but needs about €11.7 per m³ to pay back its capital",
-    source="Source: model_summary.md §2 (capital recovery over 10 years at 8% real); chart model/charts/"
+    source="Source: model_summary.md §2 (capital recovery over 10 years at 8% real); chart deck/charts/"
            "ebitda_by_year.png; pass-through rates are key judgement calls (A-POL-09, A-CST-13).",
     notes=(
         "This is why the plant fails. EBITDA turns positive in 2030, the third operating year, at 0.32 million "
@@ -667,7 +667,7 @@ text(s, gx + 0.2, 5.45, gw2 - 0.4, 1.1, "about 5% of the selling price, every ye
 s = new_slide(
     f"The base case destroys {mu(NPV)} of value and needs {mu(FUND)} of funding",
     source="Source: model/results.json (base case: permits 2026, build 2027, first sales 2028; unlevered; "
-           "salvage-only terminal value); chart model/charts/cashflow_10yr.png.",
+           "salvage-only terminal value); chart deck/charts/cashflow_10yr.png.",
     notes=(
         "The headline numbers. Net present value at 8% real is minus 5.33 million euro, which is minus 97% of the "
         "capex. The IRR is minus 13.9%. Cumulative cash never turns positive within the ten years, so there is no "
@@ -695,7 +695,7 @@ picture(s, MC("cashflow_10yr.png"), LM + 4.75, 2.15, CW - 4.75, 4.65,
 s = new_slide(
     "Selling price is the only single input that lifts NPV above zero; the green levers barely move it",
     source="Source: model/results.json → sensitivity (one input group at a time, low / high column of inputs.csv); "
-           "chart model/charts/tornado_npv.png. Price base €135/m³ has confidence L (A-MKT-16).",
+           "chart deck/charts/tornado_npv.png. Price base €135/m³ has confidence L (A-MKT-16).",
     notes=(
         "We moved each input to its low and high value, one at a time. Selling price dominates. At 155 euro per "
         "cubic metre, 15% above base, NPV just reaches plus 0.25 million. No other single change gets above zero. "
@@ -779,7 +779,7 @@ for i, (big, lab) in enumerate([(m(OPT["O3"]["kpis"]["npv"], 1), "best plant rou
 s = new_slide(
     "Break-even needs conditions that the Dutch market does not offer today",
     source="Source: model/results.json → extras; results_options.json → P2 stack and policy tests; gate-fee evidence "
-           "market.md (MKT-20); chart model/charts/breakeven.png (other inputs at base).",
+           "market.md (MKT-20); chart deck/charts/breakeven.png (other inputs at base).",
     notes=(
         "What would have to be true for NPV to reach zero? Taking one condition at a time: volume of 134,000 cubic "
         "metres a year, almost four times an average Dutch plant. Or an average price of 154 euro, 14% above our "
