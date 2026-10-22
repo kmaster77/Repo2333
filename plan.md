@@ -1,6 +1,6 @@
 # Plan — Circular concrete business case (Netherlands)
 
-Status: **Phase 0 done. Waiting for the client to confirm the defaults (section 2) before Phase 1.**
+Status: **Phase 0 done. Defaults confirmed by client on 2026-10-22 (section 2). Phase 1 started.**
 Date: 2026-10-22
 
 ---
@@ -22,21 +22,21 @@ Date: 2026-10-22
 
 ---
 
-## 2. Defaults for the `[FILL IN]` fields (please confirm or change)
+## 2. Choices for the `[FILL IN]` fields (confirmed by client)
 
-| Field | Proposed default | Why |
+| Field | Choice | Consequence for the work |
 |---|---|---|
-| Intended use | **Academic business case (course assignment / thesis input), written so it can also work as an early startup pitch** | Most likely use for a first-year MSc student. Keeps the tone objective, not salesy. |
-| Deck audience | **Professors and an early-stage investor / municipality panel** | One deck that works for both: method visible, verdict up front. |
-| Archetype | **Compare A–D at screening level. Model A (recycling hub) in depth. Test A+B and A+C hybrids as viability options in Phase 3.** | A is the most data-rich (gate fees, aggregate prices, equipment costs are public) and is the base for B and C. D (platform) has little hard financial data, so it gets a qualitative screen plus a simple model. |
-| Region | **Zuid-Holland (Rotterdam–The Hague–Delft), with the Randstad as the wider market** | Large demolition and construction volumes, port logistics, close to TU Delft research. Short transport distances matter a lot for a low-value bulk product. |
-| Starting capital | **Unknown → the model calculates the capital needed and proposes a funding mix (equity, bank loan, subsidies)** | Avoids fixing a number that would bias the plant size. |
-| Discount rate | **10% real (base); test 8% and 12%** | Typical for an industrial start-up with proven but niche technology. |
+| Intended use | **Startup pitch / competition** | Deck is short and decision-focused. Objectivity stays: weak points and the verdict are shown openly. |
+| Deck audience | **Investors / competition jury** | Lead with the verdict, unit economics, capital need and risks. |
+| Archetype | **B in depth: circular ready-mix / prefab producer** using recycled aggregates and low-clinker binders. A, C and D get a screening. | Agent 3 compares a ready-mix plant and a prefab plant (sub-variants B1 and B2) and recommends one for the base case. Recycled aggregate is *bought* in the base case. Own crushing (A+B), element reuse (B+C) and a platform role (B+D) are viability options. |
+| Region | **National** | The plant location is an output: Agent 2/3 rank 2–3 candidate regions on demand, aggregate supply and transport distance. Ready-mix has a short delivery radius (~25–50 km), so the base case is one plant in the best region with a national roll-out as a scenario. |
+| Starting capital | **Unknown** | The model calculates the capital needed and proposes a funding mix. |
+| Discount rate | **8% real (base); test 6% and 10%** | Chosen by client. |
 
 ### 2.1 Viability criteria (fixed now, before any results)
 
 The base case is **viable** only if **all** of these hold:
-1. NPV > 0 at a 10% discount rate (10 years, with terminal value limited to the salvage value of the equipment — no growth perpetuity).
+1. NPV > 0 at an 8% real discount rate (10 years, with terminal value limited to the salvage value of the equipment — no growth perpetuity).
 2. Payback period < 7 years.
 3. EBITDA positive by year 3 at the latest.
 4. Still NPV > 0 in the *low* scenario for at least two of the six main sensitivity drivers taken one at a time (robustness check).
@@ -53,10 +53,10 @@ If the result is borderline or not viable, Agent 7 (viability strategist) starts
 - Claim labels: **[VERIFIED]**, **[ESTIMATE]**, **[ASSUMPTION]**.
 
 ### 2.3 Archetypes
-- **A. Recycling hub** — high-grade crushing/separation of demolition concrete into recycled coarse aggregate, sand and cement-rich fines.
-- **B. Circular ready-mix / prefab** — uses recycled aggregates and low-clinker binders.
-- **C. Element reuse** — deconstruction, testing, recertification and resale of whole elements.
-- **D. Platform / chain orchestrator** — matching supply and demand, material passports.
+- **A. Recycling hub** (screening + option) — high-grade crushing/separation of demolition concrete into recycled coarse aggregate, sand and cement-rich fines.
+- **B. Circular ready-mix / prefab** (**base case, modelled in depth**) — uses recycled aggregates and low-clinker binders.
+- **C. Element reuse** (screening + option) — deconstruction, testing, recertification and resale of whole elements.
+- **D. Platform / chain orchestrator** (screening + option) — matching supply and demand, material passports.
 
 ---
 
@@ -84,19 +84,23 @@ Budget per agent: about 40–60 tool calls. Each agent writes to files and retur
 4. Public vs private share of concrete demand.
 5. Customer segments and their buying drivers.
 6. Evidence of willingness to pay / green premium (tenders, surveys, price data).
-7. TAM / SAM / SOM for Zuid-Holland and NL.
+7. TAM / SAM / SOM for NL (national) for circular ready-mix and prefab concrete.
+8. Rank 2–3 candidate regions for a first plant (demand density, aggregate supply, competition).
+9. Ready-mix and prefab concrete prices (€/m³, delivered) by strength class.
 
 **Agent 3 — Technology & supply chain** → `research/technology.md`
-1. Process flow for A (and the extra steps for B and C).
+1. Process flow for B (ready-mix B1 and prefab B2), plus the upstream recycling step (A) it depends on and the extra steps for C. Recommend B1 or B2 for the base case.
 2. Mass balance per tonne of input: coarse aggregate, sand, fines, residues — for conventional crushing vs advanced technologies (e.g. ADR, SmartCrusher-type, thermal/mechanical).
 3. Quality issues and how they are tested (water absorption, adhered mortar, contamination, chlorides, ASR).
 4. Equipment: capex, capacity (t/h), energy use (kWh/t), wear, staff, area needed.
 5. Logistics: typical transport distances and modes (truck, inland ship).
 6. Technology readiness level per technology.
+7. Mix designs: recycled aggregate share, low-clinker binders (CEM III/B, CEM II/C-M, CEM VI, geopolymer, recycled cement paste), cement content kg/m³, strength classes reachable, CO₂ per m³ vs a reference mix.
+8. Capex/opex of a ready-mix plant and a prefab plant (capacity m³/yr, staff, area).
 
 **Agent 4 — Competitors & landscape** → `research/competitors.md`
 1. Verify the listed players (SlimBreker / Smart Crusher, C2CA, New Horizon Urban Mining, Rutte Groep, Fieldlab Circulair Beton, prefab producers, cement producers with low-clinker products). What do they actually do today?
-2. Other recyclers, demolition firms, ready-mix producers in Zuid-Holland.
+2. Ready-mix and prefab producers in NL (nationally, incl. market shares if public), their circular/low-CO₂ product lines, plus recyclers and demolition firms that supply recycled aggregate.
 3. Public prices, scale, capacity.
 4. Positioning matrix + Porter's Five Forces + gaps in the market.
 
