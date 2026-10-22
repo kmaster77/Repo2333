@@ -1,0 +1,554 @@
+{
+ "scenarios": {
+  "pessimistic": {
+   "npv": -38250548.18172318,
+   "irr": null,
+   "payback": null,
+   "discounted_payback": null,
+   "ebitda_y3": -4109613.676078588,
+   "funding_need": 53454568.97175346,
+   "capex_initial": 8000000.0,
+   "npv_pct_of_capex": -4.781318522715397,
+   "npv_incl_wc_release_memo": -37807677.26503072,
+   "be_volume_ebitda_y3": null,
+   "unit_contribution_y3": -40.847292566555,
+   "revenue_y3": 4838496.53123375
+  },
+  "base": {
+   "npv": -4481665.395587757,
+   "irr": -0.0706382633148967,
+   "payback": null,
+   "discounted_payback": null,
+   "ebitda_y3": 530374.260142399,
+   "funding_need": 6835872.764774223,
+   "capex_initial": 5500000.0,
+   "npv_pct_of_capex": -0.8148482537432286,
+   "npv_incl_wc_release_memo": -3889007.6438108617,
+   "be_volume_ebitda_y3": 50731.9939490894,
+   "unit_contribution_y3": 27.526162216320003,
+   "revenue_y3": 9571544.07552
+  },
+  "optimistic": {
+   "npv": 29963056.877652783,
+   "irr": 1.1937549281675142,
+   "payback": 1.122701805228196,
+   "discounted_payback": 1.1901088374636346,
+   "ebitda_y3": 6952848.37955857,
+   "funding_need": 2842680.0,
+   "capex_initial": 4000000.0,
+   "npv_pct_of_capex": 7.490764219413196,
+   "npv_incl_wc_release_memo": 30557986.22591628,
+   "be_volume_ebitda_y3": 10070.446658010946,
+   "unit_contribution_y3": 86.98720421731744,
+   "revenue_y3": 14796975.305474995
+  }
+ },
+ "base_years": {
+  "year": [
+   2026,
+   2027,
+   2028,
+   2029,
+   2030,
+   2031,
+   2032,
+   2033,
+   2034,
+   2035,
+   2036
+  ],
+  "volume": [
+   0.0,
+   35000.0,
+   55300.0,
+   70000.0,
+   70000.0,
+   70000.0,
+   70000.0,
+   70000.0,
+   70000.0,
+   70000.0,
+   70000.0
+  ],
+  "revenue": [
+   0.0,
+   4762735.5608,
+   7535689.240979199,
+   9571544.07552,
+   9641396.618560001,
+   9873859.587199999,
+   9919932.54112,
+   9973436.61664,
+   10034371.813760001,
+   10034371.813760001,
+   10034371.813760001
+  ],
+  "ebitda": [
+   -380000.0,
+   -418885.8420040002,
+   136864.4537743032,
+   530374.260142399,
+   506811.90499220043,
+   437358.63688662276,
+   420465.72127513774,
+   401457.0418818407,
+   380332.50130786933,
+   376377.81454095244,
+   372403.35434020124
+  ],
+  "ebit": [
+   -380000.0,
+   -670885.8420040002,
+   -117135.5462256968,
+   274374.260142399,
+   248811.90499220043,
+   177358.63688662276,
+   158465.72127513774,
+   137457.04188184068,
+   114332.50130786933,
+   108377.81454095244,
+   102403.35434020124
+  ],
+  "net_income": [
+   20000.0,
+   -670885.8420040002,
+   -117135.5462256968,
+   274374.260142399,
+   248811.90499220043,
+   177358.63688662276,
+   158465.72127513774,
+   137457.04188184068,
+   114332.50130786933,
+   91146.45300248389,
+   82946.71701556302
+  ],
+  "fcf": [
+   -5480000.0,
+   -1084616.086245096,
+   -271256.6785291268,
+   218415.59687541798,
+   450217.4239445294,
+   365412.79820607486,
+   366116.16994582233,
+   346405.95001553954,
+   324579.8689045813,
+   309146.4530024839,
+   1552946.717015563
+  ],
+  "cum_fcf": [
+   -5480000.0,
+   -6564616.086245096,
+   -6835872.764774223,
+   -6617457.167898805,
+   -6167239.743954276,
+   -5801826.945748201,
+   -5435710.775802379,
+   -5089304.825786838,
+   -4764724.956882257,
+   -4455578.503879773,
+   -2902631.7868642104
+  ]
+ },
+ "sensitivity": [
+  {
+   "name": "Green premium (public & private)",
+   "params": [
+    "green_premium_public",
+    "green_premium_private"
+   ],
+   "main_driver": true,
+   "npv_base": -4481665.395587757,
+   "npv_low_input": -5289067.976439959,
+   "npv_high_input": -3442743.641356913,
+   "npv_pessimistic": -5289067.976439959,
+   "pessimistic_column": "low",
+   "swing": 1846324.3350830465
+  },
+  {
+   "name": "Average selling price (EUR 115-155/m3)",
+   "params": [
+    "price_plant_avg_all_classes"
+   ],
+   "main_driver": false,
+   "npv_base": -4481665.395587757,
+   "npv_low_input": -12772738.534624292,
+   "npv_high_input": 1766053.7404466334,
+   "npv_pessimistic": -12772738.534624292,
+   "pessimistic_column": "low",
+   "swing": 14538792.275070924
+  },
+  {
+   "name": "Recycled aggregate price, ex-works (EUR 10-25/t)",
+   "params": [
+    "price_rca_coarse_exworks"
+   ],
+   "main_driver": true,
+   "npv_base": -4481665.395587757,
+   "npv_low_input": -3900214.6921224063,
+   "npv_high_input": -5879690.624213712,
+   "npv_pessimistic": -5879690.624213712,
+   "pessimistic_column": "high",
+   "swing": 1979475.932091306
+  },
+  {
+   "name": "Transport distance (delivery 10-35 km + RCA haul 15-50 km)",
+   "params": [
+    "delivery_avg_distance_oneway",
+    "rca_transport_distance"
+   ],
+   "main_driver": true,
+   "npv_base": -4481665.395587757,
+   "npv_low_input": -2410207.1180375586,
+   "npv_high_input": -8357077.504590822,
+   "npv_pessimistic": -8357077.504590822,
+   "pessimistic_column": "high",
+   "swing": 5946870.386553263
+  },
+  {
+   "name": "Concrete delivery distance (10-35 km)",
+   "params": [
+    "delivery_avg_distance_oneway"
+   ],
+   "main_driver": false,
+   "npv_base": -4481665.395587757,
+   "npv_low_input": -2814524.2760389852,
+   "npv_high_input": -7649248.811017501,
+   "npv_pessimistic": -7649248.811017501,
+   "pessimistic_column": "high",
+   "swing": 4834724.534978516
+  },
+  {
+   "name": "RCA haul distance (15-50 km)",
+   "params": [
+    "rca_transport_distance"
+   ],
+   "main_driver": false,
+   "npv_base": -4481665.395587757,
+   "npv_low_input": -4039138.037266182,
+   "npv_high_input": -5171861.930640391,
+   "npv_pessimistic": -5171861.930640391,
+   "pessimistic_column": "high",
+   "swing": 1132723.8933742093
+  },
+  {
+   "name": "Cement price + ETS/CBAM path",
+   "params": [
+    "price_cem3b_2026_delivered",
+    "carbon_cost_cem3b_2026",
+    "carbon_cost_cem3b_2027",
+    "carbon_cost_cem3b_2028",
+    "carbon_cost_cem3b_2029",
+    "carbon_cost_cem3b_2030",
+    "carbon_cost_cem3b_2031",
+    "carbon_cost_cem3b_2032",
+    "carbon_cost_cem3b_2033",
+    "carbon_cost_cem3b_2034",
+    "carbon_cost_cem3b_2035",
+    "carbon_cost_cem3b_2036"
+   ],
+   "main_driver": true,
+   "npv_base": -4481665.395587757,
+   "npv_low_input": -2738425.5046810475,
+   "npv_high_input": -7461840.761356306,
+   "npv_pessimistic": -7461840.761356306,
+   "pessimistic_column": "high",
+   "swing": 4723415.256675258
+  },
+  {
+   "name": "Cement price 2026 (EUR 95-130/t)",
+   "params": [
+    "price_cem3b_2026_delivered"
+   ],
+   "main_driver": false,
+   "npv_base": -4481665.395587757,
+   "npv_low_input": -2879030.569663332,
+   "npv_high_input": -7187864.187424129,
+   "npv_pessimistic": -7187864.187424129,
+   "pessimistic_column": "high",
+   "swing": 4308833.617760797
+  },
+  {
+   "name": "ETS/CBAM carbon cost path only",
+   "params": [
+    "carbon_cost_cem3b_2026",
+    "carbon_cost_cem3b_2027",
+    "carbon_cost_cem3b_2028",
+    "carbon_cost_cem3b_2029",
+    "carbon_cost_cem3b_2030",
+    "carbon_cost_cem3b_2031",
+    "carbon_cost_cem3b_2032",
+    "carbon_cost_cem3b_2033",
+    "carbon_cost_cem3b_2034",
+    "carbon_cost_cem3b_2035",
+    "carbon_cost_cem3b_2036"
+   ],
+   "main_driver": false,
+   "npv_base": -4481665.395587757,
+   "npv_low_input": -4326176.641330588,
+   "npv_high_input": -4738009.810999248,
+   "npv_pessimistic": -4738009.810999248,
+   "pessimistic_column": "high",
+   "swing": 411833.1696686605
+  },
+  {
+   "name": "Plant utilisation (50k-90k m3/yr)",
+   "params": [
+    "output_steady_state"
+   ],
+   "main_driver": true,
+   "npv_base": -4481665.395587757,
+   "npv_low_input": -7375999.251992014,
+   "npv_high_input": -2293855.5806293543,
+   "npv_pessimistic": -7375999.251992014,
+   "pessimistic_column": "low",
+   "swing": 5082143.67136266
+  },
+  {
+   "name": "Ramp-up speed (yr1-3)",
+   "params": [
+    "ramp_year1_pct_of_steady",
+    "ramp_year2_pct_of_steady",
+    "ramp_year3plus_pct_of_steady"
+   ],
+   "main_driver": false,
+   "npv_base": -4481665.395587757,
+   "npv_low_input": -6234273.210285117,
+   "npv_high_input": -4108398.7661354477,
+   "npv_pessimistic": -6234273.210285117,
+   "pessimistic_column": "low",
+   "swing": 2125874.4441496693
+  },
+  {
+   "name": "Capex (plant, civil, permits)",
+   "params": [
+    "capex_plant_equipment",
+    "capex_site_prep_civil",
+    "capex_permits_engineering"
+   ],
+   "main_driver": true,
+   "npv_base": -4481665.395587757,
+   "npv_low_input": -2947011.449086735,
+   "npv_high_input": -7237858.534033164,
+   "npv_pessimistic": -7237858.534033164,
+   "pessimistic_column": "high",
+   "swing": 4290847.084946429
+  },
+  {
+   "name": "Discount rate (6-10%)",
+   "params": [
+    "discount_rate_real"
+   ],
+   "main_driver": false,
+   "npv_base": -4481665.395587757,
+   "npv_low_input": -4189318.92005319,
+   "npv_high_input": -4726018.246720144,
+   "npv_pessimistic": -4726018.246720144,
+   "pessimistic_column": "high",
+   "swing": 536699.3266669535
+  },
+  {
+   "name": "Gravel price (EUR 25-40/t)",
+   "params": [
+    "price_gravel_delivered"
+   ],
+   "main_driver": false,
+   "npv_base": -4481665.395587757,
+   "npv_low_input": -2485489.4474680666,
+   "npv_high_input": -7391073.415634079,
+   "npv_pessimistic": -7391073.415634079,
+   "pessimistic_column": "high",
+   "swing": 4905583.968166012
+  },
+  {
+   "name": "Sand price (EUR 14-25/t)",
+   "params": [
+    "price_sand_delivered"
+   ],
+   "main_driver": false,
+   "npv_base": -4481665.395587757,
+   "npv_low_input": -3414588.3627858227,
+   "npv_high_input": -6065748.4522386985,
+   "npv_pessimistic": -6065748.4522386985,
+   "pessimistic_column": "high",
+   "swing": 2651160.089452876
+  },
+  {
+   "name": "Delivery cost rates (fixed + per km)",
+   "params": [
+    "delivery_fixed_per_m3",
+    "delivery_variable_per_km_oneway"
+   ],
+   "main_driver": false,
+   "npv_base": -4481665.395587757,
+   "npv_low_input": -3134179.063789813,
+   "npv_high_input": -6162814.876507301,
+   "npv_pessimistic": -6162814.876507301,
+   "pessimistic_column": "high",
+   "swing": 3028635.812717488
+  },
+  {
+   "name": "Production staff (FTE x cost)",
+   "params": [
+    "staff_production_fte",
+    "cost_per_fte_production"
+   ],
+   "main_driver": false,
+   "npv_base": -4481665.395587757,
+   "npv_low_input": -3812491.911033776,
+   "npv_high_input": -5921700.9416545,
+   "npv_pessimistic": -5921700.9416545,
+   "pessimistic_column": "high",
+   "swing": 2109209.0306207235
+  },
+  {
+   "name": "SG&A (staff + non-staff)",
+   "params": [
+    "staff_sga_fte",
+    "cost_per_fte_sga",
+    "sga_fixed_non_staff"
+   ],
+   "main_driver": false,
+   "npv_base": -4481665.395587757,
+   "npv_low_input": -3333465.702467831,
+   "npv_high_input": -6639429.927001981,
+   "npv_pessimistic": -6639429.927001981,
+   "pessimistic_column": "high",
+   "swing": 3305964.22453415
+  },
+  {
+   "name": "Site lease (area x rate)",
+   "params": [
+    "site_area",
+    "site_lease_rate"
+   ],
+   "main_driver": false,
+   "npv_base": -4481665.395587757,
+   "npv_low_input": -3978032.7000602167,
+   "npv_high_input": -5973801.551828896,
+   "npv_pessimistic": -5973801.551828896,
+   "pessimistic_column": "high",
+   "swing": 1995768.851768679
+  },
+  {
+   "name": "Circular share of volume (40-80%)",
+   "params": [
+    "circular_share_of_volume"
+   ],
+   "main_driver": false,
+   "npv_base": -4481665.395587757,
+   "npv_low_input": -4797744.329064326,
+   "npv_high_input": -4201698.756124456,
+   "npv_pessimistic": -4797744.329064326,
+   "pessimistic_column": "low",
+   "swing": 596045.57293987
+  },
+  {
+   "name": "Grant DEI+/VEKI (EUR 0-1.5M)",
+   "params": [
+    "grant_dei_veki_first_plant"
+   ],
+   "main_driver": false,
+   "npv_base": -4481665.395587757,
+   "npv_low_input": -4864033.237067072,
+   "npv_high_input": -3601181.4109810023,
+   "npv_pessimistic": -4864033.237067072,
+   "pessimistic_column": "low",
+   "swing": 1262851.8260860695
+  },
+  {
+   "name": "Working capital days",
+   "params": [
+    "working_capital_receivable_days",
+    "working_capital_payable_days",
+    "working_capital_inventory_days"
+   ],
+   "main_driver": false,
+   "npv_base": -4481665.395587757,
+   "npv_low_input": -4219118.165900725,
+   "npv_high_input": -4680719.269189463,
+   "npv_pessimistic": -4680719.269189463,
+   "pessimistic_column": "high",
+   "swing": 461601.10328873806
+  },
+  {
+   "name": "Salvage value (10-40% of capex)",
+   "params": [
+    "salvage_value_yr10_pct_of_plant_civil_capex"
+   ],
+   "main_driver": false,
+   "npv_base": -4481665.395587757,
+   "npv_low_input": -4829060.51165127,
+   "npv_high_input": -4134270.279524244,
+   "npv_pessimistic": -4829060.51165127,
+   "pessimistic_column": "low",
+   "swing": 694790.2321270262
+  },
+  {
+   "name": "Maintenance (1.5-4% of capex)",
+   "params": [
+    "maintenance_pct_of_capex"
+   ],
+   "main_driver": false,
+   "npv_base": -4481665.395587757,
+   "npv_low_input": -4198300.778943044,
+   "npv_high_input": -4967289.34198768,
+   "npv_pessimistic": -4967289.34198768,
+   "pessimistic_column": "high",
+   "swing": 768988.5630446356
+  }
+ ],
+ "viability": {
+  "c1_npv_pos": false,
+  "c2_payback_lt7": false,
+  "c3_ebitda_y3_pos": true,
+  "c4_n_pass": 0,
+  "c4_pass": false,
+  "verdict": "NOT VIABLE"
+ },
+ "extras": {
+  "rows": [
+   [
+    "NPV break-even steady-state volume (same ramp %)",
+    111842.27744257913,
+    "m3/yr"
+   ],
+   [
+    "NPV break-even plant-average price (2026 basis)",
+    149.24081390339524,
+    "EUR/m3"
+   ],
+   [
+    "NPV break-even public green premium (private 0%)",
+    46.050735295921655,
+    "% of price"
+   ],
+   [
+    "NPV break-even plant-equipment capex",
+    -0.4258015166278909,
+    "MEUR (negative = impossible)"
+   ],
+   [
+    "NPV with 60k m3/yr steady state (market SOM)",
+    -5920016.244529544,
+    "EUR"
+   ],
+   [
+    "NPV at 6% discount rate",
+    -4189318.92005319,
+    "EUR"
+   ],
+   [
+    "NPV at 10% discount rate",
+    -4726018.246720144,
+    "EUR"
+   ],
+   [
+    "NPV without grant",
+    -4864033.237067072,
+    "EUR"
+   ]
+  ],
+  "rss_low": -15957355.200278902,
+  "rss_high": 3479658.7051732233
+ }
+}

@@ -19,7 +19,10 @@ import argparse
 import math
 import os
 import re
+import shutil
+import subprocess
 import sys
+import tempfile
 
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
@@ -225,7 +228,8 @@ def build_workbook(path=OUT, scenario_selector=2, overrides=None, table=None, wi
         a.font = BOLD
         ws.cell(r, 11, rec.get("label"))
         ws.cell(r, 12, rec.get("source_ids"))
-        ws.cell(r, 13, rec.get("notes"))
+        nt = rec.get("notes") or ""
+        ws.cell(r, 13, ("'" + nt) if nt.startswith("=") else nt)
         ws.cell(r, 14, d)
         wb.defined_names[p] = DefinedName(p, attr_text=f"Inputs!$J${r}")
         r += 1
@@ -473,7 +477,7 @@ def build_workbook(path=OUT, scenario_selector=2, overrides=None, table=None, wi
     kpi("npv", "NPV at discount rate", f"SUMPRODUCT({RNG('fcf')},{RNG('df')})", "EUR", "sum of FCF x 1/(1+r)^t, t=0..10")
     kpi("npv_check", "NPV cross-check with Excel NPV()", f"{R('fcf', 0)}+NPV(discount_rate_real/100,{RNG('fcf', 1)})", "EUR", "t=0 + NPV(r, t1..t10)")
     kpi("discount_rate", "Discount rate (real)", "discount_rate_real/100", "%", "input", fmt=PCT)
-    kpi("irr", "IRR (real)", f'IFERROR(IRR({RNG("fcf")},0.1),"n/a")', "%", "IRR of FCF t=0..10 incl. salvage", fmt=PCT)
+    kpi("irr", "IRR (real)", f'IFERROR(IRR({RNG("fcf")},0.1),IFERROR(IRR({RNG("fcf")},-0.1),IFERROR(IRR({RNG("fcf")},-0.3),"n/a")))', "%", "IRR of FCF t=0..10 incl. salvage", fmt=PCT)
     kpi("payback", "Payback period (simple)", f'IF(COUNT({RNG("pb_h", 1)})=0,"not reached",MIN({RNG("pb_h", 1)}))', "years from t=0",
         "first year cumulative FCF (excl. salvage) >= 0, interpolated", fmt="0.0")
     kpi("dpayback", "Discounted payback period", f'IF(COUNT({RNG("dpb_h", 1)})=0,"not reached",MIN({RNG("dpb_h", 1)}))', "years from t=0",
@@ -779,5 +783,16 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--scenario", type=int, default=2)
     ap.add_argument("--out", default=OUT)
+    ap.add_argument("--no-recalc", action="store_true", help="skip LibreOffice recalculation (no cached values)")
     a = ap.parse_args()
-    print("written", build_workbook(a.out, a.scenario))
+    path = build_workbook(a.out, a.scenario)
+    print("written", path)
+    if not a.no_recalc and shutil.which("soffice"):
+        # Recalculate once with LibreOffice so the file also carries cached values
+        # (formulas are kept). Viewers that do not calculate then still show numbers.
+        tmpd = tempfile.mkdtemp(prefix="cc_build_")
+        subprocess.run(["soffice", "--headless", "--calc", "--convert-to", "xlsx", "--outdir", tmpd, path],
+                       check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=180)
+        shutil.copyfile(os.path.join(tmpd, os.path.basename(path)), path)
+        shutil.rmtree(tmpd, ignore_errors=True)
+        print("recalculated with LibreOffice (formulas kept, cached values added)")
