@@ -56,7 +56,7 @@ Model files: `model/financial_model.xlsx` (live formulas), `model/model_core.py`
   - NPV = 0 needs any one of:
     - **134k m³/yr** steady-state volume (+92%, about 4× the Dutch average plant of 33.7k m³, ERMCO 2023), or
     - a plant-average price of **€154.0/m³** (+€19.0, +14.1%), or
-    - a public green premium of 58% (not realistic).
+    - a public green premium of 58.5% (not realistic).
   - Even free plant equipment (−€4M capex) does not reach NPV = 0.
 - **Other checks and memo values:**
 

@@ -282,7 +282,7 @@ Cross-checks: Dutch average concrete 266 kg/m³ in 2023 [VERIFIED, TEC-09]; CSC 
 | Delivery radius | ≈25–50 km in practice; NMD models ~50 km (118 tkm/m³ ÷ 2.37 t/m³) | ESTIMATE from TEC-04 |
 | Truck mixer | 9–14 m³ per load; ~43 t loaded; 8x4 / 10x4 or semi-trailer | VERIFIED, TEC-47, TEC-48, TEC-51 |
 | Truck mixer cost | €95–130/h all-in (base €110) | ESTIMATE, A-TEC-27 (TEC-47 €120–140/h retail; TEC-50 €85/h standby) |
-| Delivery cost per m³ | ≈ **€9 + €0.5 × one-way km** → €14 at 10 km, €19 at 20 km, €26 at 35 km | ESTIMATE, A-TEC-28 |
+| Delivery cost per m³ | ≈ **€9 + €0.5 × one-way km** → €14 at 10 km, €19 at 20 km, €26 at 35 km, **for 10 m³ loads**. *Post-critique: the model scales this to a 9 m³ average load → €21.1/m³ at 20 km (A-FIX-02).* | ESTIMATE, A-TEC-28 |
 | Fleet for base plant | 70,000 ÷ 9,000 m³/truck ≈ **8 mixers** | ESTIMATE, A-TEC-30 |
 | Aggregate by road | ≈ **€0.25 per t per loaded km** + €1.5–3/t handling (KiM 2021 truck+trailer €0.246/tkm average, ×1.26) → 40 km ≈ €12/t | ESTIMATE, A-TEC-32 (TEC-41) |
 | Aggregate by inland ship | ≈ **€0.015–0.05 per t·km** + €1.5–4/t transshipment (KiM 2021: small ship €0.036, push barge €0.010) | ESTIMATE, A-TEC-33 (TEC-41) |

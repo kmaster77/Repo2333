@@ -32,6 +32,8 @@ Words used once and explained:
 
 ### 1.1 Facts the selling points rest on
 
+> **Note (orchestrator, Phase 7):** the cost figures in this table are on Agent 5's 2026 basis (10 m³ loads, 3% public premium). The current model (post-critique, 2030) gives a cash cost of **€131.6/m³ circular vs €134.1/m³ standard**; the gap of **−€2.5/m³ is unchanged**. Plant EBITDA is **€4.6/m³**. See `model/model_summary.md` and `report/business_plan.md` §6.
+
 | Metric (C30/37, per m³, 2026) | Our circular mix (50% coarse RCA, 345 kg CEM III/B) | Dutch standard (CEM III/B, 330 kg) | CEM I mix (320 kg) | Source |
 |---|---|---|---|---|
 | CO₂, A1–A3 (kg/m³) | **132** (111–157) | 129 (109–154) | 286 (244–323) | ESTIMATE, price_breakdown.md §12.3 |

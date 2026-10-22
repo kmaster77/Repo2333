@@ -19,7 +19,7 @@ Sources: `research/sources_options.md` (OPT-xx). Assumptions: `research/assumpti
    On-site crushing no longer adds value on evidence-consistent terms: with a demolition partner (O2) −€0.09M vs base, with an own line (O1) −€0.91M. The green levers add little or lose money: a lower-CO₂ binder (O5) −€0.53M, extra subsidies (O7) +€0.56M, framework contracts (O4) +€0.19M.
 4. **The packages do not beat the acquisition alone.** P1 (acquire + partner crushing + framework contracts) gives NPV **−€3.97M**; P2 (P1 at 90k m³/yr with a second framework contract and +€1.0M expansion capex) gives **−€4.01M**, IRR −10.6%, payback not reached. **P2 is a combination of favourable inputs** (90k m³ = 2.7× an average Dutch plant, frameworks, a long rubble contract). Reported as a range of stacked inputs it is **−€6.8M (downside) / −€4.0M (base) / −€1.4M (upside)**. Even the upside stack (gate fee €5/t, steel 3% kept 100%, 10 m³ loads, 3% public premium, washing €2/t, expansion capex €0.5M) stays below zero.
 5. **What P2 would need:** a gate fee of **≈ €30/t** for NPV = 0 on its base terms (€26/t if 3% steel stays with us; €15/t if every other stacked input is at its upside). The bulk evidence is €0–1/t for clean concrete rubble (GWL, MKT-20) and ~€20/t only for small counter loads (MKT-23). So the gate fee and the steel split are **hard gates**, not targets, and today's evidence says they fail.
-6. **Policy cannot rescue the stand-alone plant.** A primary-aggregate levy does not help at any level. A faster ETS phase-out hurts (−€0.2–0.3M). The public green premium needed for NPV = 0 is 59% (base) or 37% (P2), against 1.5% assumed.
+6. **Policy cannot rescue the stand-alone plant.** A primary-aggregate levy does not help at any level. A faster ETS phase-out hurts (−€0.2–0.3M). The public green premium needed for NPV = 0 is 58.5% (base) or 37% (P2), against 1.5% assumed.
 7. **Recommended path (reframed, critique M10):** *"No route is investable on present evidence. The integrated acquisition route is the only one that comes close; it is worth a small (€50–100k) due-diligence phase to test gates A–C, not an investment."* On the fixed inputs the acquisition alone (O3) is as close as the integrated packages; integration helps only if gate B (gate fee and steel split) turns out far better than the evidence. Do not build a greenfield plant.
 
 ---
@@ -212,7 +212,7 @@ The policy tests come from `options.policy_tests`. The levy is applied to all pr
 | Change | O0 (base) | P1 | P2 |
 |---|---|---|---|
 | Primary aggregate levy (gravel + sand) | **no level gives NPV = 0**; €5/t → −€5.37M | no level; €5/t → −€4.02M | no level; €5/t → −€4.07M |
-| Public green premium needed for NPV = 0 (base 1.5%) | 59% | 44% | 37% |
+| Public green premium needed for NPV = 0 (base 1.5%) | 58.5% | 44% | 37% |
 | MKI value per circular m³ needed for NPV = 0 (estimate with a low-CO₂ binder: €1.5 gross) | €31.8 | €23.8 | €19.5 |
 | High ETS/CBAM path ("faster phase-out of free allocation") | −€5.60M | −€4.24M | −€4.30M |
 | Landfill tax €81/t (2030), via contaminant disposal | no effect (no crushing) | −€0.08M vs P1 | −€0.06M vs P2 |
