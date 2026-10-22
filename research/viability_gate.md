@@ -20,6 +20,8 @@ NPV is far outside the borderline band (−10% to 0% of capex).
 
 ## Verdict: **NOT VIABLE** (base case B1 as a stand-alone plant)
 
+> **Note:** this section and the next record the *original* gate (pre-critique base, sales from 2027). The current numbers are in the section "Re-run after critique" below and in `model/model_summary.md`: NPV −€5.33M, NPV = 0 needs 134k m³/yr or €154/m³.
+
 ## Why (orchestrator reading)
 - The circular mix itself is not the problem: it costs ~€2.5/m³ *less* than the Dutch standard CEM III/B mix.
 - The problem is that a new stand-alone ready-mix plant earns ~€7.6/m³ EBITDA in a mature, shrinking, consolidating market, while ~€11.7/m³ is needed to recover the capex at 8%.
@@ -27,7 +29,7 @@ NPV is far outside the borderline band (−10% to 0% of capex).
 - NPV = 0 needs ~112k m³/yr (+60% volume) or ~€149/m³ average price (+10.5%).
 
 ## Known optimism in the base case (to carry into Phase 5)
-- Sales from 2027 is optimistic: permit + build likely takes 12–18 months from late 2026. A one-year delay would make NPV worse.
+- Sales from 2027 is optimistic: permit + build likely takes 12–18 months from late 2026. (Tested after the critique: a one-year delay changes NPV only slightly, because deferring the capex roughly offsets the lost year of sales.)
 
 ## Next step
 Start Agent 7 (viability strategist): ≥5 options, each tested in `model/model_core.py` via overrides / extra scenario sheets.

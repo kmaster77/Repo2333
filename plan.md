@@ -1,6 +1,6 @@
 # Plan — Circular concrete business case (Netherlands)
 
-Status: **Phase 0 done. Defaults confirmed by client on 2026-10-22 (section 2). Phase 1 started.**
+Status: **All phases (0–7) completed on 2026-10-22. Verdict: NOT VIABLE. See README.md.**
 Date: 2026-10-22
 
 ---

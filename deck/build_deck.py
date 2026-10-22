@@ -377,7 +377,7 @@ text(s, LM + 0.1, 1.45, 11.8, 1.9, "A stand-alone circular concrete plant in the
      size=42, bold=True, color=WHITE, space_after=0)
 text(s, LM + 0.1, 3.3, 11.3, 1.0,
      "We tested one circular ready-mix plant in Zuid-Holland against four viability tests set in advance. "
-     "Verdict: NOT VIABLE. Our ask is a €50–100k due-diligence phase, not an investment.",
+     "Verdict: NOT\u00a0VIABLE. Our ask is a €50–100k due-diligence phase, not an investment.",
      size=18, color=RGBColor(0xD6, 0xDE, 0xE8))
 tiles = [(m(NPV), "NPV at 8% real"), (f"{IRR * 100:.1f}%".replace("-", "−"), "IRR (real)"),
          (mu(FUND), "funding need"), ("1 of 4", "viability tests passed")]
@@ -461,7 +461,7 @@ for i, (yr, lab) in enumerate(events):
     dot.shadow.inherit = False
     text(s, cx - ew / 2 + 0.1, 1.8, ew - 0.2, 0.5, yr, size=22, bold=True, color=ACCENT, align=PP_ALIGN.CENTER)
     text(s, cx - ew / 2 + 0.12, 2.85, ew - 0.24, 1.3, lab, size=14, color=INK, align=PP_ALIGN.CENTER)
-box(s, LM, 4.45, CW, 1.95, fill=TINT)
+box(s, LM, 4.45, CW, 1.75, fill=TINT)
 text(s, LM + 0.3, 4.6, CW - 0.6, 0.45, "But policy pushes supply, not our selling price", size=18, bold=True)
 text(s, LM + 0.3, 5.1, CW / 2 - 0.5, 1.6,
      ["• MPG tightening for new homes was cancelled (June 2025).",
@@ -777,13 +777,13 @@ for i, (big, lab) in enumerate([(m(OPT["O3"]["kpis"]["npv"], 1), "best plant rou
 
 # 13 --------------------------------------------------------------- what would have to be true
 s = new_slide(
-    "Break-even needs conditions that the Dutch market does not offer today",
+    "Reaching NPV = 0 would need conditions that the Dutch market does not offer today",
     source="Source: model/results.json → extras; results_options.json → P2 stack and policy tests; gate-fee evidence "
            "market.md (MKT-20); chart deck/charts/breakeven.png (other inputs at base).",
     notes=(
         "What would have to be true for NPV to reach zero? Taking one condition at a time: volume of 134,000 cubic "
         "metres a year, almost four times an average Dutch plant. Or an average price of 154 euro, 14% above our "
-        "base, which is already at or above the market. Or a public green premium of 59%, against 1.5% assumed. "
+        "base, which is already at or above the market. Or a public green premium of 58.5%, against 1.5% assumed. "
         "For our best package the key is the gate fee, the fee a demolition firm pays us to take clean rubble. "
         "NPV zero needs about 30 euro a tonne on base terms, or 15 euro if everything else goes our way. Bulk "
         "evidence today is 0 to 1 euro. Policy does not close the gap: a levy on primary aggregates hits us as "
@@ -796,7 +796,7 @@ picture(s, MC("breakeven.png"), LM - 0.1, 2.15, 6.7, 4.65,
 rows = [["NPV = 0 would need", "Today / base"],
         [f"{BE_VOL / 1e3:.0f}k m³ a year (+92%)", "70k base; average plant 33.7k"],
         [f"€{BE_PRICE:.0f}/m³ average price (+14%)", "€135, likely at or above market"],
-        [f"{BE_PREM:.0f}% public green premium", "1.5% assumed (0–3%)"],
+        [f"{BE_PREM:.1f}% public green premium", "1.5% assumed (0–3%)"],
         [f"Gate fee ≈ €{GATE0:.0f}/t (best package P2)", "€0–1/t for clean rubble in bulk"],
         ["A policy rescue", "Aggregate levy: no level works; faster ETS: hurts"]]
 st = {(i, 0): {"bold": True} for i in range(1, 6)}

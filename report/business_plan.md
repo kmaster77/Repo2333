@@ -444,7 +444,7 @@ P2 combines favourable inputs: an acquired plant, 90,000 m³/yr (2.7× an averag
 |---|---|---|
 | Average concrete price for NPV = 0 (today €135/m³) | €154.0/m³ | €146.7/m³ |
 | Steady volume for NPV = 0 | 134k m³/yr | 147k m³/yr |
-| Public green premium for NPV = 0 (base 1.5%) | ~59% | 37% |
+| Public green premium for NPV = 0 (base 1.5%) | 58.5% | 37% |
 | MKI value per circular m³ for NPV = 0 | €31.8 | €19.5 |
 | Gate fee for NPV = 0 | n/a (no crushing) | €29.7/t |
 | A levy on primary aggregates | does not help at any level | does not help |
