@@ -16,14 +16,14 @@ Terms used once and explained:
 
 ## Summary (the 8 things an investor should know)
 
-1. **The market is ~14 Mm³ concrete per year** (~33 Mt). Ready-mix ~7.4 Mm³ (53%), products/prefab ~5.3 Mm³ (38%). Cement use is 3.5–4 Mt/yr. Volume is flat over the long run. [VERIFIED, MKT-01, MKT-03]
+1. **The market is ~14 Mm³ concrete per year** (~33 Mt; Betonhuis long-run figure that **includes prefab, site-mixed and other concrete**). **Ready-mix: 6.0 Mm³ in 2023 at 178 plants (33.7k m³ per plant, ERMCO 2023)** — this is the basis used everywhere for ready-mix after the red-team review (critique M9). Older figures (Betonhuis ~7.4 Mm³, ACM ~8 Mm³ in 2016) describe the pre-2023 market. Products/prefab ~5.3 Mm³. Cement use is 3.5–4 Mt/yr. [VERIFIED, MKT-01, MKT-03, CMP-43]
 2. **Concrete rubble is plentiful: ~11.5–15 Mt/yr** (≈60% of 19–25 Mt stony demolition waste). Only **~1.0–2.0 Mt (8–15%) goes back into concrete** today. The rest goes mainly into road base. Landfill is near zero. [VERIFIED, MKT-05, MKT-06, MKT-07, MKT-09]
 3. **The road-base outlet will shrink by rule.** The Betonakkoord caps concrete in menggranulaat at 30% (2025), 15% (2027), 5% (2030), and targets 20% → >60% of rubble back into concrete in 2026 → 2030. So supply of recycled aggregate will grow strongly. Feedstock is **not** the bottleneck for one plant; quality is. [VERIFIED, MKT-05, MKT-11]
 4. **Primary gravel is ~75% imported**; the last large Dutch Maas gravel project ends in late 2026. Government expects no shortage for 10 years. Prices of primary aggregates have tracked general construction costs. [VERIFIED, MKT-15, MKT-16, MKT-17, MKT-18]
-5. **Ready-mix sells at ~€110–165/m³ delivered on projects** (C20/25 €110–130; C30/37 €140–165). List prices are ~€200–225/m³. [VERIFIED as published indications, MKT-24, MKT-27]
+5. **Ready-mix sells at ~€110–165/m³ on projects** (C20/25 €110–130; C30/37 €140–165; secondary source MKT-27). A primary retail list (GWL, BE) gives C20/25 €130 and C30/37 €139.5–144.5 delivered ≤ 20 km. List prices are ~€200–225/m³. The model's €135/m³ plant average is **confidence L and more likely at or above the B2B average** (§4). [VERIFIED as published indications, MKT-20, MKT-24, MKT-27]
 6. **Recycled content today is sold with a surcharge, not a discount.** The market leader charges +€3.30 (30% granulate) to +€11/m³ (100%) extra; Holcim +€4/m³ and +€5–9/m³ for its low-CO₂ ECOPact line. That is +2–8% of project price. [VERIFIED, MKT-24, MKT-25]
-7. **Willingness to pay is weak in cash; tenders reward it in "fictive" euros.** Rijkswaterstaat/ProRail convert lower MKI into a fictive bid discount (factor 2–5 × MKI saved). Evidence of real cash premiums is thin (PBL: recycled concrete ~10% dearer, "much of the sector still buys on lowest price"). Base case: **0–3% cash premium**, mainly in public/MKI-driven work. [VERIFIED, MKT-42, MKT-43, MKT-44, MKT-47; ESTIMATE A-MKT-25]
-8. **TAM ≈ €2.7bn/yr; national SAM (circular-addressable) ≈ €0.4bn ready-mix + ~€0.8bn prefab; SOM for one ready-mix plant ≈ 60k m³ ≈ €8–9m revenue/yr.** Best first region: **Zuid-Holland (Rotterdam–Drechtsteden)**, then **Metropoolregio Amsterdam**, then **Noord-Brabant**. [ESTIMATE, §8–9]
+7. **Willingness to pay is weak in cash; tenders reward it in "fictive" euros.** Rijkswaterstaat/ProRail convert lower MKI into a fictive bid discount (factor 2–5 × MKI saved). Evidence of real cash premiums is thin (PBL: recycled concrete ~10% dearer, "much of the sector still buys on lowest price"). There is also counter-evidence: a primary price list sells recycled-aggregate concrete ~€20/m³ **cheaper** than virgin concrete (GWL 'recup', MKT-20). Base case after the red-team review: **1.5% cash premium (0–3%) on public circular volume, 0% private**. [VERIFIED, MKT-20, MKT-42, MKT-43, MKT-44, MKT-47; ESTIMATE A-MKT-25]
+8. **TAM ≈ €2.5bn/yr; national SAM (circular-addressable) ≈ €0.35bn ready-mix + ~€0.8bn prefab; SOM for one ready-mix plant ≈ 60k m³ ≈ €8m revenue/yr** (ready-mix on the ERMCO 2023 basis). Best first region: **Zuid-Holland (Rotterdam–Drechtsteden)**, then **Metropoolregio Amsterdam**, then **Noord-Brabant**. [ESTIMATE, §8–9]
 
 ---
 
@@ -33,11 +33,13 @@ Terms used once and explained:
 |---|---|---|
 | Total concrete use | ~14 Mm³/yr (13–14 long-run); 12.9 Mm³ in 2017 | [VERIFIED, MKT-01, MKT-02, MKT-05] |
 | Mass | ~33 Mt/yr (14 Mm³ × ~2.35 t/m³) | [VERIFIED, MKT-08; ESTIMATE check] |
-| Ready-mix (betonmortel) | 53% → "ruim 7 Mm³"; base 7.4 Mm³ | [VERIFIED, MKT-01] |
+| Ready-mix (betonmortel) | Betonhuis long-run: 53% → "ruim 7 Mm³" (7.4 Mm³). **ERMCO: 7.2 / 7.5 / 6.0 Mm³ in 2021 / 2022 / 2023 → base 6.0 Mm³** (critique M9) | [VERIFIED, MKT-01, CMP-43] |
 | Concrete products (prefab) | 38% → "ruim 5 Mm³"; base 5.3 Mm³ | [VERIFIED, MKT-01] |
 | Other (traders/DIY ~0.7 Mm³, dry mortar ~0.4 Mm³, contractors) | ~9% | [VERIFIED, MKT-01] |
-| Ready-mix plants | ~200 plants, 35 companies (2016); market leader Heidelberg Materials has ~30 plants | [VERIFIED, MKT-04, MKT-25] |
+| Ready-mix plants | **178 plants (2023), 33.7k m³ per plant (ERMCO)**; ~200 plants, 35 companies in 2016 (ACM); market leader Heidelberg Materials has ~30 plants | [VERIFIED, CMP-43, MKT-04, MKT-25] |
 | Cement use | 3.5–4 Mt/yr (2024); long-run average ~5 Mt | [VERIFIED, MKT-03, MKT-01] |
+
+**Why 14 Mm³ and 6.0 Mm³ both appear:** 14 Mm³ is all concrete (ready-mix + prefab/products + traders, dry mortar and contractors' own concrete) on a long-run basis; 6.0 Mm³ is ready-mix only, in 2023, after a ~20% fall. For anything about ready-mix plants this file now uses 6.0 Mm³ / 178 plants / 33.7k m³ per plant. [ESTIMATE]
 
 **Check on cement:** 14 Mm³ × 280–320 kg cement/m³ = 3.9–4.5 Mt. This fits the 3.5–4 Mt recent figure; the "5 Mt" figure is an older long-run average. [ESTIMATE]
 
@@ -123,7 +125,7 @@ No Dutch producer publishes bulk gravel, sand or betongranulaat prices for concr
 | Concrete sand 0/4 | GWL sand 0/4 €24.5/t; Rijnzand €33/t pick-up | **€19/t delivered** (€14–25) | [VERIFIED proxy MKT-20; ASSUMPTION A-MKT-12] |
 | Betongranulaat (crushed concrete, certified) | BE COPRO: 0/20 €11/t, 4/20 €18/t, 6.3/20 €10.5/t, 20/40 €11–12.25/t | **€15/t ex-works** (€10–25) | [VERIFIED proxy MKT-20–22; ASSUMPTION A-MKT-13] |
 | Menggranulaat (road base) | BE €1–10/t | **€3/t** (€0–8) | [VERIFIED proxy; ASSUMPTION A-MKT-14] |
-| Gate fee clean concrete rubble | BE: €0/t (GWL, De Mol), €0–1/t (BSR), reinforced €2–5.5/t; NL counter tariff small loads clean (meng)puin ~€20/t (RCA Alkmaar 2026) | **€5/t for bulk** (−€2 to +€15) | [VERIFIED MKT-20–23; ASSUMPTION A-MKT-15] |
+| Gate fee clean concrete rubble | BE: €0/t (GWL, De Mol), €0–1/t (BSR), reinforced €2–5.5/t; NL counter tariff small loads clean (meng)puin ~€20/t (RCA Alkmaar 2026) | **€1/t for bulk** (€0 to €10; was €5/t before the red-team review, critique H3) | [VERIFIED MKT-20–23; ASSUMPTION A-MKT-15] |
 
 Note on MKT-23: the RCA Alkmaar PDF table is garbled in extraction; the €20.09/t value is matched to "schoon (meng)puin" by list order. It is a counter price for small loads, so it is an upper bound.
 
@@ -148,8 +150,20 @@ Note on MKT-23: the RCA Alkmaar PDF table is garbled in extraction; the €20.09
 
 ### Project prices (what contractors actually pay)
 
-Indicative 2026 project prices incl. regional transport: **C20/25 €110–130; C25/30 €120–140; C28/35 €130–150; C30/37 €140–165 per m³**. [VERIFIED as trade indication, MKT-27 — secondary source]
-Base: average all classes **€135/m³** (€115–155); C20/25 €120; C30/37 €145. [ASSUMPTION A-MKT-16–18] This implies project prices ≈ 60–70% of list prices — normal for volume contracts. [ESTIMATE: 145 ÷ 212.5 = 68%]
+Indicative 2026 prices: **C20/25 €110–130; C25/30 €120–140; C28/35 €130–150; C30/37 €140–165 per m³**. [VERIFIED as trade indication, MKT-27 — secondary, consumer-facing supplier page; the page does not say whether delivery is included, critique L6]
+Base: average all classes **€135/m³** (€115–155); C20/25 €120; C30/37 €145. [ASSUMPTION A-MKT-16–18; **confidence L**]
+
+**Triangulation (added after the red-team review, critique H1):**
+
+| Source | Type | C20/25 | C30/37 | Reading |
+|---|---|---|---|---|
+| Dutch Fiber Trading (MKT-27) | secondary, consumer page | €110–130 | €140–165 | basis of the €135 average |
+| GWL Houthalen price list 2026 (MKT-20) | **primary**, retail list, delivered ≤ 20 km (BE) | €130 | €139.5–144.5 | retail; B2B contract prices are normally **at or below** retail |
+| Holcim / Heidelberg NL lists (MKT-24, MKT-25) | primary, list prices | ~€203.5 | €212.5–224.5 | list before discounts; no source gives the typical project discount |
+
+- The earlier claim "project prices ≈ 60–70% of list" had no source. It is withdrawn [it was an ESTIMATE from our own base price, i.e. circular].
+- A CBS producer-price or ERMCO turnover-per-m³ check could not be made in this session (data gap).
+- **Reading:** the €135/m³ plant average is more likely **at or above** the B2B market average than below it. The likely error direction therefore **strengthens** the NOT VIABLE verdict: at €130/m³ the base NPV would be −€7.1M instead of −€5.3M (model).
 
 ### Prefab prices (thin public data)
 
@@ -172,6 +186,7 @@ No Dutch cement price list is public (data gap). Indicators:
 | Holcim ECOPact (≥30% lower CO₂) | +€5 to +€10/m³ list (+2–5%), one class cheaper | [VERIFIED, MKT-24, MKT-61] |
 | Holcim granulate up to 30% | +€4/m³ | [VERIFIED, MKT-24] |
 | Rutte Groep recycled concrete (Amsterdam) | "~10% more expensive than new concrete" (2021) | [VERIFIED, MKT-47] |
+| **GWL 'stortbeton recup' (recycled-aggregate concrete, BE)** | **~€20/m³ cheaper**: 300 kg cement €109 vs virgin 300 kg €129 (−15%) — counter-evidence, added after the red-team review (critique M3) | [VERIFIED by the red team, MKT-20] |
 
 ---
 
@@ -181,15 +196,15 @@ No source gives this split directly. Bottom-up estimate (base values, Mm³/yr): 
 
 | Segment | Volume | Public / semi-public share (assumption) | Public volume |
 |---|---|---|---|
-| Ready-mix GWW (13% of 7.4) | 0.96 | 95% (RWS, ProRail, provinces, municipalities, water boards) | 0.91 |
-| Ready-mix housing (41% of 7.4) | 3.03 | 31% = housing corporations' share of new homes 2025 [VERIFIED, MKT-30] | 0.94 |
-| Ready-mix utility, agri, other (46% of 7.4) | 3.40 | 20% (schools, hospitals, government buildings) [ASSUMPTION] | 0.68 |
+| Ready-mix GWW (13% of 6.0) | 0.78 | 95% (RWS, ProRail, provinces, municipalities, water boards) | 0.74 |
+| Ready-mix housing (41% of 6.0) | 2.46 | 31% = housing corporations' share of new homes 2025 [VERIFIED, MKT-30] | 0.76 |
+| Ready-mix utility, agri, other (46% of 6.0) | 2.76 | 20% (schools, hospitals, government buildings) [ASSUMPTION] | 0.55 |
 | Prefab B&U elements | 1.96 | 25% (corporations + public buildings) [ASSUMPTION] | 0.49 |
 | Pavers, tiles, blocks | 2.12 | 65% (public space) [ASSUMPTION] | 1.38 |
 | Piles | 0.69 | 30% [ASSUMPTION] | 0.21 |
 | Sewer and other | 0.53 | 90% (municipal sewers) [ASSUMPTION] | 0.48 |
 | Other (traders, contractors' in-situ GWW, dry mortar) | 1.3 | ~35% | 0.45 |
-| **Total** | **14.0** | | **5.5 → ~40% (range 30–50%)** |
+| **Total** | **12.6** (ready-mix on the ERMCO 2023 basis) | | **5.1 → ~40% (range 30–50%)** |
 
 Cross-checks: housing corporations are 18% of B&U main-contractor turnover and companies 28% (EIB 2024) [VERIFIED, MKT-31]; GWW main contractors turn over €9.3bn vs B&U €28bn [VERIFIED, MKT-31].
 Rough sector split [ESTIMATE]: GWW ≈ 30% of all concrete (ready-mix GWW + pavers + sewer + in-situ roads + part of piles), B&U ≈ 70%.
@@ -227,6 +242,7 @@ Rough sector split [ESTIMATE]: GWW ≈ 30% of all concrete (ready-mix GWW + pave
 | Type | Evidence | What it proves |
 |---|---|---|
 | Supplier surcharges (NL) | Heidelberg +€3.30 (R30) to +€11 (R100)/m³; Holcim ECOPact +€5–10/m³, granulate +€4/m³ [MKT-24, MKT-25] | Suppliers *ask* +2–8%. Not proof that many customers pay it. |
+| **Supplier discount (BE, counter-evidence)** | GWL sells 'stortbeton recup' (recycled-aggregate concrete) at €109 vs €129/m³ for virgin concrete at the same 300 kg cement (MKT-20, verified by the red team) | Recycled content can also be sold **below** the standard price. |
 | Company statement (NL, PBL) | Recycled concrete ~10% dearer; demand "still limited"; "large part of the sector still goes for the lowest price" (2021) [MKT-47] | Premium exists as a cost; buyers resist. |
 | Contractor report (NL) | VolkerWessels/VHB: granulate use fell in 2024 due to availability and client requirements [MKT-51] | Client specs, not WTP, drive use. |
 | Choice experiment (Germany, peer-level working paper) | Clients' WTP €0.26/m³ per %-point recycled aggregate; even organisations' WTP is below current producer premiums of 10–17% [MKT-48] | 30% recycled → ~€8/m³ (~5%) WTP; below the premiums charged. |
@@ -247,7 +263,9 @@ Rough sector split [ESTIMATE]: GWW ≈ 30% of all concrete (ready-mix GWW + pave
 3. MKI ceilings fall ≥7.5%/yr [MKT-56]. Today's "green" mix becomes tomorrow's minimum. The premium window per product is 2–3 years ("koploper becomes peloton").
 4. In private B&U the MPG pushes low-MKI binders, not recycled aggregate. Cash premium ≈ 0%.
 
-**Conclusion:** there is **good evidence that public tenders reward lower MKI, and weak evidence that customers pay more in cash**. Base case for the model: **cash premium 3% (0–8%) in public/MKI-driven work and 0% (−2% to +3%) in private work** [ASSUMPTION A-MKT-25, A-MKT-26]. The stronger commercial argument is **win rate / volume** in MKI tenders, plus lower input cost once betongranulaat is abundant — not a price premium.
+5. Our modelled circular mix has slightly **higher** CO₂ than the CEM III/B standard (132 vs 129 kg/m³, price_breakdown.md §12), so it has no MKI basis for a tender-driven cash premium.
+
+**Conclusion:** there is **good evidence that public tenders reward lower MKI, and weak and two-sided evidence on cash premiums** (surcharges asked by some suppliers, a ~€20/m³ discount by another). Base case for the model, revised after the red-team review (critique M3): **cash premium 1.5% (0–3%) in public/MKI-driven work and 0% (−2% to +3%) in private work** [ASSUMPTION A-MKT-25, A-MKT-26; was 3% (0–8%)]. The stronger commercial argument is **win rate / volume** in MKI tenders, plus lower input cost once betongranulaat is abundant — not a price premium.
 
 ---
 
@@ -257,24 +275,24 @@ Rough sector split [ESTIMATE]: GWW ≈ 30% of all concrete (ready-mix GWW + pave
 
 | Part | Volume (Mm³/yr) | Value per m³ (base) | TAM base | Low | High |
 |---|---|---|---|---|---|
-| Ready-mix | 7.4 (7.0–8.0) | €135 (115–155) | **€1.00bn** | 7.0 × 115 = €0.81bn | 8.0 × 155 = €1.24bn |
+| Ready-mix | 6.0 (5.5–7.4; ERMCO 2023) | €135 (115–155) | **€0.81bn** | 5.5 × 115 = €0.63bn | 7.4 × 155 = €1.15bn |
 | Prefab structural elements | 1.96 | €450 (350–600) | €0.88bn | €0.69bn | €1.18bn |
 | Pavers / tiles / blocks | 2.12 | €175 (125–250) | €0.37bn | €0.27bn | €0.53bn |
 | Piles | 0.69 | €300 (220–400) | €0.21bn | €0.15bn | €0.28bn |
 | Sewer / other products | 0.53 | €450 (350–600) | €0.24bn | €0.19bn | €0.32bn |
-| **Total TAM** | **12.7** | | **≈ €2.7bn** | **≈ €2.1bn** | **≈ €3.5bn** |
+| **Total TAM** | **11.3** | | **≈ €2.5bn** | **≈ €1.9bn** | **≈ €3.5bn** |
 
-Calculation (base): 7.4×135 = 999; 1.96×450 = 882; 2.12×175 = 371; 0.69×300 = 207; 0.53×450 = 239; sum = €2,698m.
+Calculation (base): 6.0×135 = 810; 1.96×450 = 882; 2.12×175 = 371; 0.69×300 = 207; 0.53×450 = 239; sum = €2,509m. (Before the ERMCO alignment the ready-mix line used 7.4 Mm³ and the TAM was €2.7bn.)
 
 ### SAM — circular-addressable part (national) [ESTIMATE]
 
 Rule: count volume where a buyer has an active reason to choose circular/low-MKI concrete (public/semi-public clients, MKI tenders, sustainability-driven private developers), and where recycled aggregate is technically allowed (exclude very high strength, some severe exposure classes, special products: −15%).
 
 **Ready-mix SAM (base):**
-- GWW 0.96 + corporations' housing 0.94 + public utility 0.68 = 2.58 Mm³ (public/semi-public, from §5)
-- Sustainability-driven private: 25% × (housing private 2.09 + utility private 2.72) = 25% × 4.81 = 1.20 Mm³ [ASSUMPTION]
-- Subtotal 3.78 Mm³ × 85% technical fit = **3.2 Mm³ ≈ 43% of ready-mix**
-- Value: 3.2 × €135 = **€0.43bn** (low: 1.9 Mm³ × 115 = €0.22bn; high: 4.6 Mm³ × 155 = €0.71bn)
+- GWW 0.74 + corporations' housing 0.76 + public utility 0.55 = 2.05 Mm³ (public/semi-public, from §5)
+- Sustainability-driven private: 25% × (housing private 1.70 + utility private 2.21) = 25% × 3.91 = 0.98 Mm³ [ASSUMPTION]
+- Subtotal 3.03 Mm³ × 85% technical fit = **2.6 Mm³ ≈ 43% of ready-mix**
+- Value: 2.6 × €135 = **€0.35bn** (low: 1.5 Mm³ × 115 = €0.18bn; high: 3.7 Mm³ × 155 = €0.58bn)
 
 **Prefab SAM (base):**
 - Structural elements: 45% × 1.96 × 85% = 0.75 Mm³ × €450 = €0.34bn
@@ -286,19 +304,19 @@ Note: pavers and sewer pipes already use recycled aggregate often; for a newcome
 
 ### Regional SAM for a first ready-mix plant (Zuid-Holland) [ESTIMATE]
 
-- National ready-mix SAM 3.2 Mm³ × ZH share 20% (17–25%; A-MKT-30) = 0.64 Mm³
-- × share inside one plant's delivery radius 70% (55–85%; A-MKT-31) = **~0.45 Mm³/yr ≈ €60m/yr**
-- Total regional ready-mix (all, not only circular): 7.4 × 20% × 70% ≈ 1.0 Mm³/yr
+- National ready-mix SAM 2.6 Mm³ × ZH share 20% (17–25%; A-MKT-30) = 0.52 Mm³
+- × share inside one plant's delivery radius 70% (55–85%; A-MKT-31) = **~0.36 Mm³/yr ≈ €49m/yr**
+- Total regional ready-mix (all, not only circular): 6.0 × 20% × 70% ≈ 0.84 Mm³/yr
 
 ### SOM — obtainable volume for one plant [ESTIMATE / ASSUMPTION A-MKT-32]
 
 | Scenario | Mature volume (year 3–4) | Share of regional SAM | Share of all ready-mix in radius | Revenue (× €135 × (1+premium)) |
 |---|---|---|---|---|
-| Low | 30k m³/yr | 7% | 3% | 30k × 135 × 1.00 = €4.1m |
-| **Base** | **60k m³/yr** | **13%** | **6%** | 60k × 135 × 1.03 = **€8.3m** |
-| High | 100k m³/yr | 22% | 10% | 100k × 135 × 1.05 = €14.2m |
+| Low | 30k m³/yr | 8% | 4% | 30k × 135 × 1.00 = €4.1m |
+| **Base** | **60k m³/yr** | **17%** | **7%** | 60k × 135 × 1.01 = **€8.2m** |
+| High | 100k m³/yr | 28% | 12% | 100k × 135 × 1.02 = €13.8m |
 
-Checks: the average Dutch plant makes ~37k m³/yr (7.4 Mm³ ÷ ~200 plants, MKT-04), so 60k is an above-average plant; a newcomer needs anchor clients (a corporation, a GWW contractor framework, a municipality) to get there.
+Checks: the average Dutch plant makes **33.7k m³/yr (6.0 Mm³ ÷ 178 plants, ERMCO 2023, CMP-43)**, so 60k is ~1.8× and the model's 70k ~2.1× an average plant; a newcomer needs anchor clients (a corporation, a GWW contractor framework, a municipality) to get there.
 Feedstock check: 60k m³ × 0.4 t/m³ = 24 kt/yr recycled aggregate ≈ 1% of the estimated ~2.7 Mt/yr concrete rubble in Zuid-Holland (§9). Volume is not a constraint; **certified clean supply and contracts are**.
 
 Prefab variant (B2), indicative: 25k m³ structural elements × €450 = ~€11m/yr. [ESTIMATE]

@@ -6,7 +6,7 @@ Prices in 2026 €, excl. VAT. Where an older price is converted, the factor is 
 |---|---|---|---|---|---|---|---|
 | A-TEC-01 | Conventional jaw+impact crushing: coarse RCA 4/16–4/22 yield | 50 | 58 | 65 | % of input mass | Impact/jaw give ~30–45% 0–4 mm; cone gives ~25% less fines (TEC-35, TEC-36); TU Delft assumes fine fraction ~30% (TEC-18). Base = 100 − 38 fines − 3 steel − 1 contaminants | M |
 | A-TEC-02 | Conventional crushing: 0/4 crusher sand (incl. <0.063 mm) | 30 | 38 | 45 | % of input mass | Same as above; balance item | M |
-| A-TEC-03 | Steel reinforcement removed by magnet | 1 | 3 | 5 | % of input mass | Typical reinforcement 50–150 kg/m³ concrete (domain knowledge, not verified this session) | L |
+| A-TEC-03 | Steel reinforcement removed by magnet | 0.5 | 1 | 3 | % of input mass | **Revised after critique H3 (was 1 / 3 / 5).** Typical reinforcement 50–150 kg/m³ concrete (domain knowledge, not verified); much rebar is removed at the demolition site, and crushers charge extra for reinforced rubble (MKT-20). 3% = upside case only (A-FIX-05). | L |
 | A-TEC-04 | Light contaminants removed (wood, plastic, gypsum, insulation) | 0.5 | 1 | 2 | % of input mass | Clean BRL 2506 concrete rubble; selective demolition lowers it (TEC-33, TEC-19) | L |
 | A-TEC-05 | Smart Liberator yields: gravel / sand / paste-rich fines (per t input) | 40 / 25 / 18 | 44 / 28 / 24 | 48 / 32 / 28 | % of input mass | No published mass balance. Derived from typical concrete composition (cement 150, sand 330, gravel 461 kg per t, TEC-28) + hydrated paste ≈ cement + bound water ≈ 20–25%; liberation efficiency assumed 90–95% | L |
 | A-TEC-06 | everox (ADR+HAS+activation) yields: RCA / ACP / RFA / filler (of recovered output) | 55 / 15 / 12 / 3 | 60 / 20 / 15 / 5 | 65 / 23 / 18 / 8 | % of output | Company guideline 60/20/15/5 (TEC-21); varies with input concrete | M |
@@ -31,7 +31,7 @@ Prices in 2026 €, excl. VAT. Where an older price is converted, the factor is 
 | A-TEC-25 | Plant staff excl. mixer drivers (manager, sales/planning 2–3, batchers 2, lab 1–2, loader drivers 2, maintenance 1) | 7 | 10 | 13 | FTE | Expert estimate; no source found | L |
 | A-TEC-26 | Truck mixer effective load | 9 | 10 | 12 | m³/trip | Mixers carry 9–14 m³ (TEC-48, TEC-47, TEC-51); part loads common | M |
 | A-TEC-27 | Truck mixer all-in hourly cost incl. driver (2026) | 95 | 110 | 130 | €/h | Retail €120–140/h (TEC-47, VAT status unclear); Holcim standby €85/h (TEC-50) | M |
-| A-TEC-28 | Delivery cost formula per m³ | fixed 7 + 0.4/km | fixed 9 + 0.5/km | fixed 11 + 0.6/km | €/m³ (km = one-way) | Fixed time 50 min (load, unload, wash) and 45 km/h average speed at A-TEC-27 cost and 10 m³ load | M |
+| A-TEC-28 | Delivery cost formula per m³ (at a 10 m³ reference load) | fixed 7 + 0.4/km | fixed 9 + 0.5/km | fixed 11 + 0.6/km | €/m³ (km = one-way) | Fixed time 50 min (load, unload, wash) and 45 km/h average speed at A-TEC-27 cost and **10 m³ load**. **Critique M2:** the model scales this by 10 / average load; average load 9 m³ (8–10), A-FIX-02 → €21.1/m³ at 20 km (was €19.0). | M |
 | A-TEC-29 | Average one-way delivery distance | 10 | 20 | 35 | km | Open time 1.5–2 h (TEC-45, TEC-46); NMD models ~50 km (118 tkm/m³ ÷ 2.37 t, TEC-04) | M |
 | A-TEC-30 | Annual output per truck mixer | 7,000 | 9,000 | 11,000 | m³/truck/yr | ~4 trips/day × 10 m³ × 220–250 days | L |
 | A-TEC-31 | New 12 m³ truck mixer price | 125,000 | 135,000 | 150,000 | € | Dealer listing €133,800 ex VAT (TEC-49) | M |

@@ -1,35 +1,26 @@
 # Viability options — what would make the circular concrete business viable?
 
-Agent 7 (Viability strategist). Date: 2026-10-22. All money is in **real 2026 €, excl. VAT**. NPV at **8% real**, 2026–2036, terminal value = salvage only (plan.md §2.1, not changed).
-Model: `model/model_core.py` (new option logic) + `model/options.py` (option definitions, asset-light model, robustness test, policy tests) + `model/financial_model.xlsx` (live option selector `Inputs!I3`, sheets `Opt_Overview` and `Opt_AssetLight`). Results: `model/results_options.json`. Chart: `model/charts/options_npv.png`.
-New sources: `research/sources_options.md` (OPT-xx). New assumptions: `research/assumptions_options.md` (A-OPT-xx).
+Agent 7 (Viability strategist). Date: 2026-10-22. **Re-run after the red-team critique** (`review/critique.md`; decisions in `review/response.md`, results in its section "Results after fixes"). All money is in **real 2026 €, excl. VAT**. NPV at **8% real**, 2026–2036, terminal value = salvage only (plan.md §2.1, not changed).
+Model: `model/model_core.py` (option logic) + `model/options.py` (option definitions, asset-light model, robustness test, policy tests, P2 range) + `model/financial_model.xlsx` (live option selector `Inputs!I3`, sheets `Opt_Overview` and `Opt_AssetLight`). Results: `model/results_options.json`. Chart: `model/charts/options_npv.png`.
+Sources: `research/sources_options.md` (OPT-xx). Assumptions: `research/assumptions_options.md` (A-OPT-xx) and the critique fixes A-FIX-xx in `research/assumptions.md`.
+
+**What changed in this re-run.** The base case now has first sales in 2028, 9 m³ truck loads and a 1.5% public premium (M1–M3). On-site crushing now uses evidence-consistent deal terms: gate fee €1/t (not €5/t), steel yield 1% (not 3%) with the steel value split 50/50 with the partner, and a €3/t washing/screening cost for own RCA (H3, M5). The packages use the acquired-plant ramp 55/85/100% (H4), the exact delivery distance (22.7 km at 90k, 23.9 km at 100k; H5), and P2 carries +€1.0M expansion capex (M6). In O5 the MKI value is netted against the public premium (M7). The earlier "+€414 / break-even" result for P2 does not survive these fixes.
 
 ---
 
 ## 0. Summary
 
-1. **No single option makes the plant viable.** We tested 10 single options and 2 packages in the financial model. Every single option still has a negative NPV, between −€2.5M and −€5.5M (see §2).
-2. **Corrected base reference (O0): first sales in 2028, not 2027.** NPV is −€4.38M, almost the same as the gated base (−€4.48M). The year without sales costs about as much as the year of later capex saves, because the plant earns so little each year. **Verdict: still NOT VIABLE.**
-3. **The three levers that matter are about plant economics, not "green":**
-   - **buy an existing plant instead of building one** (O3): +€1.7M NPV vs O0;
-   - **on-site crushing with a demolition partner**, earning gate fees and getting own recycled aggregate (O2): +€1.3M;
-   - **more volume** (O8, 100k m³/yr): +€1.5M.
+1. **No route is investable on present evidence.** We tested 10 single options and 2 packages in the financial model. Every one has a negative NPV, between −€2.5M (asset-light) and −€6.3M (see §2). None passes more than 1 of the 4 criteria, and none passes criterion 4 (0 of 6 drivers).
+2. **The base case is now the realistic timing (first sales 2028).** NPV −€5.33M. The original base (sales 2027, 10 m³ loads, 3% public premium) is kept as memo case `O_orig`: −€4.48M. **Verdict for both: NOT VIABLE.**
+3. **Only one lever moves NPV by more than €1M on its own, and it is about plant economics, not "green":**
+   - **buy an existing plant instead of building one** (O3): −€3.54M, **+€1.79M vs the base**, with a lower funding need (€4.9M);
+   - **more volume** (O8, 100k m³/yr): +€1.18M, but it needs ~3× an average Dutch plant's volume.
    
-   The green levers add little or even lose money: a lower-CO₂ binder (O5) is −€0.4M, extra subsidies (O7) +€0.6M, framework contracts (O4) +€0.2M.
-4. **Package P1** (buy and convert an existing plant + partner crushing + framework contracts) gives NPV **−€1.36M**, IRR 2.1% and payback 9.8 years. **Package P2** (P1 at 90k m³/yr with a second framework contract) gives NPV **+€0.0M** (+€414), IRR 8.0% and payback 7.3 years. P2 is exactly at break-even. We did not tune it: 90k m³ is the existing "high" utilisation input.
-5. **Robustness (criterion 4) fails for every option, P2 included: 0 of 6 drivers.** Even P2 turns negative if any one main driver moves to its pessimistic value. Under the fixed plan.md rules **no option is VIABLE, and none is even BORDERLINE.** P2 passes criteria 1 and 3, but its payback of 7.3 years misses the 7-year limit. With the maximum realistic subsidies P2 would reach NPV +€0.56M and a 6.6-year payback, which is BORDERLINE. But a €1.0M DEI+ grant is unlikely for a plant takeover that is not innovative.
-6. **Policy cannot rescue the stand-alone plant.**
-   - **Primary aggregate levy:** no levy level helps. It even hurts slightly, because our mixes still contain 1.25–1.9 t primary sand and gravel per m³.
-   - **Faster ETS phase-out:** hurts by −€0.2–0.3M, because CEM III/B is also our binder.
-   - **Landfill tax at €81/t:** ≈ €0.
-   - **Green premium for public clients:** to reach NPV = 0 it would need to be 52% (O0) or 15.6% (P1), against 3% today.
-   - **What does help:** the GWW MKI ceilings from 2028, but only with a truly lower-CO₂ product. P1 needs about €7.8 of captured value per circular m³, and our estimate is €1.5.
-7. **Recommended path:** do not build a greenfield plant. Pursue P2 as a **staged, conditional acquisition play**. Go ahead only if, before money is committed, three things are signed:
-   - **(a)** a plant purchase at ≤ €2.5M, preferably ≤ €2.0M;
-   - **(b)** a 7+ year rubble contract with a demolition partner, with a gate fee of ≥ €5/t and contract crushing at ≤ €7.5/t;
-   - **(c)** framework contracts for ≥ 40k m³/yr.
-   
-   Even then the case is break-even, not robust. Present it to the jury honestly as "investable only under these conditions".
+   On-site crushing no longer adds value on evidence-consistent terms: with a demolition partner (O2) −€0.09M vs base, with an own line (O1) −€0.91M. The green levers add little or lose money: a lower-CO₂ binder (O5) −€0.53M, extra subsidies (O7) +€0.56M, framework contracts (O4) +€0.19M.
+4. **The packages do not beat the acquisition alone.** P1 (acquire + partner crushing + framework contracts) gives NPV **−€3.97M**; P2 (P1 at 90k m³/yr with a second framework contract and +€1.0M expansion capex) gives **−€4.01M**, IRR −10.6%, payback not reached. **P2 is a combination of favourable inputs** (90k m³ = 2.7× an average Dutch plant, frameworks, a long rubble contract). Reported as a range of stacked inputs it is **−€6.8M (downside) / −€4.0M (base) / −€1.4M (upside)**. Even the upside stack (gate fee €5/t, steel 3% kept 100%, 10 m³ loads, 3% public premium, washing €2/t, expansion capex €0.5M) stays below zero.
+5. **What P2 would need:** a gate fee of **≈ €30/t** for NPV = 0 on its base terms (€26/t if 3% steel stays with us; €15/t if every other stacked input is at its upside). The bulk evidence is €0–1/t for clean concrete rubble (GWL, MKT-20) and ~€20/t only for small counter loads (MKT-23). So the gate fee and the steel split are **hard gates**, not targets, and today's evidence says they fail.
+6. **Policy cannot rescue the stand-alone plant.** A primary-aggregate levy does not help at any level. A faster ETS phase-out hurts (−€0.2–0.3M). The public green premium needed for NPV = 0 is 59% (base) or 37% (P2), against 1.5% assumed.
+7. **Recommended path (reframed, critique M10):** *"No route is investable on present evidence. The integrated acquisition route is the only one that comes close; it is worth a small (€50–100k) due-diligence phase to test gates A–C, not an investment."* On the fixed inputs the acquisition alone (O3) is as close as the integrated packages; integration helps only if gate B (gate fee and steel split) turns out far better than the evidence. Do not build a greenfield plant.
 
 ---
 
@@ -38,24 +29,19 @@ New sources: `research/sources_options.md` (OPT-xx). New assumptions: `research/
 - **Criteria** (plan.md §2.1, unchanged):
   1. NPV > 0;
   2. payback < 7 years;
-  3. EBITDA > 0 in the 3rd operating year (2029, or 2030 if sales start in 2028);
+  3. EBITDA > 0 in the 3rd operating year (2030 with first sales 2028; 2029 for `O_orig`);
   4. NPV > 0 with at least 2 of the 6 main drivers at their pessimistic value, one at a time.
 - **Criterion 4 for options** is relative to each option:
   - If the option itself sets a driver (for example utilisation at 90k), that value is stressed by the same ratio as in the base test (for example ×50/70).
-  - For options with on-site crushing, the "RCA price" driver is replaced by its A+B analogue, the **gate fee** (low = −€2/t). plan.md names the gate fee as a main driver.
+  - For options with on-site crushing, the "RCA price" driver is replaced by its A+B analogue, the **gate fee** (low = €0/t). plan.md names the gate fee as a main driver.
   - For the asset-light option (O6) the plant drivers do not apply. Its own 6 drivers are used instead.
-- **New model logic** in `model_core.py` and the workbook (live formulas, all 0 = off, base case unchanged to the euro):
-  - `opt_start_delay`: first sales later. Permits stay in 2026. Plant capex, start-up costs, grant and MIA move to the build year. Depreciation starts in the first operating year.
-  - **On-site crushing block** (`opt_crusher_*`, using the existing `hybrid_*` inputs):
-    - rubble intake follows the ramp-up;
-    - the coarse yield replaces purchased RCA (credited at the delivered price, €24.5/t);
-    - surplus coarse RCA is sold ex-works;
-    - gate fee, sand and steel revenue;
-    - costs: contaminant disposal, diesel, wear, contract crushing, staff, maintenance, BRL 2506 certification and extra site lease;
-    - own crusher capex, MIA, depreciation and salvage.
+- **Model logic** in `model_core.py` and the workbook (live formulas):
+  - `first_sales_delay_yr` (now an input, base 1): permits stay in 2026; plant capex, start-up costs, grant and MIA fall in the build year; depreciation starts in the first operating year.
+  - **On-site crushing block** (`opt_crusher_*`, using the `hybrid_*` inputs): rubble intake follows the ramp-up; the coarse yield replaces purchased RCA (credited at the delivered price, €24.5/t) and **pays €3/t washing/screening** (A-FIX-07); surplus coarse RCA is sold ex-works; gate fee, sand and **our share of the steel value** (A-FIX-06); costs: contaminant disposal, diesel, wear, contract crushing, staff, maintenance, BRL 2506 certification and extra site lease; own crusher capex, MIA, depreciation and salvage.
   - **Circular-only price and cost deltas** from a start year (for the binder option).
-  - **O6 asset-light** is a separate small model (`options.run_asset_light`, live sheet `Opt_AssetLight`).
-- **Excel–Python check** (`model/check_report.md`): **ALL CASES MATCH**. 18 recalculated cases: the 6 original cases, all 11 plant options through the live selector, and pessimistic scenario + P1. The asset-light KPIs are checked as well. The base case gives the same NPV as before (−€4,481,665).
+  - **Override order in packages (H4):** `merge()` applies dicts left to right and a later dict wins. Packages list `ACQ_RAMP` last, so the acquired-plant ramp (55/85/100% of the package's own target volume) is not replaced by the framework ramp (75/95%). Documented in `options.py`.
+  - **O6 asset-light** is a separate small model (`options.run_asset_light`, live sheet `Opt_AssetLight`), unchanged.
+- **Excel–Python check** (`model/check_report.md`): **ALL CASES MATCH** in 23 recalculated cases, incl. every plant option through the live selector, the memo case `O_orig`, and the P2 downside and upside stacks.
 
 ---
 
@@ -65,21 +51,21 @@ The KPIs come from `model/results_options.json`. Payback is counted from 2026. "
 
 | # | Option | NPV €M | IRR | Payback | EBITDA 3rd yr €M | Funding €M | Capex €M | Criteria passed | Crit. 4 | Feas. | Who must act |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| – | Base as gated (sales 2027) | −4.48 | −7.1% | not reached | 0.53 (2029) | 6.84 | 5.50 | 1/4 | 0/6 | – | – |
-| **O0** | **Corrected base: sales 2028** | **−4.38** | −9.0% | not reached | 0.51 (2030) | 6.86 | 5.50 | 1/4 | 0/6 | 5 | Founders |
-| O1 | A+B own mobile crushing line | −3.87 | −3.4% | not reached | 1.03 (2030) | 8.58 | 7.50 | 1/4 | 0/6 | 3 | Founders, province (waste permit), demolition suppliers |
-| O2 | A+B with demolition partner (contract crushing) | −3.09 | −2.6% | not reached | 0.95 (2030) | 7.00 | 5.90 | 1/4 | 0/6 | 3 | Demolition partner, province |
-| O3 | Acquire and convert an existing plant | −2.71 | −5.7% | not reached | 0.53 (2029) | 4.66 | 3.70 | 1/4 | 0/6 | 3 | Founders, seller, bank |
-| O4 | Offtake / framework contracts | −4.14 | −9.2% | not reached | 0.44 (2030) | 6.44 | 5.50 | 1/4 | 0/6 | 3 | Contractors, RWS, municipalities |
-| O5 | Lower-CO₂ binder product (from 2029) | −4.76 | −10.4% | not reached | 0.47 (2030) | 7.09 | 5.65 | 1/4 | 0/6 | 2 | Binder supplier, certification body |
+| – | Memo `O_orig`: original base (sales 2027, 10 m³, 3% premium) | −4.48 | −7.1% | not reached | 0.53 (2029) | 6.84 | 5.50 | 1/4 | 0/6 | – | – |
+| **O0** | **Base: first sales 2028 (= new base)** | **−5.33** | −13.9% | not reached | 0.32 (2030) | 7.09 | 5.50 | 1/4 | 0/6 | 5 | Founders |
+| O1 | A+B own mobile crushing line | −6.24 | −12.3% | not reached | 0.49 (2030) | 9.05 | 7.50 | 1/4 | 0/6 | 3 | Founders, province (waste permit), demolition suppliers |
+| O2 | A+B with demolition partner (contract crushing) | −5.42 | −12.9% | not reached | 0.39 (2030) | 7.50 | 5.90 | 1/4 | 0/6 | 3 | Demolition partner, province |
+| O3 | Acquire and convert an existing plant | −3.54 | −14.4% | not reached | 0.33 (2030) | 4.93 | 3.70 | 1/4 | 0/6 | 3 | Founders, seller, bank |
+| O4 | Offtake / framework contracts | −5.14 | −14.6% | not reached | 0.25 (2030) | 6.67 | 5.50 | 1/4 | 0/6 | 3 | Contractors, RWS, municipalities |
+| O5 | Lower-CO₂ binder product (from 2029) | −5.86 | −16.4% | not reached | 0.25 (2030) | 7.41 | 5.65 | 1/4 | 0/6 | 2 | Binder supplier, certification body |
 | O6 | Asset-light licence + RCA service (D) | −2.51 | n/a | not reached | −0.28 (2029) | 3.35 | 0.20 | 0/4 | 0/6 | 2 | Founders, licensee plants |
-| O7 | Maximum realistic subsidies | −3.83 | −7.9% | not reached | 0.51 (2030) | 6.26 | 5.50 | 1/4 | 0/6 | 2 | RVO |
-| O8 | Bigger plant 100k m³/yr | −2.85 | −2.0% | not reached | 1.03 (2030) | 6.68 | 5.50 | 1/4 | 0/6 | 2 | Founders, anchor customers |
-| O9 | Urban site closer to demand | −5.47 | −14.6% | not reached | 0.30 (2030) | 7.17 | 5.50 | 1/4 | 0/6 | 3 | Founders, municipality |
-| **P1** | **Acquire + partner crushing + frameworks** | **−1.36** | 2.1% | 9.8 yr | 0.91 (2029) | 4.72 | 4.10 | 1/4 | 0/6 | 3 | Founders, seller, demolition partner, contractors |
-| **P2** | **P1 + scale to 90k m³/yr** | **+0.00** | 8.0% | 7.3 yr | 1.28 (2029) | 4.58 | 4.10 | 2/4 | 0/6 | 2 | As P1 + a second anchor customer |
+| O7 | Maximum realistic subsidies | −4.77 | −13.0% | not reached | 0.32 (2030) | 6.49 | 5.50 | 1/4 | 0/6 | 2 | RVO |
+| O8 | Bigger plant 100k m³/yr | −4.15 | −7.3% | not reached | 0.70 (2030) | 7.10 | 5.50 | 1/4 | 0/6 | 2 | Founders, anchor customers |
+| O9 | Urban site closer to demand | −6.32 | −19.8% | not reached | 0.14 (2030) | 7.64 | 5.50 | 1/4 | 0/6 | 3 | Founders, municipality |
+| **P1** | **Acquire + partner crushing + frameworks** | **−3.97** | −15.7% | not reached | 0.32 (2030) | 5.42 | 4.10 | 1/4 | 0/6 | 3 | Founders, seller, demolition partner, contractors |
+| **P2** | **P1 + scale to 90k m³/yr (+€1.0M expansion)** | **−4.01** (range −6.77 to −1.42) | −10.6% | not reached | 0.59 (2030) | 6.37 | 5.10 | 1/4 | 0/6 | 2 | As P1 + a second anchor customer |
 
-Every option's verdict is **NOT VIABLE**. Ranking by NPV: P2 > P1 > O6 > O3 > O8 > O2 > O7 > O1 > O4 > O0 > base > O5 > O9. Ranking by **value per unit of risk and effort**, which is the order we would pursue: **O3, O2, O4**, together as P1, then P2. O8 only works with contracts (P2). O6 is a fallback.
+Every option's verdict is **NOT VIABLE**, and none is BORDERLINE. Ranking by NPV: O6 > O3 > P1 > P2 > O8 > O_orig > O7 > O4 > O0 > O2 > O5 > O1 > O9. (O6 has the least negative NPV only because it invests almost nothing; its EBITDA never turns positive.) Among the plant routes the acquisition routes (O3, P1, P2) are the least bad.
 
 ![NPV per option](../model/charts/options_npv.png)
 
@@ -87,185 +73,117 @@ Every option's verdict is **NOT VIABLE**. Ranking by NPV: P2 > P1 > O6 > O3 > O8
 
 ## 3. Per-option detail
 
-### O0 — Corrected base: first sales 2028 (timing realism)
-- **Change:** `opt_start_delay = 1` [A-OPT-01]. Permits and engineering (€0.5M) stay in 2026. Plant capex (€5.0M), start-up costs, the grant and MIA move to 2027. Ramp-up is 50/79/100% in 2028/29/30. Only 9 operating years remain.
-- **Result:** NPV −€4.38M. EBITDA is +€0.51M in 2030. Funding need is €6.86M. 1/4 criteria pass.
-- **Why it barely changes:** the year of delay removes about −€0.4M of FCF in the first sales year. It also defers €5M of capex by one year, which is worth about +€0.4M at 8%. So it is neutral. **The lesson is that time is not the problem. The plant's margin is.**
-- **Use:** this is the honest reference for all greenfield options (O1, O2, O4, O5, O7–O9).
+### O0 — Base: first sales 2028 (now the base case)
+- **Change:** `first_sales_delay_yr = 1` [A-OPT-01, A-FIX-01]. Permits and engineering (€0.5M) in 2026. Plant capex (€5.0M), start-up costs, the grant and MIA in 2027. Ramp-up 50/79/100% in 2028/29/30. 9 operating years.
+- **Result:** NPV −€5.33M. EBITDA +€0.32M in 2030. Funding need €7.09M. 1/4 criteria.
+- **Timing alone is nearly neutral:** with the other new inputs, sales in 2027 would give −€5.57M, i.e. the year of delay is worth +€0.24M (the deferred capex is worth slightly more than the lost first-year margin). **Time is not the problem; the plant's margin is.** The fall from −€4.48M (original) to −€5.33M comes from the 9 m³ truck loads (−€0.77M) and the lower public premium (−€0.18M).
 
 ### O1 — A+B own mobile crushing line
-- **Changes:**
-  - O0 + `opt_crusher_on = 1`;
-  - crushing from 2029 (waste permit about 18 months) [A-OPT-02];
-  - intake 40.5 kt/yr (sized to own RCA need) [inputs `hybrid_rubble_needed`];
-  - capex €2.0M (mobile crusher €1.6M, A-TEC-40, + site works €0.4M, A-OPT-03), 100% MIA-eligible (A 1401), 10% salvage [A-OPT-04];
-  - 3 crushing FTE, diesel 0.3 l/t, wear €0.4/t, maintenance 3%, BRL 2506 €25k/yr, extra 1 ha leased;
-  - gate fee €5/t (A-MKT-15), yields 58/38/3/1% (A-TEC-01–04), sand €3/t, steel €150/t.
-- **Crushing line at full output (2031):** net result about +€0.52M/yr EBITDA. Own RCA replaces purchases worth €0.58M. Gate fee €0.20M, steel €0.18M, sand €0.05M.
-- **Result:** NPV −€3.87M. EBITDA 2030 €1.03M. Funding need €8.58M (the highest).
-- **Ranges:**
-  - gate fee −€2 / €15 per t → NPV −€4.96M / −€2.46M;
-  - steel yield 1% / 5% → −€4.31M / −€3.44M;
-  - crusher capex +45% / −30% → −€4.59M / −€3.40M.
-- **Risks:**
-  - The waste permit (9–36 months, A-POL-20).
-  - Rubble supply: demolition firms are building their own high-grade lines (competitors.md §11).
-  - 3 FTE are heavy for 40 kt. A 300 t/h crusher would only run ~135 h/yr.
-  - Sand outlet is almost nil (€3/t).
-- **Feasibility 3.** O2 is the better form of the same idea.
+- **Changes:** base + `opt_crusher_on = 1`; crushing from 2029 (waste permit about 18 months) [A-OPT-02]; intake 40.5 kt/yr (sized to own RCA need); capex €2.0M (mobile crusher €1.6M, A-TEC-40, + site works €0.4M, A-OPT-03), 100% MIA-eligible, 10% salvage [A-OPT-04]; 3 crushing FTE, diesel 0.3 l/t, wear €0.4/t, maintenance 3%, BRL 2506 €25k/yr, extra 1 ha leased; **gate fee €1/t** (A-MKT-15, A-FIX-04), yields 58/38/**1**/1% (A-TEC-01–04, A-FIX-05), sand €3/t, steel €150/t kept 100% (no partner), **washing/screening €3/t of coarse RCA** (A-FIX-07).
+- **Crushing line at full output (2031):** net result about **+€0.17M/yr** (was +€0.52M). Own RCA replaces purchases worth €0.58M; gate fee €0.04M, steel €0.06M, sand €0.05M. Costs: staff €0.22M, extra lease €0.10M, washing €0.07M, maintenance €0.06M, contaminants €0.05M, certification €0.03M, diesel and wear €0.04M.
+- **Result:** NPV −€6.24M (−€0.91M vs base). EBITDA 2030 €0.49M. Funding need €9.05M (the highest).
+- **Ranges:** gate fee €0 / €10 per t → −€6.43M / −€4.60M; steel yield 0.5% / 3% → −€6.38M / −€5.68M; washing €4 / €2 per t → −€6.35M / −€6.13M; crusher capex +45% / −30% → −€7.10M / −€5.67M.
+- **Risks:** the waste permit (9–36 months, A-POL-20); rubble supply (demolition firms build their own high-grade lines, competitors.md §11); 3 FTE are heavy for 40 kt; sand outlet almost nil (€3/t).
+- **Feasibility 3.** Not recommended.
 
 ### O2 — A+B with a demolition partner (contract crushing on our site)
-- **Changes:**
-  - as O1, but the partner crushes in campaigns at **€7.5/t** (machine, operator, diesel and wear included) [A-OPT-05, OPT-04: UK £7/t];
-  - our capex is only €0.4M of site works;
-  - 1 FTE for acceptance and loader work;
-  - the gate fee (€5/t) is fixed in a long-term supply contract.
-- **Crushing line at full output:** net result ≈ **+€0.45M/yr**.
-  - Revenue and avoided cost: gate fee €0.20M, RCA credit €0.58M, steel €0.18M, sand €0.05M.
-  - Costs: contract crushing €0.30M, extra site lease €0.10M, staff €0.07M, contaminants €0.05M, BRL 2506 certification €0.03M.
-- **Result:** NPV −€3.09M (+€1.30M vs O0). Funding need €7.00M.
-- **Ranges:**
-  - gate fee −€2 / €15 per t → −€4.08M / −€1.70M;
-  - contract rate €10 / €5 per t → −€3.45M / −€2.73M;
-  - steel yield 1% / 5% → −€3.51M / −€2.67M.
-- **Risks:**
-  - **About 40% of the net result is steel scrap at an assumed 3% yield** [A-OPT-24]. In clean rubble much rebar may already have been removed.
-  - The partner's bargaining power: the gate fee could turn into a price we pay for rubble.
-  - The same permit risk as O1.
-- **What the partner gains:** a high-grade outlet as road-base demand falls (competitors.md §10), circular credentials in tenders, and its crushing crew is used.
-- **Feasibility 3.** Who must act: a demolition firm (examples in competitors.md §12: New Horizon, Vlasman, Adex, GP Groot, Van Werven, Circulair Mineraal members) and the province (permit).
+- **Changes:** as O1, but the partner crushes in campaigns at **€7.5/t** (machine, operator, diesel and wear included) [A-OPT-05; OPT-04 is a single UK contractor page that could not be re-verified (HTTP 503) — **unverified anchor**, no Dutch tariff found]; our capex is only €0.4M of site works; 1 FTE; gate fee €1/t and a **50/50 steel-value split** fixed in the supply contract (A-FIX-04/06).
+- **Crushing line at full output:** net result ≈ **+€0.06M/yr** (was +€0.45M). Revenue and avoided cost: RCA credit €0.58M, sand €0.05M, gate fee €0.04M, steel €0.03M. Costs: contract crushing €0.30M, extra site lease €0.10M, washing €0.07M, staff €0.07M, contaminants €0.05M, certification €0.03M, maintenance €0.01M.
+- **Result:** NPV −€5.42M (−€0.09M vs base). Funding need €7.50M.
+- **Ranges:** gate fee €0 / €10 per t → −€5.60M / −€3.89M; contract rate €10 / €5 per t → −€5.90M / −€4.93M; steel yield 0.5% / 3% → −€5.49M / −€5.14M; steel share 0% / 100% → −€5.56M / −€5.28M; washing €4 / €2 → −€5.53M / −€5.30M.
+- **Why the line no longer pays:** the earlier result relied on a €5/t gate fee and 3% steel kept by us (together ~€9.5/t of value). The research's own bulk source (GWL, MKT-20) accepts clean concrete rubble at **€0/t** and charges the deliverer **+€3.5/t** for reinforced rubble, so steel removal is a cost the crusher charges for, not a windfall (critique H3).
+- **Feasibility 3.** Who must act: a demolition firm (examples in competitors.md §12) and the province (permit).
 
 ### O3 — Acquire and convert an existing ready-mix plant
-- **Changes:**
-  - purchase price **€2.5M** (€1.5–4.0M) [A-OPT-06] + conversion €0.8M [A-OPT-07] → `capex_plant_equipment` 3.3;
-  - civil €0.2M; permit change and transaction €0.2M; pre-opening €100k;
-  - ramp-up 55/85/100% [A-OPT-08];
-  - maintenance 3.5% [A-OPT-09]; salvage 15% [A-OPT-10];
-  - sales start in 2027: the plant is already permitted and running.
-- **Result:** NPV −€2.71M (+€1.67M vs O0). Capex €3.7M. **Funding need €4.66M (−€2.2M).**
-- **Ranges:**
-  - purchase price €4.0M / €1.5M → −€4.39M / −€1.61M;
-  - greenfield-like ramp vs a fast one → −€2.85M / −€2.50M;
-  - truck-fed site (gravel +€5/t) → −€4.36M.
-- **NPV = 0 alone** would need about 95k m³/yr.
-- **Why it makes sense:**
-  - The market has ~178 plants for 6.0 Mm³, with spare capacity (CMP-43).
-  - Groups are exiting or consolidating (Cementbouw sold its ready-mix; Heidelberg bought Kalle en Bakker's customers; CMP-33, CMP-38).
-  - Buying a plant adds **no new capacity**, so incumbents have less reason to fight on price.
-  - It removes the 12–18-month permit-and-build delay.
-- **Risks:**
-  - Older equipment.
-  - The site may not be waterside or may lack space for RCA storage and crushing.
-  - Customers may leave after the change of owner.
-  - A good plant costs far more: Cementir paid ≈ €18M for one Danish plant + a minority stake (OPT-01).
-  - No Dutch transaction prices were found. This is a data gap.
-- **Feasibility 3.** Who must act: the founders, a seller (independent family plant or a divesting group) and the bank (the plant is collateral).
+- **Changes:** purchase price **€2.5M** (€1.5–4.0M) [A-OPT-06] + conversion €0.8M [A-OPT-07] → `capex_plant_equipment` 3.3; civil €0.2M; permit change and transaction €0.2M; pre-opening €100k; ramp-up 55/85/100% [A-OPT-08]; maintenance 3.5% [A-OPT-09]; salvage 15% [A-OPT-10]. Purchase and conversion in 2027, **first sales under our name 2028** (the purchase gates close in Q2 2027).
+- **Result:** NPV −€3.54M (+€1.79M vs base). Capex €3.7M. **Funding need €4.93M (−€2.2M vs base).**
+- **Ranges:** purchase price €4.0M / €1.5M → −€5.21M / −€2.48M; greenfield-like ramp vs a fast one → −€3.69M / −€3.33M; truck-fed site (gravel +€5/t) → −€5.13M.
+- **NPV = 0 alone** would need about 113k m³/yr.
+- **What €2.5M buys (critique M6):** the price is an ESTIMATE based on an average Dutch plant of ~34k m³/yr (ERMCO 2023, CMP-43) at an EBITDA of €6–8/m³. So **€2.5M buys a ~35k m³ plant with its customer book**. Reaching 70–90k m³ needs extra customers (frameworks) and, at 90k, extra capacity (modelled as +€1.0M in P2).
+- **Margin evidence:** the OPT-01 figures (Cementir ≈ €18M for one Danish plant + a minority stake; ready-mix segment EBITDA €38.9M) and the OPT-02 8% ready-mix margin come from search excerpts that the red team could **not confirm** — treat them as **unverified**. A further data point from the critique: **4K-Beton (18 plants, 0.6 Mm³/yr) EBITDA €2.9M on €50.7M revenue = 5.7%** (Cemnet, cited by the red team; not opened by us) — consistent with thin ready-mix margins and with our base-case plant margin of 2–3%.
+- **Why it still makes sense to look at:** ~178 plants for 6.0 Mm³ with spare capacity (CMP-43); groups are exiting or consolidating (CMP-33, CMP-38); buying adds **no new capacity**; it removes the build year.
+- **Risks:** older equipment; the site may not be waterside or may lack space; customers may leave after the change of owner; no Dutch transaction prices found (data gap).
+- **Feasibility 3.** Who must act: the founders, a seller and the bank.
 
 ### O4 — Offtake / framework contracts (MKI-based tenders)
-- **Change:** O0 + ramp-up 75/95/100% [A-OPT-11] at a framework discount of −€1.0/m³ on all volume (~3% on one third) [A-OPT-12].
-- **Result:** NPV −€4.14M (+€0.24M vs O0). Discount −€2 / €0 → −€4.51M / −€3.83M.
-- **Why so small:** a faster ramp-up only brings forward the margin of 2 years of volume, and that margin is thin (~€7.6/m³ EBITDA). Contracts mainly **reduce volume risk**: the "utilisation 50k" stress is the second-worst driver. They are a precondition for P2, not a lever on their own.
-- **Who must act:** GWW contractors, Rijkswaterstaat, municipalities, housing corporations. From 2028 the GWW decree makes MKI ceilings compulsory (POL-17), which helps tender access but not price (our MKI ≈ CEM III/B standard).
+- **Change:** base + ramp-up 75/95/100% [A-OPT-11] at a framework discount of −€1.0/m³ on all volume [A-OPT-12].
+- **Result:** NPV −€5.14M (+€0.19M vs base). Discount −€2 / €0 → −€5.51M / −€4.76M.
+- **Why so small:** a faster ramp-up only brings forward the margin of 2 years of volume, and that margin is thin. Contracts mainly **reduce volume risk**. They are a precondition for the packages, not a lever on their own.
 - **Feasibility 3.**
 
 ### O5 — A genuinely lower-CO₂ binder (from 2029)
-- **Product:** a circular mix with a binder that is ~30% lower in CO₂ than CEM III/B. Options include activated cement paste from everox (TRL 6–7, certification via EN 197-6/ETA pending) or an Ecocem ACT-type low-clinker cement (company claim: −70% vs average cement at "minimal" extra cost, OPT-05/06).
-- **Changes:**
-  - from 2029, +€1.5/m³ price on circular volume [A-OPT-13: MKI value captured in tenders + a small private premium];
-  - +€1.5/m³ cost on circular volume [A-OPT-14];
-  - €150k certification/EPD one-off + €40k/yr [A-OPT-15].
-- **Result:** NPV −€4.76M (−€0.38M vs O0). Best/worst case → −€3.98M / −€5.55M.
-- **Why it earns so little:**
-  - −40 kg CO₂/m³ is worth ≈ €5 MKI/m³ (A2 set).
-  - The contractor gets a fictive advantage of ~€15/m³, but that is only in MKI tenders (≈20% of our volume), and the supplier keeps ~30% of it.
-  - Spread over all circular volume this is ≈ €1.5/m³.
-  - To reach NPV = 0 on P1, the captured value would need to be **€7.8 per circular m³**.
-- **Strategic value:** a **hedge** against CEM III/B slag scarcity after Tata's blast-furnace replacement (~2028–30, A-POL-28). It also gives a real CO₂ story: recycled aggregate alone cuts only 8–12%. **It is not a profit driver.**
-- **Feasibility 2:** the technology risk is TRL 6–7 and certification is pending. Who must act: binder supplier (everox, Ecocem, ENCI/Heidelberg) and the certification body (KOMO, NEN 8005 assessment).
-
-### O6 — Asset-light: licence + RCA service (archetype D platform)
-- **Model:** a separate model, live in `Opt_AssetLight`. No plant.
-- **Revenue streams:**
-  - a fee of **€2/m³** [A-OPT-20] for certified circular mix designs and MKI/EPD documentation;
-  - RCA brokerage at €1.5/t [A-OPT-21];
-  - project LCA services, €100k/yr [A-OPT-22].
-- **Licensees:** 4 at maturity, +1 per year, 15k circular m³ each [A-OPT-19].
-- **Costs:** team 4 FTE, €150k overhead, €350k start-up, €200k capex [A-OPT-23].
-- **Result:** NPV −€2.51M. EBITDA stays negative (−€0.28M in 2029). Funding need €3.35M. **0/4 criteria.**
-- **Break-even:** each licensee brings only €42.6k/yr. EBITDA breaks even at ≈ **10 licensee plants**, which is not reachable by 2036 at +1 plant per year.
-- **Why:** the margin pool per circular m³ is only ~€4 (cost saving + premium). The licensee keeps most of it. Incumbents have their own lines, and SL Materials, everox and SQAPE already license. The downside is capped and small, so it remains a **fallback** or a later add-on (selling mix know-how from the P2 plant).
+- **Product:** a circular mix with a binder ~30% lower in CO₂ than CEM III/B (everox activated cement paste, TRL 6–7; or an Ecocem ACT-type cement, company claims OPT-05/06).
+- **Changes:** from 2029, **+€0.69/m³** price on circular volume = the MKI value of €1.5 [A-OPT-13] **minus the public premium already in the base** (40% × 1.5% × €135 = €0.81 per circular m³), so the MKI value is not counted twice (critique M7, A-FIX-11); +€1.5/m³ cost on circular volume [A-OPT-14]; €150k certification/EPD one-off + €40k/yr [A-OPT-15].
+- **Result:** NPV −€5.86M (−€0.53M vs base). MKI value 0 & cost +€4 / MKI value €4.5 & cost 0 → −€6.50M / −€4.83M.
+- **Why it earns so little:** −40 kg CO₂/m³ is worth ≈ €5 MKI/m³; the fictive advantage reaches only MKI tenders (≈20% of our volume) and the supplier keeps ~30% of it. To reach NPV = 0 on the base, the captured value would need to be **€32 per circular m³** (€20 on P2).
+- **Strategic value:** a **hedge** against CEM III/B slag scarcity (A-POL-28) and a real CO₂ story. **Not a profit driver.**
 - **Feasibility 2.**
 
+### O6 — Asset-light: licence + RCA service (archetype D platform)
+- Unchanged by the critique fixes (separate model, no plant; sales from 2027 because no build is needed).
+- **Revenue:** fee **€2/m³** [A-OPT-20]; RCA brokerage €1.5/t [A-OPT-21]; LCA services €100k/yr [A-OPT-22]. **Licensees:** 4 at maturity, +1 per year, 15k circular m³ each [A-OPT-19]. **Costs:** 4 FTE, €150k overhead, €350k start-up, €200k capex [A-OPT-23].
+- **Result:** NPV −€2.51M. EBITDA stays negative (−€0.28M in 2029). Funding need €3.35M. **0/4 criteria.** EBITDA breaks even only at ≈ 10 licensee plants, not reachable by 2036.
+- **Use:** a capped-downside **fallback** or a later add-on. **Feasibility 2.**
+
 ### O7 — Maximum realistic subsidies
-- **Change:** O0 + DEI+ grant €1.0M (instead of €0.4M) + 50% of plant capex MIA-eligible [A-OPT-16].
-- **Result:** NPV −€3.83M (+€0.56M vs O0).
-- **What does not fit:**
-  - **VEKI:** it pays at most €80/t CO₂ avoided, and our circular mix avoids ~0 CO₂ vs CEM III/B.
-  - **EU Innovation Fund:** it is for large binder projects.
-  - **WBSO (36–50% of R&D wages):** only for mix R&D, worth ~€0.1M.
-- **Effect on the best package:** on P2 these subsidies add +€0.56M. But a €1.0M DEI+ grant needs an innovative element (for example O5 or recycled sand), not a plant takeover.
-- **Feasibility 2.** Who must act: RVO (competitive, first come, first served).
+- **Change:** base + DEI+ grant €1.0M (instead of €0.4M) + 50% of plant capex MIA-eligible [A-OPT-16].
+- **Result:** NPV −€4.77M (+€0.56M vs base). On P2 these subsidies give −€3.50M. VEKI does not fit (our circular mix avoids ~0 CO₂ vs CEM III/B); the EU Innovation Fund is for large binder projects.
+- **Feasibility 2.**
 
 ### O8 — Bigger plant: 100k m³/yr
-- **Change:** O0 + 100k m³/yr, +2 production FTE, average delivery 23 km [A-OPT-17]. One shift can make ~240k m³, so no extra plant capex is needed.
-- **Result:** NPV −€2.85M (+€1.53M). NPV = 0 for the corrected base needs **~119k m³/yr**.
-- **Market check:**
-  - 100k m³ = the SOM **high** case. That is ≈ 22% of the regional circular SAM (0.45 Mm³) and ≈ 10% of **all** ready-mix in the delivery radius (MKT §8).
-  - It is about 3× the average Dutch plant (34k m³).
-  - 119k m³ is above anything market.md supports for a newcomer.
-- **Feasibility 2.** Scale only works when it is sold before the plant opens (P2).
+- **Change:** base + 100k m³/yr, +2 production FTE, average delivery **23.9 km** (= 20 km × √(100/70), not rounded; critique H5) [A-OPT-17].
+- **Result:** NPV −€4.15M (+€1.18M vs base). NPV = 0 needs **~159k m³/yr**.
+- **Market check:** 100k m³ = the SOM high case, ≈ 3× an average Dutch plant (33.7k m³, ERMCO 2023) and ≈ 12% of all ready-mix in the radius (0.84 Mm³, market.md §8). **Feasibility 2.**
 
 ### O9 — Urban site closer to demand (truck-fed)
-- **Change:** O0 + delivery 15 km, lease €15/m², gravel by truck +€5/t [A-OPT-18].
-- **Result:** NPV −€5.47M (−€1.09M). Waterside supply of gravel, sand and RCA (by barge, technology.md) beats proximity.
-- **Location advice:** stay **waterside** in Zuid-Holland (Rotterdam–Drechtsteden). Choose a site that can also take rubble by water, which supports P1 and P2.
+- **Change:** base + delivery 15 km, lease €15/m², gravel by truck +€5/t [A-OPT-18].
+- **Result:** NPV −€6.32M (−€0.99M). Stay **waterside**.
 
 ### C — Element reuse add-on (screening only, not modelled)
-- There are no public prices for tested and recertified elements, and market.md / competitors.md give no volumes.
-- Element reuse needs deconstruction contracts, testing and a different customer (project developers). It shares little with a ready-mix plant except the demolition partner.
-- **Not recommended as a viability lever** for this case. It is better left to a later platform role (O6) or to partners such as New Horizon.
+- No public prices or volumes. Not a viability lever for this case.
 
 ---
 
 ## 4. Packages
 
 ### P1 — Acquire + partner crushing + framework contracts
-- **Changes:**
-  - O3 (acquisition, €3.7M);
-  - + O2 (partner crushing from 2029, +€0.4M site works);
-  - + O4 (ramp-up 75/95/100%, −€1/m³);
-  - sales from 2027.
-- **Result:** NPV **−€1.36M**, IRR 2.1%, payback 9.8 years. EBITDA 2029 €0.91M. Funding need €4.72M. Capex €4.10M. 1/4 criteria.
-- **Ranges:**
-  - gate fee −€2 / €15 per t → −€2.35M / +€0.06M;
-  - purchase price €4.0M / €1.5M → −€2.99M / −€0.26M;
-  - ramp without frameworks / very fast → −€1.41M / −€1.17M.
-- **NPV = 0 needs any one of:**
-  - a gate fee of **€14.6/t**;
-  - a purchase price of **≤ €1.26M**;
-  - **82.6k m³/yr**;
-  - an average price of **€139.1/m³** (+3%).
-- **At other discount rates:** 6% → −€0.97M; 10% → −€1.69M.
+- **Changes:** O3 (acquisition) + O2 (partner crushing from 2029, +€0.4M site works) + O4 framework discount (−€1/m³). Ramp = **acquired-plant ramp 55/85/100%** (H4: listed last in the merge, so it wins). First sales 2028.
+- **Result:** NPV **−€3.97M**, IRR −15.7%, payback not reached. EBITDA 2030 €0.32M. Funding need €5.42M. Capex €4.10M. 1/4 criteria.
+- **Ranges:** gate fee €0 / €10 per t → −€4.16M / −€2.55M; purchase price €4.0M / €1.5M → −€5.65M / −€2.87M; greenfield ramp 50/79 / framework ramp 75/95 → −€4.13M / −€3.55M.
+- **NPV = 0 needs any one of:** a gate fee of **€28.3/t**; **120k m³/yr**; an average price of **€149.2/m³** (+10.5%). Even a free plant does not reach NPV = 0 on its own.
 
-### P2 — P1 + scale to 90k m³/yr (second framework contract)
-- **Change:** P1 at 90k m³/yr (the "high" utilisation input), +1 production FTE, average delivery 22 km. That is 9% of all ready-mix in the radius, above the SOM base of 60k.
-- **Result:** NPV **+€0.0M (+€414)**, IRR 8.0%, payback **7.3 years** (fails the < 7 rule).
-  - EBITDA: 2027 €0.28M; 2029 €1.28M; 2036 €1.08M.
-  - Funding need €4.58M.
-  - **2/4 criteria. NOT VIABLE.** It is not borderline either, because borderline needs criteria 1–3 to pass or NPV between −10% of capex and 0.
-- **Ranges:**
-  - gate fee −€2 / €15 per t → −€0.99M / +€1.42M;
-  - purchase price €4.0M / €1.5M → −€1.63M / +€1.09M;
-  - volume 75k / 100k → −€1.54M / +€1.02M;
-  - discount rate 6% / 10% → +€0.54M / −€0.46M.
-- **Fragile by-products:**
-  - no grant → −€0.31M;
-  - steel yield 1% → −€0.43M;
-  - sand outlet €0 → −€0.16M.
-- **Upsides:**
-  - P2 + gate fee €10/t → NPV +€0.71M, payback 6.5 years (criteria 1–3 pass), still 0/6 on criterion 4 → BORDERLINE.
-  - P2 + O7 subsidies → NPV +€0.56M, payback 6.6 years → BORDERLINE.
-  - P2 + O5 binder → −€0.35M.
+### P2 — P1 + scale to 90k m³/yr (a combination of favourable inputs)
+- **What P2 is, said plainly (critique H5):** it combines the "high" utilisation input (90k m³ = 2.7× an average Dutch plant, ≈ 11% of all ready-mix in the radius, from an acquired plant), two framework contracts and a long rubble contract. It is a scenario of favourable inputs, not a likely case.
+- **Changes vs P1:** 90k m³/yr, +1 production FTE, average delivery **22.7 km** (20 × √(90/70), not rounded), **+€1.0M expansion capex** [ASSUMPTION, A-FIX-10, range €0.5–2.0M], acquired-plant ramp 55/85/100% **of 90k** (49.5k / 76.5k / 90k m³ in 2028/29/30).
+- **Result (base terms):** NPV **−€4.01M**, IRR −10.6%, payback not reached. EBITDA 2028 −€0.34M; 2029 +€0.27M; 2030 +€0.59M; 2036 €0.41M. Funding need €6.37M. Capex €5.10M. **1/4 criteria, 0/6 on criterion 4. NOT VIABLE.**
+- **Why the earlier "+€414" is gone** (step by step from the old P2 definition, each step cumulative):
+
+| Step | NPV €M | Change |
+|---|---|---|
+| Old P2 (sales 2027, gate fee €5, steel 3% kept, 22 km, framework ramp 75/95, 10 m³, 3% premium) | +0.00 | |
+| First sales 2028 | −0.24 | −0.25 |
+| 9 m³ truck loads | −1.07 | −0.83 |
+| Public premium 1.5% | −1.25 | −0.18 |
+| Gate fee €1/t | −1.81 | −0.56 |
+| Steel yield 1% | −2.23 | −0.42 |
+| Steel value split 50/50 | −2.34 | −0.11 |
+| RCA washing/screening €3/t | −2.60 | −0.26 |
+| Acquired-plant ramp 55/85 of 90k | −3.00 | −0.40 |
+| Exact distance 22.7 km | −3.13 | −0.14 |
+| Expansion capex +€1.0M | **−4.01** | −0.88 |
+
+- **P2 as a range (stacked inputs, critique H2):**
+
+| Stack | Inputs changed vs P2 base | NPV €M | IRR | Payback | Funding €M |
+|---|---|---|---|---|---|
+| Downside | gate fee €0, steel 0.5%, washing €4/t, expansion €2.0M, public premium 0%, 8 m³ loads | **−6.77** | −25.9% | not reached | 7.91 |
+| Base | – | **−4.01** | −10.6% | not reached | 6.37 |
+| Upside | gate fee €5, steel 3% kept 100%, washing €2/t, expansion €0.5M, public premium 3%, 10 m³ loads | **−1.42** | 1.9% | 9.9 yr | 5.49 |
+
+  These are stress stacks, not probabilities. Timing (2028), the acquired ramp and the exact distance stay fixed in all three.
+- **Gate fee needed for NPV = 0:** **€29.7/t** on P2 base terms; €25.9/t with 3% steel kept 100%; €15.2/t with every other stacked input at its upside; €45.3/t at the downside. The upside stack with a €10/t gate fee is still −€0.72M.
+- **One-at-a-time ranges:** gate fee €0 / €10 → −€4.16M / −€2.74M; steel 0.5% / 3% → −€4.07M / −€3.79M; steel share 0% / 100% → −€4.13M / −€3.90M; washing €4 / €2 → −€4.10M / −€3.92M; expansion capex €2.0M / €0.5M → −€4.90M / −€3.57M; purchase price €4.0M / €1.5M → −€5.58M / −€3.01M; volume 75k / 100k → −€5.37M / −€3.29M; discount rate 6% / 10% → −€3.90M / −€4.10M; no grant −€4.33M; sand €0 −€4.19M; framework ramp 75/95 instead of 55/85 −€3.61M.
+- **Add-ons:** P2 + O7 subsidies −€3.50M; P2 + O5 binder −€4.51M; P2 + 100% concrete price pass-through −€3.63M.
 
 ---
 
@@ -273,17 +191,17 @@ Every option's verdict is **NOT VIABLE**. Ranking by NPV: P2 > P1 > O6 > O3 > O8
 
 NPV in €M when one main driver is set to its pessimistic value (option-relative, see §1):
 
-| Driver (pessimistic) | O0 | O2 | O3 | P1 | P2 |
+| Driver (pessimistic) | O0 (base) | O2 | O3 | P1 | P2 |
 |---|---|---|---|---|---|
-| Green premium 0% public / −2% private | −5.09 | −3.63 | −3.38 | −2.00 | −0.83 |
-| RCA price €25/t (O0, O3) / gate fee −€2/t (O2, P1, P2) | −5.59 | −4.08 | −3.94 | −2.35 | −0.99 |
-| Transport distance (delivery ×1.75, RCA haul 50 km) | −7.71 | −5.46 | −6.46 | −4.19 | −3.94 |
-| Cement €130/t + high ETS/CBAM path | −6.98 | −5.29 | −5.54 | −3.81 | −3.05 |
-| Utilisation ×50/70 | −6.83 | −5.46 | −5.47 | −3.95 | −2.73 |
-| Capex ×1.45 (incl. purchase price and crushing works) | −6.91 | −5.49 | −4.35 | −3.07 | −1.71 |
+| Green premium 0% public / −2% private | −5.86 | −5.95 | −4.08 | −4.51 | −4.59 |
+| RCA price €25/t (O0, O3) / gate fee €0/t (O2, P1, P2) | −6.54 | −5.60 | −4.77 | −4.16 | −4.16 |
+| Transport distance (delivery ×1.75, RCA haul 50 km) | −8.96 | −8.49 | −7.23 | −7.10 | −8.62 |
+| Cement €130/t + high ETS/CBAM path | −7.93 | −8.02 | −6.18 | −6.62 | −7.30 |
+| Utilisation ×50/70 | −7.51 | −7.91 | −5.76 | −6.41 | −6.52 |
+| Capex ×1.45 (incl. purchase price and crushing works) | −7.86 | −8.09 | −5.18 | −5.76 | −5.69 |
 | **Drivers with NPV > 0** | **0/6** | **0/6** | **0/6** | **0/6** | **0/6** |
 
-The asset-light option (O6) is 0/6 on its own drivers too (−€2.7M to −€3.8M). **Conclusion: no option is robust.** P2's NPV of zero leaves no buffer. The two most dangerous drivers are **transport distance** (delivery cost is ~14% of price) and **cement/ETS** (we buy cement; we do not make it).
+The asset-light option (O6) is 0/6 on its own drivers too. **No option is robust.** The two most dangerous drivers stay **transport distance** (delivery is ~15% of price) and **cement/ETS**.
 
 ---
 
@@ -291,58 +209,50 @@ The asset-light option (O6) is 0/6 on its own drivers too (−€2.7M to −€3
 
 The policy tests come from `options.policy_tests`. The levy is applied to all producers, and 80% of the standard mix's extra cost is passed into concrete prices.
 
-| Change | O0 (corrected base) | P1 | P2 |
+| Change | O0 (base) | P1 | P2 |
 |---|---|---|---|
-| Primary aggregate levy (gravel + sand) | **no level gives NPV = 0**; €5/t → −€4.42M | no level; €5/t → −€1.40M | €5/t → −€0.06M (hurts) |
-| Public green premium needed for NPV = 0 (today 3%) | 52% | 15.6% | 3.0% |
-| MKI value per circular m³ needed for NPV = 0 (estimate with low-CO₂ binder: €1.5) | €27.3 | €7.8 | €0 |
-| High ETS/CBAM path ("faster phase-out of free allocation") | −€4.65M | −€1.57M | −€0.27M |
-| Landfill tax €81/t (2030), via contaminant disposal | no effect (no crushing) | −€0.06M vs P1 | −€0.06M vs P2 |
-| Gate fee €15/t (rubble pushed out of road base) | n/a | +€0.06M | +€1.42M |
-| Average concrete price for NPV = 0 (today €135/m³) | €151.3 | €139.1 | €135.0 |
-| Steady volume for NPV = 0 | 119k m³ | 83k m³ | 90k m³ |
+| Primary aggregate levy (gravel + sand) | **no level gives NPV = 0**; €5/t → −€5.37M | no level; €5/t → −€4.02M | no level; €5/t → −€4.07M |
+| Public green premium needed for NPV = 0 (base 1.5%) | 59% | 44% | 37% |
+| MKI value per circular m³ needed for NPV = 0 (estimate with a low-CO₂ binder: €1.5 gross) | €31.8 | €23.8 | €19.5 |
+| High ETS/CBAM path ("faster phase-out of free allocation") | −€5.60M | −€4.24M | −€4.30M |
+| Landfill tax €81/t (2030), via contaminant disposal | no effect (no crushing) | −€0.08M vs P1 | −€0.06M vs P2 |
+| Gate fee €10/t (top of the new range) | n/a | −€2.55M | −€2.74M |
+| Gate fee for NPV = 0 | n/a | €28.3/t | €29.7/t |
+| Average concrete price for NPV = 0 (today €135/m³) | €154.0 | €149.2 | €146.7 |
+| Steady volume for NPV = 0 | 134k m³ | 120k m³ | 147k m³ |
 
 **Reading the table:**
-1. **A levy on primary aggregates does not help this business model.** Our circular mix still uses 620 kg gravel + 630 kg sand per m³, and 40% of our volume is standard mix. The levy raises our cost about as much as the market price. It helps only a producer with very high recycled content, including recycled sand (CUR 127), which is not certifiable at scale today.
-2. **A faster ETS phase-out hurts.** We buy CEM III/B. Competitors use the same binder, so there is no relative gain, and the market passes on only 80%.
-3. **The market changes that matter are:**
-   - **(a) gate fees for clean rubble.** They rise if road-base outlets shrink (RAW no longer specifies concrete granulate, CMP-91) or if high-grade-reuse targets become binding (NPCE, Betonakkoord). This is the single biggest P2 lever: €15/t adds +€1.4M.
-   - **(b) MKI ceilings at front-runner level** in the GWW decree (base 1 Jan 2028, levels not yet set, POL-17). These would turn our CO₂ advantage into a price only if we also have a lower-CO₂ binder (O5). The value needed (€7.8/m³ on P1) is about 5× our estimate.
-   - **(c) plant prices staying low** as the market consolidates.
-4. **What the business really depends on:**
-   - buying capacity cheaply (≤ €2.5M);
-   - a long rubble contract with a positive gate fee;
-   - ~90k m³ sold under contract, with deliveries kept short (≤ 22 km);
-   - a stable average price of €135/m³.
-   
-   None of this is a "green" factor. The circular content makes these deals possible (partner, tenders), but it does not pay for itself.
+1. **A levy on primary aggregates does not help this business model**: our mixes still use 1.25–1.9 t of primary sand and gravel per m³, so the levy raises our cost about as much as the market price.
+2. **A faster ETS phase-out hurts**: we buy CEM III/B like our competitors, and the market passes on only 80% (a key judgement call; at 100% the base improves by €0.4M).
+3. **The market changes that would matter:** (a) much higher gate fees for clean rubble (€15–30/t needed, against €0–1/t today); (b) MKI ceilings at front-runner level, worth something only with a lower-CO₂ binder; (c) plant prices staying low. None is in sight on present evidence.
+4. **None of the needed conditions is a "green" factor.** The circular content can open deals (partner, tenders), but it does not pay for itself.
 
 ---
 
 ## 7. Recommended path
 
-1. **Stop the greenfield plan (base and O0).** It cannot reach NPV = 0 with any realistic single change.
-2. **Pursue P2 as a conditional acquisition play,** with three gates before any money is committed (target Q2 2027):
-   - **Gate A — plant:** an LOI on a waterside ready-mix plant in Zuid-Holland at **≤ €2.5M** (target ≤ €2.0M; P1 needs ≤ €1.26M on its own), with 1 ha of space and a permit route for rubble acceptance.
-   - **Gate B — rubble:** a 7–10-year contract with a demolition firm: **gate fee ≥ €5/t (target €10/t), contract crushing ≤ €7.5/t**, and a steel-scrap split agreed in writing.
-   - **Gate C — volume:** framework or offtake contracts for **≥ 40k m³/yr** with GWW contractors or public clients, so that 90k m³ is reachable by year 3.
+1. **No route is investable on present evidence.** Stop the greenfield plan (base): it cannot reach NPV = 0 with any realistic single change.
+2. **The integrated acquisition route is the only one that comes close.** It is worth a small **due-diligence phase of €50–100k** to test three gates, **not an investment**. On today's evidence the acquisition alone (O3, −€3.5M) is as close as the integrated packages; integration helps only if gate B is far better than the evidence.
+   - **Gate A — plant:** a waterside ready-mix plant in Zuid-Holland at **≤ €2.5M** (≈ a 35k m³ plant), with 1 ha of space and a permit route for rubble acceptance; an expansion quote for 90k m³ (modelled at €1.0M).
+   - **Gate B — rubble (hard gate):** a 7–10-year contract with a demolition firm that gives a **gate fee in the range needed for NPV = 0 (≈ €15–30/t, depending on the other inputs)** and a written **steel-scrap split**. Today's evidence (€0–1/t bulk, reinforced rubble charged extra) says this gate fails. If it fails, the crushing part adds nothing and P1/P2 collapse to O3.
+   - **Gate C — volume:** framework or offtake contracts for **≥ 40k m³/yr** with GWW contractors or public clients, signed before any purchase.
    
-   If any gate fails, do not invest. The fallback is the asset-light service (O6): capex €0.2M, but expected losses of ~€0.3–0.5M/yr, so only as a small pilot.
-3. **Use O5 (lower-CO₂ binder) as a hedge from ~2029,** not as a profit line: run trials with everox/Ecocem/ENCI and an ETA/EN 197-6 route, financed with WBSO/DEI+. It protects against slag scarcity and supports the GWW MKI story.
-4. **Funding:** ~€4.6M peak need for P2, against €6.9M for O0. Part of this could be debt secured on the acquired plant. The demolition partner could take equity, which aligns its incentives on the gate fee.
-5. **For the jury:**
+   If any gate fails, do not invest. The fallback is the asset-light service (O6) as a small pilot only (capex €0.2M, expected losses ~€0.3M/yr).
+3. **O5 (lower-CO₂ binder)** only as a research hedge (trials funded with WBSO/DEI+), not as a profit line.
+4. **For the jury:**
    - "The stand-alone circular plant is not viable."
-   - "Integration (acquire + crush + contracts) brings it to break-even."
-   - "It is investable only if three named contracts are signed."
+   - "No route is investable on present evidence; the integrated acquisition route comes closest."
+   - "Even its favourable-input stack (P2 upside, −€1.4M) stays below zero; break-even would need a gate fee of €15–30/t against €0–1/t in the market."
+   - "We propose a €50–100k diligence phase to test the three gates, not an investment."
    
-   Show criterion 4 failing openly.
+   Show the P2 range and criterion 4 failing openly.
 
 ---
 
 ## 8. Data gaps (what would change the conclusion fastest)
 
-1. **Dutch gate fees for clean concrete rubble (bulk, multi-year).** These are worth ±€1.2M on P2. Interview 2 demolition firms.
-2. **Prices paid for small Dutch ready-mix plants** (asset deals 2022–2026). Worth ±€1.3M.
-3. **Contract-crushing rates in NL** (only a UK price was found) and the **real steel content** of clean rubble.
-4. **ACP / ACT binder price and certification date.** This decides whether O5 is a cost or a margin.
-5. **GWW decree ceiling levels (2028) and award factors** (how much MKI value reaches the supplier).
+1. **Dutch gate fees for clean concrete rubble (bulk, multi-year)** and the steel content / steel ownership in such contracts. Gate fee €0 → €10/t is worth €1.4M on P2.
+2. **Prices paid for small Dutch ready-mix plants** (asset deals 2022–2026) and the cost of expanding one to 90k m³. Purchase price €1.5–4.0M is worth €2.6M on P2.
+3. **Real project prices** by strength class (the #1 driver; the base €135/m³ is likely at or above the market average).
+4. **Contract-crushing and washing rates in NL** (only an unverified UK price was found).
+5. **ACP / ACT binder price and certification date**; **GWW decree ceiling levels (2028)**.

@@ -1,43 +1,43 @@
 {
  "options": {
   "BASE": {
-   "name": "Base case as gated (sales 2027)",
+   "name": "New base (sales 2028, 9 m3 loads, 1.5% public premium)",
    "overrides": {},
    "kpis": {
-    "npv": -4481665.395587757,
-    "irr": -0.0706382633148967,
+    "npv": -5326983.506670521,
+    "irr": -0.13903572418112053,
     "payback": null,
     "discounted_payback": null,
-    "ebitda_y3": 530374.260142399,
-    "ebitda_y3_year": 2029,
-    "funding_need": 6835872.764774223,
+    "ebitda_y3": 324745.52248082124,
+    "ebitda_y3_year": 2030,
+    "funding_need": 7085186.005030902,
     "capex_initial": 5500000.0,
-    "npv_pct_of_capex": -0.8148482537432286
+    "npv_pct_of_capex": -0.9685424557582765
    },
    "c4": [
     {
      "name": "Green premium (public & private)",
-     "npv_pessimistic": -5289067.976439959
+     "npv_pessimistic": -5857475.586939191
     },
     {
      "name": "Recycled aggregate price, ex-works (EUR 10-25/t)",
-     "npv_pessimistic": -5879690.624213712
+     "npv_pessimistic": -6536904.135141932
     },
     {
      "name": "Transport distance (delivery 10-35 km + RCA haul 15-50 km)",
-     "npv_pessimistic": -8357077.504590822
+     "npv_pessimistic": -8958732.908052286
     },
     {
      "name": "Cement price + ETS/CBAM path",
-     "npv_pessimistic": -7461840.761356306
+     "npv_pessimistic": -7929892.404250226
     },
     {
      "name": "Plant utilisation (50k-90k m3/yr)",
-     "npv_pessimistic": -7375999.251992014
+     "npv_pessimistic": -7506360.555677015
     },
     {
      "name": "Capex (plant, civil, permits)",
-     "npv_pessimistic": -7237858.534033164
+     "npv_pessimistic": -7855901.396229205
     }
    ],
    "criteria": {
@@ -51,23 +51,23 @@
    }
   },
   "O0": {
-   "name": "Corrected base: first sales 2028",
-   "description": "Same plant, but permit + build take until end 2027; first sales 2028 (9 operating years to 2036).",
+   "name": "Base: first sales 2028 (= new base)",
+   "description": "Same plant; permit 2026, build 2027, first sales 2028 (9 operating years to 2036). Since the red-team fixes this IS the base case.",
    "overrides": {
-    "opt_start_delay": 1
+    "first_sales_delay_yr": 1
    },
    "who": "Founders (planning)",
    "feasibility": 5,
    "kpis": {
-    "npv": -4383366.244503959,
-    "irr": -0.0899609289108631,
+    "npv": -5326983.506670521,
+    "irr": -0.13903572418112053,
     "payback": null,
     "discounted_payback": null,
-    "ebitda_y3": 506811.90499220043,
+    "ebitda_y3": 324745.52248082124,
     "ebitda_y3_year": 2030,
-    "funding_need": 6855141.753499794,
+    "funding_need": 7085186.005030902,
     "capex_initial": 5500000.0,
-    "npv_pct_of_capex": -0.7969756808189017
+    "npv_pct_of_capex": -0.9685424557582765
    },
    "c4": [
     {
@@ -77,7 +77,7 @@
       "green_premium_private"
      ],
      "pessimistic_column": "low",
-     "npv_pessimistic": -5090689.018195524
+     "npv_pessimistic": -5857475.586939191
     },
     {
      "name": "Recycled aggregate price, ex-works (EUR 10-25/t)",
@@ -85,7 +85,7 @@
       "price_rca_coarse_exworks"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -5593286.872975369
+     "npv_pessimistic": -6536904.135141932
     },
     {
      "name": "Transport distance (delivery 10-35 km + RCA haul 15-50 km)",
@@ -94,7 +94,7 @@
       "rca_transport_distance"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -7712436.737171118
+     "npv_pessimistic": -8958732.908052286
     },
     {
      "name": "Cement price + ETS/CBAM path",
@@ -113,7 +113,7 @@
       "carbon_cost_cem3b_2036"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -6982840.683773717
+     "npv_pessimistic": -7929892.404250226
     },
     {
      "name": "Plant utilisation (50k-90k m3/yr)",
@@ -121,7 +121,7 @@
       "output_steady_state"
      ],
      "pessimistic_column": "low",
-     "npv_pessimistic": -6832348.225558046
+     "npv_pessimistic": -7506360.555677015
     },
     {
      "name": "Capex (plant, civil, permits)",
@@ -131,7 +131,7 @@
       "capex_permits_engineering"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -6912284.134062643
+     "npv_pessimistic": -7855901.396229205
     }
    ],
    "criteria": {
@@ -146,56 +146,57 @@
    "ebitda_by_year": [
     0.0,
     -380000.0,
-    -424591.4976111995,
-    125739.6755624963,
-    506811.90499220043,
-    437358.63688662276,
-    420465.72127513774,
-    401457.0418818407,
-    380332.50130786933,
-    376377.81454095244,
-    372403.35434020124
+    -515442.33569448907,
+    -17896.512323196046,
+    324745.52248082124,
+    254465.52447684482,
+    237408.7552901581,
+    218209.79432566464,
+    196868.54418449104,
+    192913.85741757415,
+    188939.39721682295
    ],
    "fcf_by_year": [
     -500000.0,
     -4980000.0,
-    -1090953.128335583,
-    -284188.62516421056,
-    190697.3155841129,
-    365412.79820607486,
-    366116.16994582233,
-    346405.95001553954,
-    324579.8689045813,
-    326377.81454095244,
-    1572403.3543402012
+    -1179001.689412845,
+    -426184.3156180566,
+    9852.965639791684,
+    182656.2695201321,
+    183086.27414604882,
+    163190.1388034725,
+    141151.71428421675,
+    142913.85741757415,
+    1388939.397216823
    ],
    "crusher_net_y5": 0.0,
    "volume_y5": 70000.0
   },
   "O1": {
    "name": "A+B own mobile crushing line",
-   "description": "O0 + own mobile crusher on a 1 ha extension: takes 40.5 kt/yr clean rubble for a gate fee, makes own RCA, sells sand and steel. Crushing from 2029 (waste permit).",
+   "description": "Base + own mobile crusher on a 1 ha extension: takes 40.5 kt/yr clean rubble for a gate fee, makes own RCA (washed/screened), sells sand and keeps the steel. Crushing from 2029 (waste permit).",
    "overrides": {
-    "opt_start_delay": 1,
+    "first_sales_delay_yr": 1,
     "opt_crusher_on": 1,
     "opt_crusher_start_year": 2029,
     "opt_rubble_intake_tpy": 40500,
     "opt_crusher_capex": 2000000,
     "opt_crusher_salvage_pct": 10,
-    "opt_crusher_mia_share_pct": 100
+    "opt_crusher_mia_share_pct": 100,
+    "hybrid_steel_value_share_retained": 100
    },
    "who": "Founders + province (waste permit) + demolition suppliers",
    "feasibility": 3,
    "kpis": {
-    "npv": -3872697.2136231884,
-    "irr": -0.03399085184252931,
+    "npv": -6241924.886131242,
+    "irr": -0.12252389240651368,
     "payback": null,
     "discounted_payback": null,
-    "ebitda_y3": 1028218.1998609509,
+    "ebitda_y3": 493599.31734957173,
     "ebitda_y3_year": 2030,
-    "funding_need": 8581964.158612808,
+    "funding_need": 9053708.720760355,
     "capex_initial": 7500000.0,
-    "npv_pct_of_capex": -0.5163596284830918
+    "npv_pct_of_capex": -0.8322566514841656
    },
    "c4": [
     {
@@ -205,7 +206,7 @@
       "green_premium_private"
      ],
      "pessimistic_column": "low",
-     "npv_pessimistic": -4431451.639056539
+     "npv_pessimistic": -6772416.966399914
     },
     {
      "name": "Gate fee received (A+B analogue of RCA price)",
@@ -213,7 +214,7 @@
       "hybrid_gate_fee_received"
      ],
      "pessimistic_column": "low",
-     "npv_pessimistic": -4962862.539633131
+     "npv_pessimistic": -6428542.739941329
     },
     {
      "name": "Transport distance (delivery 10-35 km + RCA haul 15-50 km)",
@@ -222,7 +223,7 @@
       "rca_transport_distance"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -6426532.915077095
+     "npv_pessimistic": -9314599.14696042
     },
     {
      "name": "Cement price + ETS/CBAM path",
@@ -241,7 +242,7 @@
       "carbon_cost_cem3b_2036"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -6256012.002232283
+     "npv_pessimistic": -8844833.783710951
     },
     {
      "name": "Plant utilisation (50k-90k m3/yr)",
@@ -249,7 +250,7 @@
       "output_steady_state"
      ],
      "pessimistic_column": "low",
-     "npv_pessimistic": -6423328.110944913
+     "npv_pessimistic": -8739110.502066042
     },
     {
      "name": "Capex (plant, civil, permits)",
@@ -259,7 +260,7 @@
       "capex_permits_engineering"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -6904573.430827252
+     "npv_pessimistic": -9489960.753995972
     }
    ],
    "criteria": {
@@ -274,54 +275,59 @@
    "ebitda_by_year": [
     0.0,
     -380000.0,
-    -424591.4976111995,
-    454877.8403124958,
-    1028218.1998609509,
-    957693.7737297174,
-    939724.3443024475,
-    919633.7685242873,
-    897421.9220835268,
-    892374.4929204881,
-    887301.8266116343
+    -515442.33569448907,
+    32725.177426803857,
+    493599.31734957173,
+    422248.1613199394,
+    404114.87831746787,
+    383834.02096810937,
+    361405.4649601504,
+    356358.0357971117,
+    351285.3694882579
    ],
    "fcf_by_year": [
     -500000.0,
     -4980000.0,
-    -3090953.128335583,
-    -11011.030277224723,
-    697228.0159323155,
-    885747.9350491692,
-    885374.7929731323,
-    764965.1179453616,
-    734846.4337826892,
-    737369.8737470022,
-    2184121.9553458327
+    -3179001.6894128453,
+    -394707.0313475088,
+    173617.74133045995,
+    350438.9063632267,
+    349792.3971733586,
+    328814.3654459175,
+    305688.6350598759,
+    306358.0357971117,
+    1751285.369488258
    ],
-   "crusher_net_y5": 522489.7368430939,
+   "crusher_net_y5": 168519.73684309388,
    "volume_y5": 70000.0,
    "ranges": [
     {
-     "case": "gate fee -2 / 15",
-     "npv_low_case": -4962862.539633131,
-     "npv_high_case": -2460648.007840852
+     "case": "gate fee 0 / 10",
+     "npv_low_case": -6428542.739941329,
+     "npv_high_case": -4599075.844557064
     },
     {
-     "case": "steel yield 1% / 5%",
-     "npv_low_case": -4307974.744165773,
-     "npv_high_case": -3443238.8411552
+     "case": "steel yield 0.5% / 3%",
+     "npv_low_case": -6381888.276488807,
+     "npv_high_case": -5682071.324700981
+    },
+    {
+     "case": "RCA washing/screening 4 / 2 EUR/t",
+     "npv_low_case": -6353739.914241759,
+     "npv_high_case": -6130109.858020725
     },
     {
      "case": "crusher capex 2.5M / 1.4M",
-     "npv_low_case": -4590466.108661425,
-     "npv_high_case": -3404208.7133511696
+     "npv_low_case": -7104866.460098496,
+     "npv_high_case": -5666630.503486406
     }
    ]
   },
   "O2": {
    "name": "A+B with demolition partner (contract crushing)",
-   "description": "O0 + a demolition firm delivers rubble (gate fee by contract) and crushes it on our site in campaigns at a fixed rate per tonne. Little own capex.",
+   "description": "Base + a demolition firm delivers rubble (gate fee by contract) and crushes it on our site in campaigns at a fixed rate per tonne; steel value split 50/50. Little own capex.",
    "overrides": {
-    "opt_start_delay": 1,
+    "first_sales_delay_yr": 1,
     "opt_crusher_on": 1,
     "opt_crusher_start_year": 2029,
     "opt_rubble_intake_tpy": 40500,
@@ -336,15 +342,15 @@
    "who": "Demolition partner + province (waste permit)",
    "feasibility": 3,
    "kpis": {
-    "npv": -3087304.6044158954,
-    "irr": -0.025678764813050592,
+    "npv": -5415793.02678918,
+    "irr": -0.12890694560450217,
     "payback": null,
     "discounted_payback": null,
-    "ebitda_y3": 950321.7699484508,
+    "ebitda_y3": 385479.76243707165,
     "ebitda_y3_year": 2030,
-    "funding_need": 7004140.466112807,
+    "funding_need": 7495816.707969258,
     "capex_initial": 5900000.0,
-    "npv_pct_of_capex": -0.5232719668501518
+    "npv_pct_of_capex": -0.9179310214896915
    },
    "c4": [
     {
@@ -354,7 +360,7 @@
       "green_premium_private"
      ],
      "pessimistic_column": "low",
-     "npv_pessimistic": -3625624.599108089
+     "npv_pessimistic": -5946285.107057852
     },
     {
      "name": "Gate fee received (A+B analogue of RCA price)",
@@ -362,7 +368,7 @@
       "hybrid_gate_fee_received"
      ],
      "pessimistic_column": "low",
-     "npv_pessimistic": -4084419.610701349
+     "npv_pessimistic": -5602410.880599268
     },
     {
      "name": "Transport distance (delivery 10-35 km + RCA haul 15-50 km)",
@@ -371,7 +377,7 @@
       "rca_transport_distance"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -5460437.665377468
+     "npv_pessimistic": -8488467.287618361
     },
     {
      "name": "Cement price + ETS/CBAM path",
@@ -390,7 +396,7 @@
       "carbon_cost_cem3b_2036"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -5289916.752532658
+     "npv_pessimistic": -8018701.92436889
     },
     {
      "name": "Plant utilisation (50k-90k m3/yr)",
@@ -398,7 +404,7 @@
       "output_steady_state"
      ],
      "pessimistic_column": "low",
-     "npv_pessimistic": -5457232.861245287
+     "npv_pessimistic": -7912978.642723982
     },
     {
      "name": "Capex (plant, civil, permits)",
@@ -408,7 +414,7 @@
       "capex_permits_engineering"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -5492570.74282602
+     "npv_pessimistic": -8088534.512009074
     }
    ],
    "criteria": {
@@ -423,53 +429,64 @@
    "ebitda_by_year": [
     0.0,
     -380000.0,
-    -424591.4976111995,
-    432701.5328124957,
-    950321.7699484508,
-    880511.4491676558,
-    863259.6956175752,
-    843890.3840959892,
-    822403.4082330875,
-    818084.4740007985,
-    813743.9450973459
+    -515442.33569448907,
+    -13327.398823196068,
+    385479.76243707165,
+    314842.711757876,
+    297427.10463259555,
+    277867.51153981313,
+    256163.82610971108,
+    251844.89187742025,
+    247504.36297396943
    ],
    "fcf_by_year": [
     -500000.0,
     -4980000.0,
-    -1490953.128335583,
-    -33187.337777224835,
-    619331.5860198154,
-    724518.2508732177,
-    675469.1428189257,
-    660911.5731329228,
-    644782.6965056631,
-    647846.6797085925,
-    1935142.0072622306
+    -1579001.689412845,
+    -436815.0185564128,
+    66546.74806179549,
+    243033.4568011635,
+    243104.62348848605,
+    222847.856017621,
+    200446.99620943703,
+    201844.89187742025,
+    1487504.3629739694
    ],
-   "crusher_net_y5": 445307.4122810313,
+   "crusher_net_y5": 60962.41228103131,
    "volume_y5": 70000.0,
    "ranges": [
     {
-     "case": "gate fee -2 / 15",
-     "npv_low_case": -4084419.610701349,
-     "npv_high_case": -1698237.381073583
+     "case": "gate fee 0 / 10",
+     "npv_low_case": -5602410.880599268,
+     "npv_high_case": -3892961.2541310154
     },
     {
      "case": "contract rate 10 / 5 EUR/t",
-     "npv_low_case": -3453492.805281,
-     "npv_high_case": -2725929.9211885915
+     "npv_low_case": -5897754.354851754,
+     "npv_high_case": -4933831.698726607
     },
     {
-     "case": "steel yield 1% / 5%",
-     "npv_low_case": -3510527.473946189,
-     "npv_high_case": -2671226.7549439445
+     "case": "steel yield 0.5% / 3%",
+     "npv_low_case": -5485774.7219679635,
+     "npv_high_case": -5135866.246074051
+    },
+    {
+     "case": "steel value share 0% / 100%",
+     "npv_low_case": -5555756.417146745,
+     "npv_high_case": -5275829.636431616
+    },
+    {
+     "case": "RCA washing/screening 4 / 2 EUR/t",
+     "npv_low_case": -5527608.054899697,
+     "npv_high_case": -5303977.998678664
     }
    ]
   },
   "O3": {
    "name": "Acquire and convert an existing plant",
-   "description": "Buy a running ready-mix plant (permit, customers, staff) in Zuid-Holland and convert it (RCA bins, covered store, probes). Sales from 2027.",
+   "description": "Buy a running ready-mix plant (permit, customers, staff) in Zuid-Holland in 2027 and convert it (RCA bins, covered store, probes). First sales under our name 2028 (purchase gates close Q2 2027).",
    "overrides": {
+    "first_sales_delay_yr": 1,
     "capex_plant_equipment": 3.3,
     "capex_site_prep_civil": 0.2,
     "capex_permits_engineering": 0.2,
@@ -482,15 +499,15 @@
    "who": "Founders + seller (independent or divesting group) + bank",
    "feasibility": 3,
    "kpis": {
-    "npv": -2705789.5614862163,
-    "irr": -0.056678846333865496,
+    "npv": -3537420.1353761354,
+    "irr": -0.14377397185977742,
     "payback": null,
     "discounted_payback": null,
-    "ebitda_y3": 532874.260142399,
-    "ebitda_y3_year": 2029,
-    "funding_need": 4661681.444374892,
+    "ebitda_y3": 327245.52248082124,
+    "ebitda_y3_year": 2030,
+    "funding_need": 4931578.71133476,
     "capex_initial": 3700000.0,
-    "npv_pct_of_capex": -0.7312944760773558
+    "npv_pct_of_capex": -0.9560594960476041
    },
    "c4": [
     {
@@ -500,7 +517,7 @@
       "green_premium_private"
      ],
      "pessimistic_column": "low",
-     "npv_pessimistic": -3377467.842980103
+     "npv_pessimistic": -4077025.938494827
     },
     {
      "name": "Recycled aggregate price, ex-works (EUR 10-25/t)",
@@ -508,7 +525,7 @@
       "price_rca_coarse_exworks"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -3940495.933866989
+     "npv_pessimistic": -4768539.236812999
     },
     {
      "name": "Transport distance (delivery 10-35 km + RCA haul 15-50 km)",
@@ -517,7 +534,7 @@
       "rca_transport_distance"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -6457747.367237817
+     "npv_pessimistic": -7232558.617268468
     },
     {
      "name": "Cement price + ETS/CBAM path",
@@ -536,7 +553,7 @@
       "carbon_cost_cem3b_2036"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -5543966.336481661
+     "npv_pessimistic": -6181738.744910619
     },
     {
      "name": "Plant utilisation (50k-90k m3/yr)",
@@ -544,7 +561,7 @@
       "output_steady_state"
      ],
      "pessimistic_column": "low",
-     "npv_pessimistic": -5465475.323850985
+     "npv_pessimistic": -5759677.71446947
     },
     {
      "name": "Capex (plant, civil, permits)",
@@ -554,7 +571,7 @@
       "capex_permits_engineering"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -4346295.804516088
+     "npv_pessimistic": -5178055.759227128
     }
    ],
    "criteria": {
@@ -567,56 +584,56 @@
     "verdict": "NOT VIABLE"
    },
    "ebitda_by_year": [
+    0.0,
     -180000.0,
-    -319394.4262043992,
-    255527.75406095944,
-    532874.260142399,
-    509311.90499220043,
-    439858.63688662276,
-    422965.72127513774,
-    403957.0418818407,
-    382832.50130786933,
-    378877.81454095244,
-    374903.35434020124
+    -425224.6692639375,
+    89304.29142441042,
+    327245.52248082124,
+    256965.52447684482,
+    239908.7552901581,
+    220709.79432566464,
+    199368.54418449104,
+    195413.85741757415,
+    191439.39721682295
    ],
    "fcf_by_year": [
-    -3480000.0,
-    -1031697.6948696048,
-    -149983.74950528704,
-    309878.9925623442,
-    405982.9947528102,
-    326115.2698893262,
-    331538.2138568368,
-    317093.4332100246,
-    301078.683567151,
-    304258.1383893867,
-    826670.2889204293
+    -200000.0,
+    -3280000.0,
+    -1135139.9583541292,
+    -316438.75298063096,
+    101164.14212180825,
+    200156.2695201321,
+    200586.27414604882,
+    180690.1388034725,
+    158651.71428421675,
+    160413.85741757415,
+    681439.397216823
    ],
    "crusher_net_y5": 0.0,
    "volume_y5": 70000.0,
    "ranges": [
     {
      "case": "purchase price 4.0M / 1.5M",
-     "npv_low_case": -4391848.383173092,
-     "npv_high_case": -1605312.323138566
+     "npv_low_case": -5212520.9838745175,
+     "npv_high_case": -2477164.40938498
     },
     {
      "case": "ramp as greenfield 50/79 / 65/90",
-     "npv_low_case": -2851901.1494455817,
-     "npv_high_case": -2503518.2950594197
+     "npv_low_case": -3687501.990680071,
+     "npv_high_case": -3331165.2360933204
     },
     {
      "case": "truck-fed site gravel +5 / waterside",
-     "npv_low_case": -4360929.80489861,
-     "npv_high_case": -2705789.5614862163
+     "npv_low_case": -5128348.4503877,
+     "npv_high_case": -3537420.1353761354
     }
    ]
   },
   "O4": {
    "name": "Offtake / framework contracts (MKI tenders)",
-   "description": "O0 + framework contracts with a public client / GWW contractor before the plant opens: faster ramp-up (75%/95%) at a ~3% framework discount on that volume.",
+   "description": "Base + framework contracts with a public client / GWW contractor before the plant opens: faster ramp-up (75%/95%) at a ~3% framework discount on that volume.",
    "overrides": {
-    "opt_start_delay": 1,
+    "first_sales_delay_yr": 1,
     "ramp_year1_pct_of_steady": 75,
     "ramp_year2_pct_of_steady": 95,
     "opt_price_delta_per_m3": -1.0
@@ -624,15 +641,15 @@
    "who": "Contractors, Rijkswaterstaat / municipalities",
    "feasibility": 3,
    "kpis": {
-    "npv": -4142336.449612022,
-    "irr": -0.09157711115481398,
+    "npv": -5137258.26852277,
+    "irr": -0.14551648527138966,
     "payback": null,
     "discounted_payback": null,
-    "ebitda_y3": 436660.4249922,
+    "ebitda_y3": 254844.782480821,
     "ebitda_y3_year": 2030,
-    "funding_need": 6439041.528530774,
+    "funding_need": 6672085.73122927,
     "capex_initial": 5500000.0,
-    "npv_pct_of_capex": -0.7531520817476404
+    "npv_pct_of_capex": -0.9340469579132309
    },
    "c4": [
     {
@@ -642,7 +659,7 @@
       "green_premium_private"
      ],
      "pessimistic_column": "low",
-     "npv_pessimistic": -4880822.667096663
+     "npv_pessimistic": -5698052.864578045
     },
     {
      "name": "Recycled aggregate price, ex-works (EUR 10-25/t)",
@@ -650,7 +667,7 @@
       "price_rca_coarse_exworks"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -5422976.319907914
+     "npv_pessimistic": -6427138.049407727
     },
     {
      "name": "Transport distance (delivery 10-35 km + RCA haul 15-50 km)",
@@ -659,7 +676,7 @@
       "rca_transport_distance"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -7681354.2363071935
+     "npv_pessimistic": -9008106.833233865
     },
     {
      "name": "Cement price + ETS/CBAM path",
@@ -678,7 +695,7 @@
       "carbon_cost_cem3b_2036"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -6888351.179921996
+     "npv_pessimistic": -7895995.402845393
     },
     {
      "name": "Plant utilisation (50k-90k m3/yr)",
@@ -686,7 +703,7 @@
       "output_steady_state"
      ],
      "pessimistic_column": "low",
-     "npv_pessimistic": -6653584.150214474
+     "npv_pessimistic": -7370842.5284286225
     },
     {
      "name": "Capex (plant, civil, permits)",
@@ -696,7 +713,7 @@
       "capex_permits_engineering"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -6662014.428581644
+     "npv_pessimistic": -7666176.158081454
     }
    ],
    "criteria": {
@@ -711,45 +728,45 @@
    "ebitda_by_year": [
     0.0,
     -380000.0,
-    6808.643583199009,
-    367388.786385281,
-    436660.4249922,
-    367207.1568866223,
-    350314.2412751373,
-    331305.5618818402,
-    310181.0213078689,
-    306226.334540952,
-    302251.8743402008
+    -129279.5585417347,
+    194899.9280037526,
+    254844.782480821,
+    184564.7844768446,
+    167508.01529015787,
+    148309.05432566442,
+    126967.80418449081,
+    123013.11741757393,
+    119038.65721682273
    ],
    "fcf_by_year": [
     -500000.0,
     -4980000.0,
-    -959041.5285307735,
-    70229.63437695219,
-    318854.92688546027,
-    295261.3182060744,
-    295964.6899458221,
-    276254.4700155391,
-    249982.2520982956,
-    248583.33097817114,
-    1495744.0182155627
+    -1090957.383639817,
+    -101128.34758945298,
+    137359.4432904655,
+    112755.52952013211,
+    113185.53414604813,
+    93289.39880347252,
+    71250.9742842163,
+    73013.11741757393,
+    1319038.6572168227
    ],
    "crusher_net_y5": 0.0,
    "volume_y5": 70000.0,
    "ranges": [
     {
      "case": "framework discount -2 / 0 EUR/m3",
-     "npv_low_case": -4511325.065975148,
-     "npv_high_case": -3831140.2237132695
+     "npv_low_case": -5514134.90637942,
+     "npv_high_case": -4760381.630666117
     }
    ]
   },
   "O5": {
    "name": "Lower-CO2 binder product (from 2029)",
-   "description": "O0 + circular mix with a lower-CO2 binder (activated cement paste / ACT-type, ~-30% CO2 vs CEM III/B). Earns MKI value in tenders, but costs more and needs certification.",
+   "description": "Base + circular mix with a lower-CO2 binder (activated cement paste / ACT-type, ~-30% CO2 vs CEM III/B). Earns MKI value in tenders (netted against the public premium already in the base), but costs more and needs certification.",
    "overrides": {
-    "opt_start_delay": 1,
-    "opt_circ_price_delta_per_m3": 1.5,
+    "first_sales_delay_yr": 1,
+    "opt_circ_price_delta_per_m3": 0.6899999999999998,
     "opt_circ_cost_delta_per_m3": 1.5,
     "opt_circ_delta_start_year": 2029,
     "opt_extra_capex_y0": 150000,
@@ -758,15 +775,15 @@
    "who": "Binder supplier (everox, Ecocem, ENCI) + certification body",
    "feasibility": 2,
    "kpis": {
-    "npv": -4763213.961625601,
-    "irr": -0.10350641717442283,
+    "npv": -5863590.220992636,
+    "irr": -0.1635408063586406,
     "payback": null,
     "discounted_payback": null,
-    "ebitda_y3": 466496.90499220043,
+    "ebitda_y3": 250580.62248082086,
     "ebitda_y3_year": 2030,
-    "funding_need": 7093571.973362808,
+    "funding_need": 7411252.0460075475,
     "capex_initial": 5650000.0,
-    "npv_pct_of_capex": -0.8430467188717878
+    "npv_pct_of_capex": -1.0378035789367497
    },
    "c4": [
     {
@@ -776,7 +793,7 @@
       "green_premium_private"
      ],
      "pessimistic_column": "low",
-     "npv_pessimistic": -5470536.735317165
+     "npv_pessimistic": -6394082.301261309
     },
     {
      "name": "Recycled aggregate price, ex-works (EUR 10-25/t)",
@@ -784,7 +801,7 @@
       "price_rca_coarse_exworks"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -5973134.590097011
+     "npv_pessimistic": -7073510.849464045
     },
     {
      "name": "Transport distance (delivery 10-35 km + RCA haul 15-50 km)",
@@ -793,7 +810,7 @@
       "rca_transport_distance"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -8092284.454292761
+     "npv_pessimistic": -9495339.622374399
     },
     {
      "name": "Cement price + ETS/CBAM path",
@@ -812,7 +829,7 @@
       "carbon_cost_cem3b_2036"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -7362688.400895359
+     "npv_pessimistic": -8466499.118572341
     },
     {
      "name": "Plant utilisation (50k-90k m3/yr)",
@@ -820,7 +837,7 @@
       "output_steady_state"
      ],
      "pessimistic_column": "low",
-     "npv_pessimistic": -7209455.197161936
+     "npv_pessimistic": -7995438.239566958
     },
     {
      "name": "Capex (plant, civil, permits)",
@@ -830,7 +847,7 @@
       "capex_permits_engineering"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -7292131.851184286
+     "npv_pessimistic": -8392508.110551322
     }
    ],
    "criteria": {
@@ -845,36 +862,36 @@
    "ebitda_by_year": [
     0.0,
     -380000.0,
-    -464591.4976111995,
-    85490.82556249574,
-    466496.90499220043,
-    397043.63688662276,
-    380150.72127513774,
-    361142.0418818407,
-    340017.50130786933,
-    336062.81454095244,
-    332088.35434020124
+    -555442.3356944891,
+    -84886.78332319483,
+    250580.62248082086,
+    180300.62447684444,
+    163243.85529015772,
+    144044.89432566427,
+    122703.64418449067,
+    118748.95741757378,
+    114774.49721682258
    ],
    "fcf_by_year": [
     -500000.0,
     -5130000.0,
-    -1130953.128335583,
-    -332618.84502722486,
-    148207.52106356504,
-    325097.7982060746,
-    325801.16994582256,
-    306090.95001553954,
-    284264.8689045815,
-    286062.81454095244,
-    1532088.3543402012
+    -1219001.689412845,
+    -496938.0167550419,
+    -65312.33983966056,
+    108491.36952013196,
+    108921.37414604821,
+    89025.23880347237,
+    66986.81428421638,
+    68748.95741757378,
+    1314774.4972168226
    ],
    "crusher_net_y5": 0.0,
    "volume_y5": 70000.0,
    "ranges": [
     {
      "case": "MKI value 0 / 4.5, cost +4 / 0",
-     "npv_low_case": -5553320.148506183,
-     "npv_high_case": -3983948.5938882465
+     "npv_low_case": -6496937.410672745,
+     "npv_high_case": -4826355.2966996245
     }
    ]
   },
@@ -1047,24 +1064,24 @@
   },
   "O7": {
    "name": "Maximum realistic subsidies",
-   "description": "O0 + DEI+ grant EUR 1.0M (instead of 0.4M) + 50% of plant capex eligible for MIA.",
+   "description": "Base + DEI+ grant EUR 1.0M (instead of 0.4M) + 50% of plant capex eligible for MIA.",
    "overrides": {
-    "opt_start_delay": 1,
+    "first_sales_delay_yr": 1,
     "grant_dei_veki_first_plant": 1.0,
     "mia_eligible_share_of_capex": 50
    },
    "who": "RVO",
    "feasibility": 2,
    "kpis": {
-    "npv": -3827810.688948403,
-    "irr": -0.07864809923961463,
+    "npv": -4771427.951114965,
+    "irr": -0.129705528669744,
     "payback": null,
     "discounted_payback": null,
-    "ebitda_y3": 506811.90499220043,
+    "ebitda_y3": 324745.52248082124,
     "ebitda_y3_year": 2030,
-    "funding_need": 6255141.753499794,
+    "funding_need": 6485186.005030902,
     "capex_initial": 5500000.0,
-    "npv_pct_of_capex": -0.6959655798088006
+    "npv_pct_of_capex": -0.8675323547481754
    },
    "c4": [
     {
@@ -1074,7 +1091,7 @@
       "green_premium_private"
      ],
      "pessimistic_column": "low",
-     "npv_pessimistic": -4535133.462639968
+     "npv_pessimistic": -5301920.0313836355
     },
     {
      "name": "Recycled aggregate price, ex-works (EUR 10-25/t)",
@@ -1082,7 +1099,7 @@
       "price_rca_coarse_exworks"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -5037731.317419813
+     "npv_pessimistic": -5981348.579586376
     },
     {
      "name": "Transport distance (delivery 10-35 km + RCA haul 15-50 km)",
@@ -1091,7 +1108,7 @@
       "rca_transport_distance"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -7156881.181615562
+     "npv_pessimistic": -8403177.35249673
     },
     {
      "name": "Cement price + ETS/CBAM path",
@@ -1110,7 +1127,7 @@
       "carbon_cost_cem3b_2036"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -6427285.128218161
+     "npv_pessimistic": -7374336.84869467
     },
     {
      "name": "Plant utilisation (50k-90k m3/yr)",
@@ -1118,7 +1135,7 @@
       "output_steady_state"
      ],
      "pessimistic_column": "low",
-     "npv_pessimistic": -6276792.67000249
+     "npv_pessimistic": -6950805.000121459
     },
     {
      "name": "Capex (plant, civil, permits)",
@@ -1128,7 +1145,7 @@
       "capex_permits_engineering"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -6356728.578507088
+     "npv_pessimistic": -7300345.84067365
     }
    ],
    "criteria": {
@@ -1143,53 +1160,53 @@
    "ebitda_by_year": [
     0.0,
     -380000.0,
-    -424591.4976111995,
-    125739.6755624963,
-    506811.90499220043,
-    437358.63688662276,
-    420465.72127513774,
-    401457.0418818407,
-    380332.50130786933,
-    376377.81454095244,
-    372403.35434020124
+    -515442.33569448907,
+    -17896.512323196046,
+    324745.52248082124,
+    254465.52447684482,
+    237408.7552901581,
+    218209.79432566464,
+    196868.54418449104,
+    192913.85741757415,
+    188939.39721682295
    ],
    "fcf_by_year": [
     -500000.0,
     -4380000.0,
-    -1090953.128335583,
-    -284188.62516421056,
-    190697.3155841129,
-    365412.79820607486,
-    366116.16994582233,
-    346405.95001553954,
-    324579.8689045813,
-    326377.81454095244,
-    1572403.3543402012
+    -1179001.689412845,
+    -426184.3156180566,
+    9852.965639791684,
+    182656.2695201321,
+    183086.27414604882,
+    163190.1388034725,
+    141151.71428421675,
+    142913.85741757415,
+    1388939.397216823
    ],
    "crusher_net_y5": 0.0,
    "volume_y5": 70000.0
   },
   "O8": {
    "name": "Bigger plant: 100k m3/yr",
-   "description": "O0 at 100k m3/yr (market SOM high case): +2 production FTE, larger delivery radius (23 km average).",
+   "description": "Base at 100k m3/yr (market SOM high case): +2 production FTE, larger delivery radius (23.9 km average = 20 km x sqrt(100/70)).",
    "overrides": {
-    "opt_start_delay": 1,
+    "first_sales_delay_yr": 1,
     "output_steady_state": 100000,
     "staff_production_fte": 9,
-    "delivery_avg_distance_oneway": 23
+    "delivery_avg_distance_oneway": 23.904572186687872
    },
    "who": "Founders + anchor customers",
    "feasibility": 2,
    "kpis": {
-    "npv": -2850494.0406331797,
-    "irr": -0.019747158655875154,
+    "npv": -4147282.5734855793,
+    "irr": -0.07260647410445203,
     "payback": null,
     "discounted_payback": null,
-    "ebitda_y3": 1031330.6715334989,
+    "ebitda_y3": 704315.1623361725,
     "ebitda_y3_year": 2030,
-    "funding_need": 6683326.767499706,
+    "funding_need": 7098289.085923442,
     "capex_initial": 5500000.0,
-    "npv_pct_of_capex": -0.5182716437514873
+    "npv_pct_of_capex": -0.754051376997378
    },
    "c4": [
     {
@@ -1199,7 +1216,7 @@
       "green_premium_private"
      ],
      "pessimistic_column": "low",
-     "npv_pessimistic": -3611817.2480318276
+     "npv_pessimistic": -4773650.6835688725
     },
     {
      "name": "Recycled aggregate price, ex-works (EUR 10-25/t)",
@@ -1207,7 +1224,7 @@
       "price_rca_coarse_exworks"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -4172300.7811704045
+     "npv_pessimistic": -5744262.895287067
     },
     {
      "name": "Transport distance (delivery 10-35 km + RCA haul 15-50 km)",
@@ -1216,7 +1233,7 @@
       "rca_transport_distance"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -7660096.322197744
+     "npv_pessimistic": -10048183.748347634
     },
     {
      "name": "Cement price + ETS/CBAM path",
@@ -1235,7 +1252,7 @@
       "carbon_cost_cem3b_2036"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -6034078.350537573
+     "npv_pessimistic": -7734246.136870352
     },
     {
      "name": "Plant utilisation (50k-90k m3/yr)",
@@ -1243,7 +1260,7 @@
       "output_steady_state"
      ],
      "pessimistic_column": "low",
-     "npv_pessimistic": -5596712.783418741
+     "npv_pessimistic": -6807613.795789145
     },
     {
      "name": "Capex (plant, civil, permits)",
@@ -1253,7 +1270,7 @@
       "capex_permits_engineering"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -5120583.220341869
+     "npv_pessimistic": -6544722.744172308
     }
    ],
    "criteria": {
@@ -1268,37 +1285,37 @@
    "ebitda_by_year": [
     0.0,
     -380000.0,
-    -226126.0680160001,
-    517499.2025892809,
-    1031330.6715334989,
-    933058.9997046888,
-    909878.28213761,
-    883679.8049773388,
-    854463.4528831076,
-    849780.2711854428,
-    845073.6735792905
+    -389373.31808266323,
+    259437.31360667385,
+    704315.1623361725,
+    604862.4477953613,
+    581447.6536922846,
+    554977.3457160145,
+    525451.4085257817,
+    520768.2268281169,
+    516061.6292219646
    ],
    "fcf_by_year": [
     -500000.0,
     -4980000.0,
-    -1156642.683336548,
-    -46684.084163157386,
-    557945.3904035388,
-    691142.5796658106,
-    699596.0405899422,
-    679670.5697698978,
-    657505.8357488547,
-    662764.9612195985,
-    1909788.6657958336
+    -1315886.6805374576,
+    -302402.40538598376,
+    275897.2239918441,
+    523706.3692857721,
+    498630.0934462069,
+    435818.25406100805,
+    413430.0452685964,
+    418638.0243064627,
+    1665661.7288826979
    ],
    "crusher_net_y5": 0.0,
    "volume_y5": 100000.0
   },
   "O9": {
    "name": "Urban site closer to demand (truck-fed)",
-   "description": "O0 on an inland site in the city: shorter delivery (15 km) but higher lease and gravel by truck (+EUR 5/t).",
+   "description": "Base on an inland site in the city: shorter delivery (15 km) but higher lease and gravel by truck (+EUR 5/t).",
    "overrides": {
-    "opt_start_delay": 1,
+    "first_sales_delay_yr": 1,
     "delivery_avg_distance_oneway": 15,
     "site_lease_rate": 15,
     "price_gravel_delivered": 37
@@ -1306,15 +1323,15 @@
    "who": "Founders + municipality",
    "feasibility": 3,
    "kpis": {
-    "npv": -5472675.51479549,
-    "irr": -0.1458656998659626,
+    "npv": -6315399.807390517,
+    "irr": -0.19800935798662905,
     "payback": null,
     "discounted_payback": null,
-    "ebitda_y3": 302871.9049922023,
+    "ebitda_y3": 140249.96692526713,
     "ebitda_y3_year": 2030,
-    "funding_need": 7168062.791340337,
+    "funding_need": 7643903.138644321,
     "capex_initial": 5500000.0,
-    "npv_pct_of_capex": -0.9950319117809981
+    "npv_pct_of_capex": -1.1482545104346393
    },
    "c4": [
     {
@@ -1324,7 +1341,7 @@
       "green_premium_private"
      ],
      "pessimistic_column": "low",
-     "npv_pessimistic": -6179998.288487054
+     "npv_pessimistic": -6845891.887659188
     },
     {
      "name": "Recycled aggregate price, ex-works (EUR 10-25/t)",
@@ -1332,7 +1349,7 @@
       "price_rca_coarse_exworks"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -6682596.143266901
+     "npv_pessimistic": -7525320.435861927
     },
     {
      "name": "Transport distance (delivery 10-35 km + RCA haul 15-50 km)",
@@ -1341,7 +1358,7 @@
       "rca_transport_distance"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -8120718.462854787
+     "npv_pessimistic": -9190451.936985767
     },
     {
      "name": "Cement price + ETS/CBAM path",
@@ -1360,7 +1377,7 @@
       "carbon_cost_cem3b_2036"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -8072149.954065249
+     "npv_pessimistic": -8918308.704970226
     },
     {
      "name": "Plant utilisation (50k-90k m3/yr)",
@@ -1368,7 +1385,7 @@
       "output_steady_state"
      ],
      "pessimistic_column": "low",
-     "npv_pessimistic": -7734372.464473758
+     "npv_pessimistic": -8336318.387755918
     },
     {
      "name": "Capex (plant, civil, permits)",
@@ -1378,7 +1395,7 @@
       "capex_permits_engineering"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -8001593.404354175
+     "npv_pessimistic": -8844317.6969492
     }
    ],
    "criteria": {
@@ -1393,42 +1410,43 @@
    "ebitda_by_year": [
     0.0,
     -380000.0,
-    -564061.4976111995,
-    -51122.92443750426,
-    302871.9049922023,
-    233418.63688662462,
-    216525.72127513774,
-    197517.04188184068,
-    176392.50130786747,
-    172437.81454095244,
-    168463.35434020124
+    -645190.113472267,
+    -179398.0012120856,
+    140249.96692526713,
+    69969.96892129071,
+    52913.199734603986,
+    33714.23877010867,
+    12372.988628935069,
+    8418.301862018183,
+    4443.841661266983
    ],
    "fcf_by_year": [
     -500000.0,
     -4980000.0,
-    -1222096.0050479118,
-    -456221.4936573617,
-    -9745.29263506364,
-    161472.79820607672,
-    162176.16994582233,
-    142465.95001553977,
-    120639.86890457966,
-    122437.81454095244,
-    1368463.3543402012
+    -1300422.3439029518,
+    -582856.0730000967,
+    -171145.19813494082,
+    -1839.28603542177,
+    -1409.281409505289,
+    -21305.41675208346,
+    -43343.84127133922,
+    -41581.69813798182,
+    1204443.841661267
    ],
    "crusher_net_y5": 0.0,
    "volume_y5": 70000.0
   },
   "P1": {
    "name": "Package 1: acquire + partner crushing + frameworks",
-   "description": "O3 + O2 crushing from 2029 + O4 framework contracts (ramp 75%/95%, -EUR 1/m3).",
+   "description": "O3 + O2 crushing from 2029 + O4 framework contracts (-EUR 1/m3). Ramp = acquired-plant ramp 55%/85% (frameworks replace lost customers, they do not speed up the takeover).",
    "overrides": {
+    "first_sales_delay_yr": 1,
     "capex_plant_equipment": 3.3,
     "capex_site_prep_civil": 0.2,
     "capex_permits_engineering": 0.2,
     "capex_preopening_costs": 100000,
-    "ramp_year1_pct_of_steady": 75,
-    "ramp_year2_pct_of_steady": 95,
+    "ramp_year1_pct_of_steady": 55,
+    "ramp_year2_pct_of_steady": 85,
     "maintenance_pct_of_capex": 3.5,
     "salvage_value_yr10_pct_of_plant_civil_capex": 15,
     "opt_crusher_on": 1,
@@ -1446,15 +1464,15 @@
    "who": "Founders, seller, demolition partner, contractors",
    "feasibility": 3,
    "kpis": {
-    "npv": -1358150.0162514236,
-    "irr": 0.021135375241402632,
-    "payback": 9.802141461035768,
+    "npv": -3973034.7429831885,
+    "irr": -0.1569118906823433,
+    "payback": null,
     "discounted_payback": null,
-    "ebitda_y3": 906587.9213923998,
-    "ebitda_y3_year": 2029,
-    "funding_need": 4719594.97403108,
+    "ebitda_y3": 318079.0224370714,
+    "ebitda_y3_year": 2030,
+    "funding_need": 5415260.147334762,
     "capex_initial": 4100000.0,
-    "npv_pct_of_capex": -0.33125610152473745
+    "npv_pct_of_capex": -0.9690328641422411
    },
    "c4": [
     {
@@ -1464,7 +1482,7 @@
       "green_premium_private"
      ],
      "pessimistic_column": "low",
-     "npv_pessimistic": -2004173.1420882149
+     "npv_pessimistic": -4508771.264741956
     },
     {
      "name": "Gate fee received (A+B analogue of RCA price)",
@@ -1472,7 +1490,7 @@
       "hybrid_gate_fee_received"
      ],
      "pessimistic_column": "low",
-     "npv_pessimistic": -2352363.67769886
+     "npv_pessimistic": -4161548.4753424237
     },
     {
      "name": "Transport distance (delivery 10-35 km + RCA haul 15-50 km)",
@@ -1481,7 +1499,7 @@
       "rca_transport_distance"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -4192817.1834574104
+     "npv_pessimistic": -7103503.948520465
     },
     {
      "name": "Cement price + ETS/CBAM path",
@@ -1500,7 +1518,7 @@
       "carbon_cost_cem3b_2036"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -3806948.6706098723
+     "npv_pessimistic": -6617353.35251767
     },
     {
      "name": "Plant utilisation (50k-90k m3/yr)",
@@ -1508,7 +1526,7 @@
       "output_steady_state"
      ],
      "pessimistic_column": "low",
-     "npv_pessimistic": -3950930.5663306057
+     "npv_pessimistic": -6413479.663948923
     },
     {
      "name": "Capex (plant, civil, permits)",
@@ -1518,7 +1536,7 @@
       "capex_permits_engineering"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -3069585.6843984784
+     "npv_pessimistic": -5757493.96249539
     }
    ],
    "criteria": {
@@ -1531,61 +1549,62 @@
     "verdict": "NOT VIABLE"
    },
    "ebitda_by_year": [
+    0.0,
     -180000.0,
-    15957.626993998885,
-    382489.348538721,
-    906587.9213923998,
-    882670.2899484504,
-    812859.9691676553,
-    795608.2156175748,
-    776238.9040959906,
-    754751.9282330889,
-    750432.9940007981,
-    746092.4650973454
+    -463670.0762639381,
+    50606.462424408644,
+    318079.0224370714,
+    247441.97175787576,
+    230026.36463259533,
+    210466.7715398129,
+    188763.08610971086,
+    184444.15187742002,
+    180103.62297396734
    ],
    "fcf_by_year": [
-    -3480000.0,
-    -933945.4653950422,
-    -305649.50863603724,
-    567272.2167859282,
-    678271.674094079,
-    611482.2584418522,
-    616638.9446589253,
-    601926.5749729238,
-    585642.8983456641,
-    588552.0815485922,
-    1150692.6091022303
+    -200000.0,
+    -3280000.0,
+    -1567233.8146691984,
+    -368026.332665564,
+    90843.84207805828,
+    190632.71680116304,
+    190703.88348848606,
+    170447.11601762078,
+    148046.25620943657,
+    149444.15187742002,
+    710103.6229739673
    ],
-   "crusher_net_y5": 445307.4122810313,
+   "crusher_net_y5": 60962.41228103131,
    "volume_y5": 70000.0,
    "ranges": [
     {
-     "case": "gate fee -2 / 15",
-     "npv_low_case": -2352363.67769886,
-     "npv_high_case": 62155.21438777077
+     "case": "gate fee 0 / 10",
+     "npv_low_case": -4161548.4753424237,
+     "npv_high_case": -2553119.8170806756
     },
     {
      "case": "purchase price 4.0M / 1.5M",
-     "npv_low_case": -2992368.5246911687,
-     "npv_high_case": -263044.69109003386
+     "npv_low_case": -5648135.591481571,
+     "npv_high_case": -2869540.226245744
     },
     {
-     "case": "ramp 55/85 (no framework) / 85/100",
-     "npv_low_case": -1413903.5097565278,
-     "npv_high_case": -1169650.4754678567
+     "case": "ramp 50/79 (greenfield) / 75/95 (frameworks speed up the takeover)",
+     "npv_low_case": -4129619.678808086,
+     "npv_high_case": -3552582.3645169884
     }
    ]
   },
   "P2": {
    "name": "Package 2: P1 + scale to 90k m3/yr",
-   "description": "P1 with a second framework contract: 90k m3/yr, +1 production FTE, 22 km average delivery.",
+   "description": "A COMBINATION OF FAVOURABLE INPUTS: P1 with a second framework contract, 90k m3/yr (2.7x an average Dutch plant), +1 production FTE, 22.7 km average delivery, +EUR 1.0M expansion capex; acquired-plant ramp 55%/85% of 90k; first sales 2028.",
    "overrides": {
+    "first_sales_delay_yr": 1,
     "capex_plant_equipment": 3.3,
     "capex_site_prep_civil": 0.2,
     "capex_permits_engineering": 0.2,
     "capex_preopening_costs": 100000,
-    "ramp_year1_pct_of_steady": 75,
-    "ramp_year2_pct_of_steady": 95,
+    "ramp_year1_pct_of_steady": 55,
+    "ramp_year2_pct_of_steady": 85,
     "maintenance_pct_of_capex": 3.5,
     "salvage_value_yr10_pct_of_plant_civil_capex": 15,
     "opt_crusher_on": 1,
@@ -1601,20 +1620,21 @@
     "opt_price_delta_per_m3": -1.0,
     "output_steady_state": 90000,
     "staff_production_fte": 8,
-    "delivery_avg_distance_oneway": 22
+    "delivery_avg_distance_oneway": 22.677868380553633,
+    "opt_extra_capex_y0": 1000000.0
    },
    "who": "As P1 + second anchor customer",
    "feasibility": 2,
    "kpis": {
-    "npv": 414.2765430589061,
-    "irr": 0.08001652141159299,
-    "payback": 7.2803217116570025,
+    "npv": -4013320.245943241,
+    "irr": -0.1061163578749032,
+    "payback": null,
     "discounted_payback": null,
-    "ebitda_y3": 1276012.626968801,
-    "ebitda_y3_year": 2029,
-    "funding_need": 4579629.137430806,
-    "capex_initial": 4100000.0,
-    "npv_pct_of_capex": 0.00010104305928266003
+    "ebitda_y3": 585677.6863530185,
+    "ebitda_y3_year": 2030,
+    "funding_need": 6368910.119711529,
+    "capex_initial": 5100000.0,
+    "npv_pct_of_capex": -0.7869255384202433
    },
    "c4": [
     {
@@ -1624,7 +1644,7 @@
       "green_premium_private"
      ],
      "pessimistic_column": "low",
-     "npv_pessimistic": -826956.0671394353
+     "npv_pessimistic": -4591264.722087688
     },
     {
      "name": "Gate fee received (A+B analogue of RCA price)",
@@ -1632,7 +1652,7 @@
       "hybrid_gate_fee_received"
      ],
      "pessimistic_column": "low",
-     "npv_pessimistic": -993799.3849043772
+     "npv_pessimistic": -4164887.568848502
     },
     {
      "name": "Transport distance (delivery 10-35 km + RCA haul 15-50 km)",
@@ -1641,7 +1661,7 @@
       "rca_transport_distance"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -3935651.4962610924
+     "npv_pessimistic": -8618829.133096417
     },
     {
      "name": "Cement price + ETS/CBAM path",
@@ -1660,7 +1680,7 @@
       "carbon_cost_cem3b_2036"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -3050869.323177853
+     "npv_pessimistic": -7302298.834942188
     },
     {
      "name": "Plant utilisation (50k-90k m3/yr)",
@@ -1668,7 +1688,7 @@
       "output_steady_state"
      ],
      "pessimistic_column": "low",
-     "npv_pessimistic": -2726038.074622176
+     "npv_pessimistic": -6516269.639213922
     },
     {
      "name": "Capex (plant, civil, permits)",
@@ -1678,102 +1698,306 @@
       "capex_permits_engineering"
      ],
      "pessimistic_column": "high",
-     "npv_pessimistic": -1707738.213724308
+     "npv_pessimistic": -5686919.84219576
     }
    ],
    "criteria": {
-    "c1": true,
+    "c1": false,
     "c2": false,
     "c3": true,
     "c4_n_pass": 0,
     "c4": false,
-    "n_pass": 2,
+    "n_pass": 1,
     "verdict": "NOT VIABLE"
    },
    "ebitda_by_year": [
+    0.0,
     -180000.0,
-    278752.66327800043,
-    732747.1266926397,
-    1276012.626968801,
-    1246109.6993239,
-    1157206.1269526891,
-    1135882.1180784125,
-    1111839.8187549394,
-    1085079.113641508,
-    1080395.9319438431,
-    1075689.3343376908
+    -343313.51423314493,
+    272554.8710507117,
+    585677.6863530185,
+    495711.17554100417,
+    474176.4977843296,
+    449889.55072645843,
+    422850.21902662516,
+    418167.0373289604,
+    413460.4397228081
    ],
    "fcf_by_year": [
-    -3480000.0,
-    -948706.4582084703,
-    -150922.6792223357,
-    823058.6464654254,
-    946059.578408471,
-    860716.8678953338,
-    867879.4513336343,
-    849499.284545206,
-    829102.0606606288,
-    833384.5815023317,
-    1395253.4860785666
+    -200000.0,
+    -4280000.0,
+    -1637895.463611337,
+    -251014.65610019234,
+    304342.7519188265,
+    420452.8237922888,
+    386887.4855992603,
+    368331.4038247855,
+    346353.8008731189,
+    350176.6335697912,
+    911630.2895088079
    ],
-   "crusher_net_y5": 445307.4122810313,
+   "crusher_net_y5": 60962.41228103131,
    "volume_y5": 90000.0,
    "ranges": [
     {
-     "case": "gate fee -2 / 15",
-     "npv_low_case": -993799.3849043772,
-     "npv_high_case": 1420719.5071822535
+     "case": "gate fee 0 / 10",
+     "npv_low_case": -4164887.568848502,
+     "npv_high_case": -2740239.0916132154
+    },
+    {
+     "case": "steel yield 0.5% / 3%",
+     "npv_low_case": -4069670.4649118595,
+     "npv_high_case": -3794231.8954930366
+    },
+    {
+     "case": "steel value share 0% / 100%",
+     "npv_low_case": -4126398.2892208016,
+     "npv_high_case": -3901668.12370525
+    },
+    {
+     "case": "RCA washing/screening 4 / 2 EUR/t",
+     "npv_low_case": -4104051.192922321,
+     "npv_high_case": -3923227.6156718014
+    },
+    {
+     "case": "expansion capex 2.0M / 0.5M",
+     "npv_low_case": -4897047.197256219,
+     "npv_high_case": -3572678.736380389
     },
     {
      "case": "purchase price 4.0M / 1.5M",
-     "npv_low_case": -1630408.20384172,
-     "npv_high_case": 1091180.2374203403
+     "npv_low_case": -5577561.471181941,
+     "npv_high_case": -3005777.6404804615
     },
     {
      "case": "volume 75k / 100k",
-     "npv_low_case": -1544391.4547908832,
-     "npv_high_case": 1023778.1997251677
+     "npv_low_case": -5374295.873563712,
+     "npv_high_case": -3294666.143891829
     }
-   ]
+   ],
+   "stack": {
+    "downside_inputs": {
+     "hybrid_gate_fee_received": 0,
+     "hybrid_yield_steel": 0.5,
+     "hybrid_rca_washing_screening": 4,
+     "opt_extra_capex_y0": 2000000.0,
+     "green_premium_public": 0,
+     "delivery_truck_load_avg": 8
+    },
+    "upside_inputs": {
+     "hybrid_gate_fee_received": 5,
+     "hybrid_yield_steel": 3,
+     "hybrid_steel_value_share_retained": 100,
+     "hybrid_rca_washing_screening": 2,
+     "opt_extra_capex_y0": 500000.0,
+     "green_premium_public": 3,
+     "delivery_truck_load_avg": 10
+    },
+    "downside": {
+     "npv": -6772314.292661962,
+     "irr": -0.25887030503368014,
+     "payback": null,
+     "discounted_payback": null,
+     "ebitda_y3": 208778.97753135674,
+     "ebitda_y3_year": 2030,
+     "funding_need": 7908816.221468405,
+     "capex_initial": 6100000.0,
+     "npv_pct_of_capex": -1.1102154578134364
+    },
+    "base": {
+     "npv": -4013320.245943241,
+     "irr": -0.1061163578749032,
+     "payback": null,
+     "discounted_payback": null,
+     "ebitda_y3": 585677.6863530185,
+     "ebitda_y3_year": 2030,
+     "funding_need": 6368910.119711529,
+     "capex_initial": 5100000.0,
+     "npv_pct_of_capex": -0.7869255384202433
+    },
+    "upside": {
+     "npv": -1417868.8323788843,
+     "irr": 0.019154827307698796,
+     "payback": 9.886057840935988,
+     "discounted_payback": null,
+     "ebitda_y3": 1168625.622198986,
+     "ebitda_y3_year": 2030,
+     "funding_need": 5486153.519319145,
+     "capex_initial": 4600000.0,
+     "npv_pct_of_capex": -0.30823235486497486
+    },
+    "gate_fee_for_npv0_base_terms": 29.677624782121775,
+    "gate_fee_for_npv0_steel3_kept100": 25.927624782121775,
+    "gate_fee_for_npv0_downside_other": 45.34226795903706,
+    "gate_fee_for_npv0_upside_other": 15.208027458167717,
+    "npv_original_p2_definition_memo": 414.2765430589061
+   }
+  },
+  "O_orig": {
+   "name": "Memo: original base (sales 2027, 10 m3 loads, 3% public premium)",
+   "description": "The base case as gated before the red-team fixes, kept for traceability. Not a recommendation.",
+   "overrides": {
+    "first_sales_delay_yr": 0,
+    "delivery_truck_load_avg": 10,
+    "green_premium_public": 3
+   },
+   "who": "-",
+   "feasibility": null,
+   "kpis": {
+    "npv": -4481665.395587757,
+    "irr": -0.0706382633148967,
+    "payback": null,
+    "discounted_payback": null,
+    "ebitda_y3": 530374.260142399,
+    "ebitda_y3_year": 2029,
+    "funding_need": 6835872.764774223,
+    "capex_initial": 5500000.0,
+    "npv_pct_of_capex": -0.8148482537432286
+   },
+   "c4": [
+    {
+     "name": "Green premium (public & private)",
+     "params": [
+      "green_premium_public",
+      "green_premium_private"
+     ],
+     "pessimistic_column": "low",
+     "npv_pessimistic": -5289067.976439959
+    },
+    {
+     "name": "Recycled aggregate price, ex-works (EUR 10-25/t)",
+     "params": [
+      "price_rca_coarse_exworks"
+     ],
+     "pessimistic_column": "high",
+     "npv_pessimistic": -5879690.624213712
+    },
+    {
+     "name": "Transport distance (delivery 10-35 km + RCA haul 15-50 km)",
+     "params": [
+      "delivery_avg_distance_oneway",
+      "rca_transport_distance"
+     ],
+     "pessimistic_column": "high",
+     "npv_pessimistic": -8357077.504590822
+    },
+    {
+     "name": "Cement price + ETS/CBAM path",
+     "params": [
+      "price_cem3b_2026_delivered",
+      "carbon_cost_cem3b_2026",
+      "carbon_cost_cem3b_2027",
+      "carbon_cost_cem3b_2028",
+      "carbon_cost_cem3b_2029",
+      "carbon_cost_cem3b_2030",
+      "carbon_cost_cem3b_2031",
+      "carbon_cost_cem3b_2032",
+      "carbon_cost_cem3b_2033",
+      "carbon_cost_cem3b_2034",
+      "carbon_cost_cem3b_2035",
+      "carbon_cost_cem3b_2036"
+     ],
+     "pessimistic_column": "high",
+     "npv_pessimistic": -7461840.761356306
+    },
+    {
+     "name": "Plant utilisation (50k-90k m3/yr)",
+     "params": [
+      "output_steady_state"
+     ],
+     "pessimistic_column": "low",
+     "npv_pessimistic": -7375999.251992014
+    },
+    {
+     "name": "Capex (plant, civil, permits)",
+     "params": [
+      "capex_plant_equipment",
+      "capex_site_prep_civil",
+      "capex_permits_engineering"
+     ],
+     "pessimistic_column": "high",
+     "npv_pessimistic": -7237858.534033164
+    }
+   ],
+   "criteria": {
+    "c1": false,
+    "c2": false,
+    "c3": true,
+    "c4_n_pass": 0,
+    "c4": false,
+    "n_pass": 1,
+    "verdict": "NOT VIABLE"
+   },
+   "ebitda_by_year": [
+    -380000.0,
+    -418885.8420040002,
+    136864.4537743032,
+    530374.260142399,
+    506811.90499220043,
+    437358.63688662276,
+    420465.72127513774,
+    401457.0418818407,
+    380332.50130786933,
+    376377.81454095244,
+    372403.35434020124
+   ],
+   "fcf_by_year": [
+    -5480000.0,
+    -1084616.086245096,
+    -271256.6785291268,
+    218415.59687541798,
+    450217.4239445294,
+    365412.79820607486,
+    366116.16994582233,
+    346405.95001553954,
+    324579.8689045813,
+    309146.4530024839,
+    1552946.717015563
+   ],
+   "crusher_net_y5": 0.0,
+   "volume_y5": 70000.0
   }
  },
  "policy": [
   {
    "option": "O0",
    "levy_for_npv0_eur_per_t": null,
-   "npv_levy_5": -4421275.014769718,
-   "public_premium_for_npv0_pct": 51.95035581142352,
-   "circ_mki_value_for_npv0_eur_m3": 27.315285049088615,
-   "npv_high_ets_path": -4649664.650186889,
-   "npv_landfill_81": -4383366.244503959,
-   "npv_gate_fee_15": -4383366.244503959,
-   "price_for_npv0_eur_m3": 151.27201253917116,
-   "volume_for_npv0_m3": 118706.78405359757
+   "npv_levy_5": -5374422.726043836,
+   "public_premium_for_npv0_pct": 58.516035491531795,
+   "circ_mki_value_for_npv0_eur_m3": 31.81609685984536,
+   "npv_high_ets_path": -5596307.760804085,
+   "npv_landfill_81": -5326983.506670521,
+   "npv_gate_fee_10": -5326983.506670521,
+   "gate_fee_for_npv0_eur_per_t": null,
+   "price_for_npv0_eur_m3": 154.02118186120686,
+   "volume_for_npv0_m3": 134079.03272206255
   },
   {
    "option": "P1",
    "levy_for_npv0_eur_per_t": null,
-   "npv_levy_5": -1402002.0402840585,
-   "public_premium_for_npv0_pct": 15.621456328032107,
-   "circ_mki_value_for_npv0_eur_m3": 7.836732541530793,
-   "npv_high_ets_path": -1568819.0640054545,
-   "npv_landfill_81": -1417372.3231437039,
-   "npv_gate_fee_15": 62155.21438777077,
-   "price_for_npv0_eur_m3": 139.13950608238895,
-   "volume_for_npv0_m3": 82605.59900813829
+   "npv_levy_5": -4020867.2176418095,
+   "public_premium_for_npv0_pct": 44.49310861109875,
+   "circ_mki_value_for_npv0_eur_m3": 23.807010404006334,
+   "npv_high_ets_path": -4243516.84671451,
+   "npv_landfill_81": -4050920.160411472,
+   "npv_gate_fee_10": -2553119.8170806756,
+   "gate_fee_for_npv0_eur_per_t": 28.251887437904344,
+   "price_for_npv0_eur_m3": 149.23296755919074,
+   "volume_for_npv0_m3": 120238.4125309271
   },
   {
    "option": "P2",
-   "levy_for_npv0_eur_per_t": 0.03663878521117603,
-   "npv_levy_5": -56120.96891689033,
-   "public_premium_for_npv0_pct": 2.997003036304596,
-   "circ_mki_value_for_npv0_eur_m3": null,
-   "npv_high_ets_path": -269745.2253724163,
-   "npv_landfill_81": -58808.03034922115,
-   "npv_gate_fee_15": 1420719.5071822535,
-   "price_for_npv0_eur_m3": 134.99901707464466,
-   "volume_for_npv0_m3": 89995.97111332626
+   "levy_for_npv0_eur_per_t": null,
+   "npv_levy_5": -4074757.1418152587,
+   "public_premium_for_npv0_pct": 36.72350493356316,
+   "circ_mki_value_for_npv0_eur_m3": 19.50466889948099,
+   "npv_high_ets_path": -4298885.862827087,
+   "npv_landfill_81": -4075853.5024126773,
+   "npv_gate_fee_10": -2740239.0916132154,
+   "gate_fee_for_npv0_eur_per_t": 29.677624782121775,
+   "price_for_npv0_eur_m3": 146.66082237912377,
+   "volume_for_npv0_m3": 147307.9812945575
   }
  ],
- "notes": "NPV at 8% real, 2026-2036, salvage-only terminal value. Criterion 3 uses the third operating year (2029 if sales start 2027, 2030 if 2028). Criterion 4: option-relative stress (see options.py)."
+ "notes": "NPV at 8% real, 2026-2036, salvage-only terminal value. Base after red-team fixes: first sales 2028. Criterion 3 uses the third operating year (2030 if sales start 2028, 2029 if 2027). Criterion 4: option-relative stress (see options.py). O_orig = original base (memo)."
 }

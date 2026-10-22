@@ -46,6 +46,12 @@ for i_, o_ in enumerate(opts.MODEL_OPTIONS):
     CASES.append((f"Option {o_[0]} via selector ({i_ + 1})", 2, {}, i_ + 1))
 _P1 = [i_ + 1 for i_, o_ in enumerate(opts.MODEL_OPTIONS) if o_[0] == "P1"][0]
 CASES.append(("Pessimistic scenario + option P1 via selector", 1, {}, _P1))
+# Red-team fixes: timing / truck load override, and the P2 downside and upside stacks (option selector + Override column)
+CASES.append(("Override: first sales 2027 + 8 m3 loads", 2, {"first_sales_delay_yr": 0, "delivery_truck_load_avg": 8}, 0))
+CASES.append(("Override: first sales 2029 (delay 2)", 2, {"first_sales_delay_yr": 2}, 0))
+_P2 = [i_ + 1 for i_, o_ in enumerate(opts.MODEL_OPTIONS) if o_[0] == "P2"][0]
+CASES.append(("Option P2 downside stack (selector + overrides)", 2, dict(opts.P2_DOWN), _P2))
+CASES.append(("Option P2 upside stack (selector + overrides)", 2, dict(opts.P2_UP), _P2))
 AL_KPIS = [("npv", "npv"), ("irr", "irr"), ("payback", "payback"), ("ebitda_y3", "ebitda_y3"), ("funding", "funding_need")]
 SC = {1: "pessimistic", 2: "base", 3: "optimistic"}
 YEARLY = [("revenue", "revenue"), ("ebitda", "ebitda"), ("ebit", "ebit"), ("tax", "tax"),
@@ -168,7 +174,8 @@ def main():
           "## What is and is not checked", "",
           "- Checked: every KPI on the Valuation sheet that drives the criteria, 7 yearly lines x 11 years, all check rows, "
           "for 3 scenarios, 3 override cases (incl. all original option hooks), every Agent-7 option through the live option "
-          "selector (Inputs!I3), one pessimistic-scenario + package P1 case, and the asset-light sheet (O6) KPIs.",
+          "selector (Inputs!I3) incl. the memo case O_orig (original base), one pessimistic-scenario + package P1 case, two timing / "
+          "truck-load override cases, the P2 downside and upside stacks (selector + Override column), and the asset-light sheet (O6) KPIs.",
           "- Not checked by recalculation: the Scenarios, Sensitivity, criterion-4 and Opt_Overview results values, because they "
           "are pasted from model_core.py / options.py (same code path as the cases above)."]
     with open(REPORT, "w", encoding="utf-8") as fh:

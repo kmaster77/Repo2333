@@ -19,10 +19,13 @@ column on the Inputs sheet of the workbook).
 Conventions (identical in the workbook)
 --------------------------------------
 * Real 2026 EUR, excl. VAT. Year index t = 0..10, calendar year = 2026 + t.
-* t = 0 (2026): permitting/construction year. All initial capex, the one-off
-  start-up costs (pre-opening, LCA/EPD) and the grant fall in t = 0. Cash flow of
-  t = 0 is not discounted; year t is discounted with 1/(1+r)^t.
-* t = 1..10 (2027-2036): operating years. Ramp-up: t=1 ramp1, t=2 ramp2, t>=3 ramp3.
+* t = 0 (2026): permitting year; permits/engineering capex always fall in t = 0. Plant and
+  civil capex, the one-off start-up costs (pre-opening, LCA/EPD), the grant and the MIA fall
+  in the build year t = first_sales_delay_yr (base: 2027). Cash flow of t = 0 is not
+  discounted; year t is discounted with 1/(1+r)^t.
+* t = 1..10 (2027-2036): possible operating years. First sales in t = 1 + first_sales_delay_yr
+  (base: delay 1 -> build 2026-2027, first sales 2028, 9 operating years). Ramp-up: first
+  operating year ramp1, second ramp2, then ramp3.
 * Percent inputs are stored as numbers (8 = 8 %) and divided by 100 in formulas.
 * Unlevered model (no debt, no interest). Tax = Dutch Vpb, two brackets, losses
   carried forward without time limit (the 50 % cap above EUR 1M is ignored; taxable
@@ -81,6 +84,7 @@ output_steady_state ramp_year1_pct_of_steady ramp_year2_pct_of_steady ramp_year3
 circular_share_of_volume public_share_of_sales salvage_value_yr10_pct_of_plant_civil_capex
 working_capital_payable_days concrete_price_passthrough_of_market_binder_cost
 price_plant_avg_all_classes green_premium_public green_premium_private price_real_escalation
+delivery_truck_load_avg
 """.split()
 
 DIRECTION: Dict[str, str] = {p: "cost" for p in _COST}
@@ -106,7 +110,6 @@ HOOKS = {
     "opt_price_delta_per_m3": ("EUR/m3", "Price change on ALL concrete sold (e.g. extra premium)"),
     "opt_cost_delta_per_m3": ("EUR/m3", "Variable cost change on ALL concrete sold (negative = saving)"),
     # --- added by Agent 7 (viability options); all 0 = base case unchanged -------------
-    "opt_start_delay": ("yr", "Delay of first sales in years (0 = 2027, 1 = 2028). Permits/engineering stay in 2026; plant capex, start-up costs, grant and MIA move to the year before first sales"),
     "opt_crusher_on": ("0/1", "Option A+B: on-site rubble acceptance + crushing line (uses the hybrid_* inputs)"),
     "opt_crusher_start_year": ("year", "First calendar year of crushing (waste-processing permit)"),
     "opt_rubble_intake_tpy": ("t/yr", "Rubble intake at full plant output (scales with the ramp-up)"),
@@ -186,8 +189,8 @@ def run(inputs: dict, overrides: Optional[dict] = None, scenario: str = "base") 
     n = len(T)
     r = pct("discount_rate_real")
 
-    # ---------------- Timing (option hook opt_start_delay) -----------------
-    d = int(round(p["opt_start_delay"]))          # build year index (0 = 2026)
+    # ---------------- Timing (input first_sales_delay_yr; base 1 = first sales 2028, critique M1) ---
+    d = int(round(p["first_sales_delay_yr"]))     # build year index (0 = 2026)
     s0 = 1 + d                                     # first operating year index
     op = [1.0 if t >= s0 else 0.0 for t in T]
     t3 = 2 + s0                                    # third operating year (criterion 3)
@@ -244,7 +247,7 @@ def run(inputs: dict, overrides: Optional[dict] = None, scenario: str = "base") 
     cr_rev = {
         "gate_fee": [intake[t] * p["hybrid_gate_fee_received"] for t in T],
         "sand": [intake[t] * pct("hybrid_yield_sand_0_4") * p["hybrid_price_crusher_sand"] for t in T],
-        "steel": [intake[t] * pct("hybrid_yield_steel") * p["hybrid_price_steel_scrap"] for t in T],
+        "steel": [intake[t] * pct("hybrid_yield_steel") * p["hybrid_price_steel_scrap"] * pct("hybrid_steel_value_share_retained") for t in T],
         "surplus_rca": [rca_surplus[t] * p["price_rca_coarse_exworks"] for t in T],
     }
     rev_crusher = [sum(cr_rev[k][t] for k in cr_rev) for t in T]
@@ -271,7 +274,9 @@ def run(inputs: dict, overrides: Optional[dict] = None, scenario: str = "base") 
     mat_conv_m3 = [sum(m_conv[k][t] for k in m_conv) for t in T]
     rca_qc_m3 = p["mix_circ_rca_coarse"] / 1000 * (p["rca_lot_testing"] + p["rca_handling_prewetting"])
     energy_m3 = p["electricity_use"] * p["price_electricity"] + p["diesel_use_plant"] * p["price_diesel"]
-    delivery_m3 = p["delivery_fixed_per_m3"] + p["delivery_variable_per_km_oneway"] * p["delivery_avg_distance_oneway"]
+    # rates are calibrated at the reference load (10 m3); cost per m3 scales with reference / actual load (critique M2)
+    delivery_m3 = ((p["delivery_fixed_per_m3"] + p["delivery_variable_per_km_oneway"] * p["delivery_avg_distance_oneway"])
+                   * p["delivery_rates_reference_load"] / p["delivery_truck_load_avg"])
 
     # ---------------- Opex (EUR/yr) ----------------------------------------
     wage_idx = [(1 + pct("real_wage_growth")) ** t for t in T]
@@ -286,6 +291,7 @@ def run(inputs: dict, overrides: Optional[dict] = None, scenario: str = "base") 
         "cr_contaminants": [intake[t] * pct("hybrid_yield_contaminants") * p["hybrid_cost_contaminant_disposal"] for t in T],
         "cr_diesel": [intake[t] * p["hybrid_crusher_diesel"] * p["price_diesel"] for t in T],
         "cr_wear": [intake[t] * p["hybrid_crusher_wear"] for t in T],
+        "cr_washing": [coarse_prod[t] * p["hybrid_rca_washing_screening"] for t in T],
         "cr_contract": [intake[t] * p["opt_crusher_contract_rate"] for t in T],
         "bad_debt": [revenue[t] * pct("bad_debt_pct_revenue") for t in T],
         "staff_prod": [op[t] * p["staff_production_fte"] * p["cost_per_fte_production"] * wage_idx[t] for t in T],
@@ -302,10 +308,10 @@ def run(inputs: dict, overrides: Optional[dict] = None, scenario: str = "base") 
         "startup_oneoff": [startup_oneoff if t == d else 0.0 for t in T],
     }
     VARIABLE = ("raw_materials", "rca_qc", "energy", "delivery", "var_delta", "circ_delta", "cr_rca_credit",
-                "cr_contaminants", "cr_diesel", "cr_wear", "cr_contract", "bad_debt")
+                "cr_contaminants", "cr_diesel", "cr_wear", "cr_washing", "cr_contract", "bad_debt")
     FIXED = ("staff_prod", "maintenance", "certification", "site_lease", "staff_sga", "sga_other", "extra_fixed",
              "cr_staff", "cr_maintenance", "cr_certification", "cr_site")
-    CR_VAR = ("cr_rca_credit", "cr_contaminants", "cr_diesel", "cr_wear", "cr_contract")
+    CR_VAR = ("cr_rca_credit", "cr_contaminants", "cr_diesel", "cr_wear", "cr_washing", "cr_contract")
     CR_FIX = ("cr_staff", "cr_maintenance", "cr_certification", "cr_site")
     opex_var = [sum(opex[k][t] for k in VARIABLE) for t in T]
     opex_fixed = [sum(opex[k][t] for k in FIXED) for t in T]
@@ -428,6 +434,7 @@ SENSITIVITIES = [
     ("Gravel price (EUR 25-40/t)", ["price_gravel_delivered"], False),
     ("Sand price (EUR 14-25/t)", ["price_sand_delivered"], False),
     ("Delivery cost rates (fixed + per km)", ["delivery_fixed_per_m3", "delivery_variable_per_km_oneway"], False),
+    ("Truck-mixer load (8-10 m3 per trip)", ["delivery_truck_load_avg"], False),
     ("Production staff (FTE x cost)", ["staff_production_fte", "cost_per_fte_production"], False),
     ("SG&A (staff + non-staff)", ["staff_sga_fte", "cost_per_fte_sga", "sga_fixed_non_staff"], False),
     ("Site lease (area x rate)", ["site_area", "site_lease_rate"], False),

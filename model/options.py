@@ -21,26 +21,45 @@ import model_core as mc  # noqa: E402
 
 OUT_JSON = os.path.join(HERE, "results_options.json")
 
-DELAY = {"opt_start_delay": 1}                                   # A-OPT-01
+_TAB0 = mc.load_inputs()
+_B = lambda k: _TAB0[k]["base"]
 
-# On-site crushing, partner variant (contract crushing on our site)  A-OPT-02/03/05
+# ORDER OF OVERRIDES (critique H4): merge() applies the dicts left to right and a LATER dict WINS for any key
+# that appears twice. Packages list ACQ_RAMP LAST on purpose, so the ramp of an acquired plant (55/85/100 % of
+# the package's own target volume, A-OPT-08) is not silently replaced by the framework ramp of OFFTAKE (75/95).
+
+DELAY = {"first_sales_delay_yr": 1}       # A-OPT-01 / A-FIX-01. Same as the new base (inputs.csv); kept explicit
+# Original base before the red-team fixes (memo, critique M1/M2/M3): sales 2027, 10 m3 loads, 3% public premium  A-FIX-08
+ORIG = {"first_sales_delay_yr": 0, "delivery_truck_load_avg": 10, "green_premium_public": 3}
+
+# On-site crushing, partner variant (contract crushing on our site)  A-OPT-02/03/05; steel value split 50/50 (inputs base, A-FIX-06)
 CRUSH_PARTNER = {"opt_crusher_on": 1, "opt_crusher_start_year": 2029, "opt_rubble_intake_tpy": 40500,
                  "opt_crusher_capex": 400000, "opt_crusher_salvage_pct": 10, "opt_crusher_mia_share_pct": 0,
                  "opt_crusher_contract_rate": 7.5, "hybrid_crusher_diesel": 0, "hybrid_crusher_wear": 0,
                  "hybrid_crusher_staff_fte": 1}
-# On-site crushing, own mobile line                                  A-OPT-02/03/04
+# On-site crushing, own mobile line (no partner, so we keep all the steel value)   A-OPT-02/03/04, A-FIX-06
 CRUSH_OWN = {"opt_crusher_on": 1, "opt_crusher_start_year": 2029, "opt_rubble_intake_tpy": 40500,
-             "opt_crusher_capex": 2000000, "opt_crusher_salvage_pct": 10, "opt_crusher_mia_share_pct": 100}
+             "opt_crusher_capex": 2000000, "opt_crusher_salvage_pct": 10, "opt_crusher_mia_share_pct": 100,
+             "hybrid_steel_value_share_retained": 100}
 # Acquisition of an existing plant                                   A-OPT-06..10
 ACQ = {"capex_plant_equipment": 3.3, "capex_site_prep_civil": 0.2, "capex_permits_engineering": 0.2,
        "capex_preopening_costs": 100000, "ramp_year1_pct_of_steady": 55, "ramp_year2_pct_of_steady": 85,
        "maintenance_pct_of_capex": 3.5, "salvage_value_yr10_pct_of_plant_civil_capex": 15}
+ACQ_RAMP = {"ramp_year1_pct_of_steady": 55, "ramp_year2_pct_of_steady": 85}                                   # A-OPT-08, A-FIX-09
 OFFTAKE = {"ramp_year1_pct_of_steady": 75, "ramp_year2_pct_of_steady": 95, "opt_price_delta_per_m3": -1.0}   # A-OPT-11/12
-BINDER = {"opt_circ_price_delta_per_m3": 1.5, "opt_circ_cost_delta_per_m3": 1.5, "opt_circ_delta_start_year": 2029,
-          "opt_extra_capex_y0": 150000, "opt_extra_opex_per_yr": 40000}                                      # A-OPT-13..15
+# O5: the MKI value (A-OPT-13, EUR 1.5 per circular m3) is NETTED against the public green premium that the base already
+# pays on circular volume (public share x public premium x price = 0.40 x 1.5% x EUR 135 = EUR 0.81/m3), critique M7, A-FIX-11
+MKI_GROSS = 1.5
+PUBLIC_PREMIUM_EUR_M3 = _B("public_share_of_sales") / 100 * _B("green_premium_public") / 100 * _B("price_plant_avg_all_classes")
+BINDER = {"opt_circ_price_delta_per_m3": MKI_GROSS - PUBLIC_PREMIUM_EUR_M3, "opt_circ_cost_delta_per_m3": 1.5,
+          "opt_circ_delta_start_year": 2029, "opt_extra_capex_y0": 150000, "opt_extra_opex_per_yr": 40000}       # A-OPT-13..15
 SUBSIDY = {"grant_dei_veki_first_plant": 1.0, "mia_eligible_share_of_capex": 50}                               # A-OPT-16
-SCALE90 = {"output_steady_state": 90000, "staff_production_fte": 8, "delivery_avg_distance_oneway": 22}       # A-OPT-17
-SCALE100 = {"output_steady_state": 100000, "staff_production_fte": 9, "delivery_avg_distance_oneway": 23}     # A-OPT-17
+# Delivery distance grows with the sales radius: 20 km x sqrt(volume / 70k), NOT rounded (critique H5)   A-OPT-17
+DIST = lambda v: _B("delivery_avg_distance_oneway") * (v / _B("output_steady_state")) ** 0.5
+SCALE90 = {"output_steady_state": 90000, "staff_production_fte": 8, "delivery_avg_distance_oneway": DIST(90000)}     # 22.68 km
+SCALE100 = {"output_steady_state": 100000, "staff_production_fte": 9, "delivery_avg_distance_oneway": DIST(100000)}  # 23.90 km
+# Extra capex to lift an acquired ~35k m3 plant to 90k m3/yr (second mixer line / silos / trucks yard), critique M6  A-FIX-10
+EXPAND90 = {"opt_extra_capex_y0": 1.0e6}
 URBAN = {"delivery_avg_distance_oneway": 15, "site_lease_rate": 15, "price_gravel_delivered": 37}             # A-OPT-18
 
 
@@ -53,42 +72,46 @@ def merge(*ds):
 
 # key, short name, description, overrides (None = separate model), who must act, feasibility 1-5
 OPTIONS = [
-    ("O0", "Corrected base: first sales 2028",
-     "Same plant, but permit + build take until end 2027; first sales 2028 (9 operating years to 2036).",
+    ("O0", "Base: first sales 2028 (= new base)",
+     "Same plant; permit 2026, build 2027, first sales 2028 (9 operating years to 2036). Since the red-team fixes this IS the base case.",
      merge(DELAY), "Founders (planning)", 5),
     ("O1", "A+B own mobile crushing line",
-     "O0 + own mobile crusher on a 1 ha extension: takes 40.5 kt/yr clean rubble for a gate fee, makes own RCA, sells sand and steel. Crushing from 2029 (waste permit).",
+     "Base + own mobile crusher on a 1 ha extension: takes 40.5 kt/yr clean rubble for a gate fee, makes own RCA (washed/screened), sells sand and keeps the steel. Crushing from 2029 (waste permit).",
      merge(DELAY, CRUSH_OWN), "Founders + province (waste permit) + demolition suppliers", 3),
     ("O2", "A+B with demolition partner (contract crushing)",
-     "O0 + a demolition firm delivers rubble (gate fee by contract) and crushes it on our site in campaigns at a fixed rate per tonne. Little own capex.",
+     "Base + a demolition firm delivers rubble (gate fee by contract) and crushes it on our site in campaigns at a fixed rate per tonne; steel value split 50/50. Little own capex.",
      merge(DELAY, CRUSH_PARTNER), "Demolition partner + province (waste permit)", 3),
     ("O3", "Acquire and convert an existing plant",
-     "Buy a running ready-mix plant (permit, customers, staff) in Zuid-Holland and convert it (RCA bins, covered store, probes). Sales from 2027.",
-     merge(ACQ), "Founders + seller (independent or divesting group) + bank", 3),
+     "Buy a running ready-mix plant (permit, customers, staff) in Zuid-Holland in 2027 and convert it (RCA bins, covered store, probes). First sales under our name 2028 (purchase gates close Q2 2027).",
+     merge(DELAY, ACQ), "Founders + seller (independent or divesting group) + bank", 3),
     ("O4", "Offtake / framework contracts (MKI tenders)",
-     "O0 + framework contracts with a public client / GWW contractor before the plant opens: faster ramp-up (75%/95%) at a ~3% framework discount on that volume.",
+     "Base + framework contracts with a public client / GWW contractor before the plant opens: faster ramp-up (75%/95%) at a ~3% framework discount on that volume.",
      merge(DELAY, OFFTAKE), "Contractors, Rijkswaterstaat / municipalities", 3),
     ("O5", "Lower-CO2 binder product (from 2029)",
-     "O0 + circular mix with a lower-CO2 binder (activated cement paste / ACT-type, ~-30% CO2 vs CEM III/B). Earns MKI value in tenders, but costs more and needs certification.",
+     "Base + circular mix with a lower-CO2 binder (activated cement paste / ACT-type, ~-30% CO2 vs CEM III/B). Earns MKI value in tenders (netted against the public premium already in the base), but costs more and needs certification.",
      merge(DELAY, BINDER), "Binder supplier (everox, Ecocem, ENCI) + certification body", 2),
     ("O6", "Asset-light: licence + RCA service (archetype D)",
      "No plant. Sell certified circular mix designs, RCA supply and MKI/EPD documentation to 2-8 existing plants for a fee per m3.",
      None, "Founders + licensee plants", 2),
     ("O7", "Maximum realistic subsidies",
-     "O0 + DEI+ grant EUR 1.0M (instead of 0.4M) + 50% of plant capex eligible for MIA.",
+     "Base + DEI+ grant EUR 1.0M (instead of 0.4M) + 50% of plant capex eligible for MIA.",
      merge(DELAY, SUBSIDY), "RVO", 2),
     ("O8", "Bigger plant: 100k m3/yr",
-     "O0 at 100k m3/yr (market SOM high case): +2 production FTE, larger delivery radius (23 km average).",
+     "Base at 100k m3/yr (market SOM high case): +2 production FTE, larger delivery radius (23.9 km average = 20 km x sqrt(100/70)).",
      merge(DELAY, SCALE100), "Founders + anchor customers", 2),
     ("O9", "Urban site closer to demand (truck-fed)",
-     "O0 on an inland site in the city: shorter delivery (15 km) but higher lease and gravel by truck (+EUR 5/t).",
+     "Base on an inland site in the city: shorter delivery (15 km) but higher lease and gravel by truck (+EUR 5/t).",
      merge(DELAY, URBAN), "Founders + municipality", 3),
     ("P1", "Package 1: acquire + partner crushing + frameworks",
-     "O3 + O2 crushing from 2029 + O4 framework contracts (ramp 75%/95%, -EUR 1/m3).",
-     merge(ACQ, CRUSH_PARTNER, OFFTAKE), "Founders, seller, demolition partner, contractors", 3),
+     "O3 + O2 crushing from 2029 + O4 framework contracts (-EUR 1/m3). Ramp = acquired-plant ramp 55%/85% (frameworks replace lost customers, they do not speed up the takeover).",
+     merge(DELAY, ACQ, CRUSH_PARTNER, OFFTAKE, ACQ_RAMP), "Founders, seller, demolition partner, contractors", 3),
     ("P2", "Package 2: P1 + scale to 90k m3/yr",
-     "P1 with a second framework contract: 90k m3/yr, +1 production FTE, 22 km average delivery.",
-     merge(ACQ, CRUSH_PARTNER, OFFTAKE, SCALE90), "As P1 + second anchor customer", 2),
+     "A COMBINATION OF FAVOURABLE INPUTS: P1 with a second framework contract, 90k m3/yr (2.7x an average Dutch plant), +1 production FTE, "
+     "22.7 km average delivery, +EUR 1.0M expansion capex; acquired-plant ramp 55%/85% of 90k; first sales 2028.",
+     merge(DELAY, ACQ, CRUSH_PARTNER, OFFTAKE, SCALE90, EXPAND90, ACQ_RAMP), "As P1 + second anchor customer", 2),
+    ("O_orig", "Memo: original base (sales 2027, 10 m3 loads, 3% public premium)",
+     "The base case as gated before the red-team fixes, kept for traceability. Not a recommendation.",
+     merge(ORIG), "-", None),
 ]
 OPT_BY_KEY = {o[0]: o for o in OPTIONS}
 MODEL_OPTIONS = [o for o in OPTIONS if o[3] is not None]          # in the workbook selector (1..N)
@@ -170,7 +193,7 @@ def al_breakeven_licensees(table=None):
 # Criterion 4 for an option: the 6 main drivers at their pessimistic value, one at a time.
 # A parameter the option overrides is moved by the same RATIO (pessimistic / base input) as in the
 # base test, so the stress is relative to the option's own value. For options with on-site crushing
-# the "RCA price" driver is replaced by its A+B analogue, the gate fee (low = -2 EUR/t), as plan.md
+# the "RCA price" driver is replaced by its A+B analogue, the gate fee (low = EUR 0/t), as plan.md
 # names the gate fee as a main driver.
 # ---------------------------------------------------------------------------
 def criterion4_option(table, ov):
@@ -262,10 +285,45 @@ def policy_tests(table, key, ov):
     hi_c = {f"carbon_cost_cem3b_{y}": table[f"carbon_cost_cem3b_{y}"]["high"] for y in mc.YEARS}
     res["npv_high_ets_path"] = npv(dict(ov, **hi_c))
     res["npv_landfill_81"] = npv(dict(ov, hybrid_cost_contaminant_disposal=160))
-    res["npv_gate_fee_15"] = npv(dict(ov, hybrid_gate_fee_received=15))
+    res["npv_gate_fee_10"] = npv(dict(ov, hybrid_gate_fee_received=10))
+    res["gate_fee_for_npv0_eur_per_t"] = (solve_fn(lambda g: npv(dict(ov, hybrid_gate_fee_received=g)), -50, 200)
+                                          if ov.get("opt_crusher_on") else None)
     res["price_for_npv0_eur_m3"] = solve_fn(lambda x: npv(dict(ov, price_plant_avg_all_classes=x)), 80, 250)
     res["volume_for_npv0_m3"] = solve_fn(lambda x: npv(dict(ov, output_steady_state=x)), 20000, 240000)
     return res
+
+
+# ---------------------------------------------------------------------------
+# P2 as a RANGE (critique H2): stacked downside / base / upside of the inputs the critique and the orchestrator
+# decisions flagged (A-FIX-12). Downside = the low end of each range in review/response.md; upside = the original
+# P2 deal terms (gate fee EUR 5/t, steel 3% kept 100%) plus the favourable end of the other ranges. All other
+# inputs stay at the new base. These are stress stacks, not probabilities.
+# ---------------------------------------------------------------------------
+P2_DOWN = {"hybrid_gate_fee_received": 0, "hybrid_yield_steel": 0.5, "hybrid_rca_washing_screening": 4,
+           "opt_extra_capex_y0": 2.0e6, "green_premium_public": 0, "delivery_truck_load_avg": 8}
+P2_UP = {"hybrid_gate_fee_received": 5, "hybrid_yield_steel": 3, "hybrid_steel_value_share_retained": 100,
+         "hybrid_rca_washing_screening": 2, "opt_extra_capex_y0": 0.5e6, "green_premium_public": 3, "delivery_truck_load_avg": 10}
+
+
+def p2_stack(table):
+    ov = OPT_BY_KEY["P2"][3]
+    npv = lambda o: mc.run(table, o)["kpis"]["npv"]
+    out = {"downside_inputs": P2_DOWN, "upside_inputs": P2_UP}
+    for lab, extra in (("downside", P2_DOWN), ("base", {}), ("upside", P2_UP)):
+        k = mc.run(table, dict(ov, **extra))["kpis"]
+        out[lab] = kfmt(k)
+    gf = lambda o: solve_fn(lambda g: npv(dict(o, hybrid_gate_fee_received=g)), -50, 200)
+    out["gate_fee_for_npv0_base_terms"] = gf(ov)                                          # steel 1%, split 50/50
+    out["gate_fee_for_npv0_steel3_kept100"] = gf(dict(ov, hybrid_yield_steel=3, hybrid_steel_value_share_retained=100))
+    out["gate_fee_for_npv0_downside_other"] = gf(dict(ov, **{k: v for k, v in P2_DOWN.items() if k != "hybrid_gate_fee_received"}))
+    out["gate_fee_for_npv0_upside_other"] = gf(dict(ov, **{k: v for k, v in P2_UP.items() if k != "hybrid_gate_fee_received"}))
+    # traceability: the P2 definition and inputs BEFORE the critique fixes (must reproduce the old +EUR 414)
+    orig_p2 = merge(ACQ, CRUSH_PARTNER, OFFTAKE, {"output_steady_state": 90000, "staff_production_fte": 8,
+                    "delivery_avg_distance_oneway": 22}, ORIG,
+                    {"hybrid_gate_fee_received": 5, "hybrid_yield_steel": 3, "hybrid_steel_value_share_retained": 100,
+                     "hybrid_rca_washing_screening": 0})
+    out["npv_original_p2_definition_memo"] = npv(orig_p2)
+    return out
 
 
 def kfmt(k):
@@ -277,7 +335,7 @@ def evaluate(table=None):
     table = table or mc.load_inputs()
     rows = {}
     base_k = mc.run(table)["kpis"]
-    rows["BASE"] = {"name": "Base case as gated (sales 2027)", "overrides": {}, "kpis": kfmt(base_k),
+    rows["BASE"] = {"name": "New base (sales 2028, 9 m3 loads, 1.5% public premium)", "overrides": {}, "kpis": kfmt(base_k),
                     "c4": [{"name": s["name"], "npv_pessimistic": s["npv_pessimistic"]} for s in mc.criterion4(table)]}
     rows["BASE"]["criteria"] = criteria(base_k, rows["BASE"]["c4"])
     for key, name, desc, ov, who, feas in OPTIONS:
@@ -298,12 +356,15 @@ def evaluate(table=None):
     rows["O6"]["breakeven_licensees"] = al_breakeven_licensees(table)
     # low / high range per option for the most uncertain option-specific inputs (one at a time)
     ranges = {
-        "O1": [("gate fee -2 / 15", {"hybrid_gate_fee_received": -2}, {"hybrid_gate_fee_received": 15}),
-               ("steel yield 1% / 5%", {"hybrid_yield_steel": 1}, {"hybrid_yield_steel": 5}),
+        "O1": [("gate fee 0 / 10", {"hybrid_gate_fee_received": 0}, {"hybrid_gate_fee_received": 10}),
+               ("steel yield 0.5% / 3%", {"hybrid_yield_steel": 0.5}, {"hybrid_yield_steel": 3}),
+               ("RCA washing/screening 4 / 2 EUR/t", {"hybrid_rca_washing_screening": 4}, {"hybrid_rca_washing_screening": 2}),
                ("crusher capex 2.5M / 1.4M", {"opt_crusher_capex": 2.9e6}, {"opt_crusher_capex": 1.4e6})],
-        "O2": [("gate fee -2 / 15", {"hybrid_gate_fee_received": -2}, {"hybrid_gate_fee_received": 15}),
+        "O2": [("gate fee 0 / 10", {"hybrid_gate_fee_received": 0}, {"hybrid_gate_fee_received": 10}),
                ("contract rate 10 / 5 EUR/t", {"opt_crusher_contract_rate": 10}, {"opt_crusher_contract_rate": 5}),
-               ("steel yield 1% / 5%", {"hybrid_yield_steel": 1}, {"hybrid_yield_steel": 5})],
+               ("steel yield 0.5% / 3%", {"hybrid_yield_steel": 0.5}, {"hybrid_yield_steel": 3}),
+               ("steel value share 0% / 100%", {"hybrid_steel_value_share_retained": 0}, {"hybrid_steel_value_share_retained": 100}),
+               ("RCA washing/screening 4 / 2 EUR/t", {"hybrid_rca_washing_screening": 4}, {"hybrid_rca_washing_screening": 2})],
         "O3": [("purchase price 4.0M / 1.5M", {"capex_plant_equipment": 4.8}, {"capex_plant_equipment": 2.3}),
                ("ramp as greenfield 50/79 / 65/90", {"ramp_year1_pct_of_steady": 50, "ramp_year2_pct_of_steady": 79},
                 {"ramp_year1_pct_of_steady": 65, "ramp_year2_pct_of_steady": 90}),
@@ -311,11 +372,15 @@ def evaluate(table=None):
         "O4": [("framework discount -2 / 0 EUR/m3", {"opt_price_delta_per_m3": -2}, {"opt_price_delta_per_m3": 0})],
         "O5": [("MKI value 0 / 4.5, cost +4 / 0", {"opt_circ_price_delta_per_m3": 0, "opt_circ_cost_delta_per_m3": 4},
                 {"opt_circ_price_delta_per_m3": 4.5, "opt_circ_cost_delta_per_m3": 0})],
-        "P1": [("gate fee -2 / 15", {"hybrid_gate_fee_received": -2}, {"hybrid_gate_fee_received": 15}),
+        "P1": [("gate fee 0 / 10", {"hybrid_gate_fee_received": 0}, {"hybrid_gate_fee_received": 10}),
                ("purchase price 4.0M / 1.5M", {"capex_plant_equipment": 4.8}, {"capex_plant_equipment": 2.3}),
-               ("ramp 55/85 (no framework) / 85/100", {"ramp_year1_pct_of_steady": 55, "ramp_year2_pct_of_steady": 85, "opt_price_delta_per_m3": 0},
-                {"ramp_year1_pct_of_steady": 85, "ramp_year2_pct_of_steady": 100})],
-        "P2": [("gate fee -2 / 15", {"hybrid_gate_fee_received": -2}, {"hybrid_gate_fee_received": 15}),
+               ("ramp 50/79 (greenfield) / 75/95 (frameworks speed up the takeover)", {"ramp_year1_pct_of_steady": 50, "ramp_year2_pct_of_steady": 79},
+                {"ramp_year1_pct_of_steady": 75, "ramp_year2_pct_of_steady": 95})],
+        "P2": [("gate fee 0 / 10", {"hybrid_gate_fee_received": 0}, {"hybrid_gate_fee_received": 10}),
+               ("steel yield 0.5% / 3%", {"hybrid_yield_steel": 0.5}, {"hybrid_yield_steel": 3}),
+               ("steel value share 0% / 100%", {"hybrid_steel_value_share_retained": 0}, {"hybrid_steel_value_share_retained": 100}),
+               ("RCA washing/screening 4 / 2 EUR/t", {"hybrid_rca_washing_screening": 4}, {"hybrid_rca_washing_screening": 2}),
+               ("expansion capex 2.0M / 0.5M", {"opt_extra_capex_y0": 2.0e6}, {"opt_extra_capex_y0": 0.5e6}),
                ("purchase price 4.0M / 1.5M", {"capex_plant_equipment": 4.8}, {"capex_plant_equipment": 2.3}),
                ("volume 75k / 100k", {"output_steady_state": 75000}, {"output_steady_state": 100000})],
     }
@@ -329,11 +394,13 @@ def evaluate(table=None):
             al_r.append({"case": f"{lab} {lo} / {hi}", "npv_low_case": run_asset_light({k_: lo}, table)["kpis"]["npv"],
                          "npv_high_case": run_asset_light({k_: hi}, table)["kpis"]["npv"]})
     rows["O6"]["ranges"] = al_r
+    rows["P2"]["stack"] = p2_stack(table)
     policy = [policy_tests(table, "O0", OPT_BY_KEY["O0"][3]), policy_tests(table, "P1", OPT_BY_KEY["P1"][3]),
               policy_tests(table, "P2", OPT_BY_KEY["P2"][3])]
     return {"options": rows, "policy": policy,
-            "notes": "NPV at 8% real, 2026-2036, salvage-only terminal value. Criterion 3 uses the third operating year "
-                     "(2029 if sales start 2027, 2030 if 2028). Criterion 4: option-relative stress (see options.py)."}
+            "notes": "NPV at 8% real, 2026-2036, salvage-only terminal value. Base after red-team fixes: first sales 2028. "
+                     "Criterion 3 uses the third operating year (2030 if sales start 2028, 2029 if 2027). Criterion 4: "
+                     "option-relative stress (see options.py). O_orig = original base (memo)."}
 
 
 def main():

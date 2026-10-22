@@ -2,6 +2,8 @@
 
 Agent 5 (Cost & price analyst). Date: 2026-10-22. All money in **real 2026 €, excl. VAT**. Concrete prices are **delivered to site** unless stated.
 Labels: **[VERIFIED]** = source read; **[ESTIMATE]** = calculated from sources (calculation shown); **[ASSUMPTION]** = no source, reasoning given.
+> **Update after the red-team critique (Phase 5, `review/response.md`).** Four inputs used below changed in `model/inputs.csv`: (1) public green premium **1.5%** instead of 3% → blended premium on circular volume **€0.8/m³** instead of €1.7/m³ (A-FIX-03); (2) delivery cost is scaled to the **9 m³ average truck load** → **€21.1/m³** at 20 km instead of €19.0 (A-FIX-02); (3) the plant-average price €135/m³ is now **confidence L** and the "project ≈ 68% of list" ratio is withdrawn (critique H1); (4) ready-mix market basis = ERMCO 2023 (6.0 Mm³, 178 plants, 33.7k m³/plant). The unit-cost tables below are kept as written by Agent 5 (2026 basis, 10 m³ loads, 3% premium). **Current model values (2030, first full-output year, base case):** plant-average price €137.2/m³, cash cost €132.6/m³, **EBITDA €4.6/m³, EBIT €1.0/m³**; circular mix still ~€2.5/m³ cheaper to make than the standard mix (`model/model_summary.md` §2).
+
 IDs: Phase 1 sources (POL-, MKT-, TEC-, CMP-) and assumptions (A-POL-, A-MKT-, A-TEC-, A-CMP-) are reused. New: `research/sources_cost.md` (CST-xx), `research/assumptions_cost.md` (A-CST-xx). Machine-readable inputs: `model/inputs.csv`.
 
 Words used once and explained:
@@ -16,7 +18,7 @@ Words used once and explained:
 
 1. **C30/37 per m³ (steady state 70k m³/yr, 2026):** circular product costs **€133** and sells for **€147** → EBIT margin **€13.7/m³ (9.3%)**. The conventional CEM III/B reference costs **€136**, sells for **€145** → **€9.4/m³ (6.5%)**. A CEM I reference costs **€144** → **€1.0/m³**. [ESTIMATE, §9]
 2. **The circular product is ~€2.5/m³ cheaper to make than the conventional one, not dearer**, because certified RCA delivered (~€24.5/t) is cheaper than barge gravel (~€32/t). Extra costs of the circular mix (+15 kg cement, +superplasticiser, lot testing, handling) are ~€3.8/m³. **Break-even RCA price ≈ €29/t delivered.** Above that, circular costs more. [ESTIMATE, §11]
-3. **The premium is small:** base €1.7/m³ blended (3% on the 40% public share, 0% private). Incumbents' list surcharges (+€3.30 R30, +€5.50 R50) are evidence of *asking*, not of *getting*. [ASSUMPTION A-MKT-25/26; VERIFIED MKT-25]
+3. **The premium is small:** base €1.7/m³ blended (3% on the 40% public share, 0% private) [**updated: 1.5% public → €0.8/m³**, A-FIX-03]. Incumbents' list surcharges (+€3.30 R30, +€5.50 R50) are evidence of *asking*, not of *getting*. [ASSUMPTION A-MKT-25/26; VERIFIED MKT-25]
 4. **For the financial model use plant averages, not C30/37.** All strength classes together sell at ~€135/m³ with ~310 kg cement. Then the plant earns only **€4.4/m³ EBIT (3.2%) and €8.0/m³ EBITDA (≈€0.56M/yr)**. The capital charge at 8% is **€7.8/m³**. So in the base case the plant does **not** earn its cost of capital (−€3.4/m³ economic profit). [ESTIMATE, §10]
 5. **Ranges are wide.** Margin of the circular C30/37: **−€17 to +€44/m³** (combined uncertainty, root-sum-square method, §9). The three inputs that matter most: **selling price** (±€15–20/m³), **volume/utilisation** (50k m³ → margin −€9/m³), and **delivery distance ≈ cement price** (each ±€6/m³). [ESTIMATE, §11]
 6. **ETS/CBAM:** CEM III/B carbon cost rises from ~€4/t (2026) to €12/t (2030) and €26/t (2034); CEM I from €14 to €45 and €95/t (current law). That adds **+€2.3/m³ (2030) and +€6.1/m³ (2034)** to a CEM III/B mix but **+€8.3 and +€22/m³** to a CEM I mix. This hurts CEM I users, not Dutch CEM III/B competitors. [ESTIMATE, §3.2]
@@ -145,7 +147,7 @@ Capex items used (`model/inputs.csv`): plant equipment €4.0M (3.0–5.5), site
 ## 6. Delivery to site
 
 Formula from technology.md: **€9 + €0.5 × one-way km per m³** [ESTIMATE, A-TEC-28].
-**Check:** truck mixer €110/h all-in, 10 m³ per trip, 50 min fixed (load, wait, unload, wash), 45 km/h. At 20 km: (50 + 2 × 20 ÷ 45 × 60) min = 103 min = 1.72 h × €110 = €189 ÷ 10 m³ = **€18.9/m³**. The formula gives €19.0. ✔ [ESTIMATE]
+**Check:** truck mixer €110/h all-in, 10 m³ per trip, 50 min fixed (load, wait, unload, wash), 45 km/h. At 20 km: (50 + 2 × 20 ÷ 45 × 60) min = 103 min = 1.72 h × €110 = €189 ÷ 10 m³ = **€18.9/m³**. The formula gives €19.0. ✔ [ESTIMATE] **Update (critique M2):** most Dutch truck mixers carry 8 to <10 m³ (ERMCO 2023), so the model now divides by a 9 m³ average load: (€9 + €0.5 × 20) × 10/9 = **€21.1/m³** (8 m³: €23.8; 10 m³: €19.0) [A-FIX-02].
 **Distance:** a 30 km delivery radius with evenly spread demand gives an average distance of 2/3 × 30 = **20 km** [ESTIMATE, A-CST-27]. Range 10–35 km → **€11 / €19 / €32 per m³** (low/base/high, incl. formula ranges).
 Caution: waiting time on site (pumps, slow pours) and part loads are the main reasons real costs exceed the formula. Holcim's list charges €18/m³ for under-loads <7.5 m³ [VERIFIED, CMP-35] — a sign of how much part loads cost.
 
@@ -340,14 +342,14 @@ In B1 the plant does **not** receive rubble. For a later "own crushing" option (
 | 2 | CO₂ per m³ CEM III/B | Mebin 87 kg @300 kg cement, excl. transport (CMP-27); TEC 126 (330 kg × 0.32 + 20); Betonakkoord example 115 + 30 | 129 kg (330 × 0.300 + 30) | Middle GWP; Betonakkoord's own 30 kg "other" |
 | 3 | Cement prices | A-MKT-19/20 €105 / €125 | €110 / €140 | Argus and Sika evidence (CST-14, CST-11); still no Dutch list |
 | 4 | CEM I–CEM III/B spread | €20/t (MKT) vs Heidelberg +€22/m³ ≈ €70/t (list, MKT-25) | €30/t | List surcharge includes margin and option pricing |
-| 5 | Green premium | A-MKT-25/26: 3% public / 0% private vs A-CMP-04: €5/m³ (0–12) | Market's 3% / 0% (→ €1.7/m³ blended) | CMP's €5 is a list premium of ECOPact, a *binder* product our reference also matches |
+| 5 | Green premium | A-MKT-25/26: 3% public / 0% private vs A-CMP-04: €5/m³ (0–12) | Market's 3% / 0% (→ €1.7/m³ blended); **updated to 1.5% / 0% (→ €0.8/m³), critique M3** | CMP's €5 is a list premium of ECOPact, a *binder* product our reference also matches |
 | 6 | MKI tender value | Policy €3.4/m³ supplier share; market ΔMKI €5 × factor 4 = €20 fictive | €0.5 (0–3.4), not additive | Our ΔMKI vs a Dutch CEM III/B competitor is ~0 (§12) |
 | 7 | Fictive discount factor | A-POL-10 base 3 vs A-MKT-27 base 4 | Not used directly | Only matters vs ceiling-level competitors |
 | 8 | RCA per m³ | A-MKT-29 0.40 t vs A-TEC-45 0.71 t (incl. fines) vs NMD C1 0.33 t | 0.56 t coarse (50%), no fines | Brief's 30–50%; fines need CUR 127 |
 | 9 | Allowed coarse RCA | Policy base 30% (A-POL-25) vs TEC mix C2 50% | 50% base, 30% as low variant | 50% needs CUR 112 acceptance outside X0 — a sales risk |
 | 10 | CBAM path in base | A-POL-04 base = 50/50 blend with July-2026 proposal from 2028; A-POL-07/08 and policy §5 table = current law | Current law in base; proposal as low | It is the law today; brief and policy table use it |
-| 11 | Project price vs list | MKT: project €145 ≈ 68% of list €212; A-CMP-01: −20% (→ ~€170) | €145 (130–165) | MKT-27 is an observed trade indication; −20% is a guess |
-| 12 | Ready-mix market size | MKT 7.4 Mm³ (~200 plants, 2016) vs CMP 6.0 Mm³ at 178 plants (ERMCO 2023, avg 33.7k m³/plant) | Not used in unit cost | Flag for Agent 6: our 70k m³ is 2× the 2023 average plant |
+| 11 | Project price vs list | MKT: project €145 ≈ 68% of list €212; A-CMP-01: −20% (→ ~€170) | €145 (130–165) | MKT-27 is a secondary trade indication; −20% is a guess. **Update (critique H1):** the 68% ratio has no source and is withdrawn; GWL primary retail list C30/37 €139.5–144.5 delivered (MKT-20) |
+| 12 | Ready-mix market size | MKT 7.4 Mm³ (~200 plants, 2016) vs CMP 6.0 Mm³ at 178 plants (ERMCO 2023, avg 33.7k m³/plant) | Not used in unit cost | Flag for Agent 6: our 70k m³ is 2× the 2023 average plant. **ERMCO 2023 is now the basis everywhere (critique M9)** |
 | 13 | Steady-state output | TEC 70k (brief) vs MKT SOM base 60k | 70k base; **test 60k** | At 60k, fixed costs rise by ~€3.9/m³ |
 | 14 | NMD A1-set C30/37 CEM I | €34.59 (TEC-04) vs €32.48 (TEC-05) | €34.59 (TEC-04) | Different card versions; TEC-04 has the module split |
 | 15 | CPI factors | MKT 2021→2026 ×1.27; TEC ×1.26; A-CMP-15 placeholder 1.03 (2025→26) | 1.022 for 2025→2026 (CBS Jan values, MKT-54) | Immaterial (<1%) |

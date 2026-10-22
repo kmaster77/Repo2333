@@ -43,7 +43,8 @@ def subtitle(ax, text):
 
 def unit_cost_stack(tab):
     r = mc.run(tab)
-    y, u, t = r["years"], r["unit"], 3
+    y, u = r["years"], r["unit"]
+    t = 3 + int(round(r["params"]["first_sales_delay_yr"]))     # third operating year = first full-output year
     vol = y["volume"][t]
     fixed_m3 = lambda k: y[f"opex_{k}"][t] / vol
     share = y["volume_circ"][t] / vol
@@ -84,7 +85,7 @@ def unit_cost_stack(tab):
     ax.set_ylim(0, 180)
     ax.grid(axis="x", visible=False)
     ax.set_title("Circular concrete costs about the same as standard concrete", loc="left", pad=28)
-    subtitle(ax, "Cost per m³ in 2029 (first full year, 70,000 m³), base case. Black line = selling price.")
+    subtitle(ax, f"Cost per m³ in {mc.YEARS[t]} (first full year, {vol:,.0f} m³), base case. Black line = selling price.")
     ax.legend(loc="upper left", bbox_to_anchor=(1.12, 1), fontsize=9.5)
     return save(fig, "unit_cost_stack.png")
 
@@ -134,7 +135,8 @@ def cashflow(tab):
     ax.set_xticks(yrs, [str(v) for v in yrs])
     ax.grid(axis="x", visible=False)
     ax.set_title("The plant does not earn back its investment within 10 years", loc="left", pad=28)
-    subtitle(ax, "Base case. 2026 = build year (capex EUR 5.5M + start-up costs); sales start 2027.")
+    d = int(round(mc.run(tab)["params"]["first_sales_delay_yr"]))
+    subtitle(ax, f"Base case. Permits 2026, build {mc.YEARS[d]} (capex EUR 5.5M + start-up costs); first sales {mc.YEARS[d + 1]}.")
     ax.legend(loc="lower right")
     return save(fig, "cashflow_10yr.png")
 
@@ -147,7 +149,7 @@ def scenarios(tab):
     ax.bar(labs, vals, color=[C[1], C[0], C[2]], width=0.55, edgecolor=SURF)
     for i, s in enumerate(mc.SCENARIOS):
         k = res[s]
-        irr = "n/a" if k["irr"] is None else f"{k['irr'] * 100:.0f}%"
+        irr = "n/a" if k["irr"] is None else f"{k['irr'] * 100:.1f}%"
         pb = "not reached" if k["payback"] is None else f"{k['payback']:.1f} yr"
         txt = f"NPV {k['npv'] / 1e6:+.1f}M\nIRR {irr}\npayback {pb}"
         yv = vals[i]
@@ -163,12 +165,14 @@ def scenarios(tab):
 
 
 def ebitda(tab):
-    y = mc.run(tab)["years"]
-    yrs, e = y["year"][1:], y["ebitda"][1:]
+    r_ = mc.run(tab)
+    y = r_["years"]
+    d = int(round(r_["params"]["first_sales_delay_yr"]))
+    yrs, e = y["year"][1 + d:], y["ebitda"][1 + d:]
     fig, ax = plt.subplots(figsize=(10, 5.6))
     ax.bar(yrs, e, color=[C[1] if v < 0 else C[0] for v in e], width=0.6, edgecolor=SURF)
-    for x_, v, rv in zip(yrs, e, y["revenue"][1:]):
-        ax.text(x_, v + (0.02e6 if v >= 0 else -0.02e6), f"{v / 1e6:.2f}\n({v / rv * 100:.0f}%)", ha="center",
+    for x_, v, rv in zip(yrs, e, y["revenue"][1 + d:]):
+        ax.text(x_, v + (0.02e6 if v >= 0 else -0.02e6), f"{v / 1e6:.2f}\n({v / rv * 100:.1f}%)", ha="center",
                 va="bottom" if v >= 0 else "top", fontsize=9, color=INK)
     ax.axhline(0, color=INK2, linewidth=1)
     ax.yaxis.set_major_formatter(MEUR)
@@ -176,15 +180,20 @@ def ebitda(tab):
     ax.set_xticks(yrs, [str(v) for v in yrs])
     ax.set_ylim(min(e) * 1.6, max(e) * 1.5)
     ax.grid(axis="x", visible=False)
-    ax.set_title("EBITDA turns positive in year 2, but stays near EUR 0.4-0.5M a year", loc="left", pad=28)
-    subtitle(ax, "Base case, 35k / 55k / 70k m³ in 2027 / 2028 / 2029+. Margin shrinks as carbon costs rise faster than prices.")
+    first_pos = next((i + 1 for i, v in enumerate(e) if v > 0), None)
+    pos = [v for v in e[2:]]
+    ax.set_title(f"EBITDA turns positive in operating year {first_pos}, but stays at EUR {min(pos) / 1e6:.1f}-{max(pos) / 1e6:.1f}M a year",
+                 loc="left", pad=28)
+    v_ = y["volume"][1 + d:]
+    subtitle(ax, f"Base case, {v_[0] / 1e3:.0f}k / {v_[1] / 1e3:.0f}k / {v_[2] / 1e3:.0f}k m³ in {yrs[0]} / {yrs[1]} / {yrs[2]}+. "
+                 "Margin % of revenue in brackets; it shrinks as carbon costs rise faster than prices.")
     return save(fig, "ebitda_by_year.png")
 
 
 def breakeven(tab):
-    vols = list(range(40000, 140001, 5000))
+    vols = list(range(40000, 160001, 5000))
     npv_v = [mc.run(tab, {"output_steady_state": v})["kpis"]["npv"] for v in vols]
-    prices = [115 + i for i in range(0, 46)]
+    prices = [115 + i for i in range(0, 51)]
     npv_p = [mc.run(tab, {"price_plant_avg_all_classes": p})["kpis"]["npv"] for p in prices]
     bv = mc.solve(tab, "output_steady_state", lo=20000, hi=240000)
     bp = mc.solve(tab, "price_plant_avg_all_classes", lo=80, hi=250)
@@ -203,8 +212,8 @@ def breakeven(tab):
         ax.set_xlabel(xl)
         ax.yaxis.set_major_formatter(MEUR)
     axs[0].set_ylabel("NPV at 8% real (EUR million)")
-    axs[0].set_title("Break-even needs ~112k m³ a year ...", loc="left", pad=10)
-    axs[1].set_title("... or a ~10% higher average price", loc="left", pad=10)
+    axs[0].set_title(f"Break-even needs ~{bv / 1000:.0f}k m³ a year ...", loc="left", pad=10)
+    axs[1].set_title(f"... or a ~{(bp / 135 - 1) * 100:.1f}% higher average price", loc="left", pad=10)
     fig.suptitle("What it takes to reach NPV = 0 (other inputs at base)", x=0.07, ha="left", fontsize=15, fontweight="bold", y=1.03)
     return save(fig, "breakeven.png")
 
